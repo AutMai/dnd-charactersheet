@@ -1,0 +1,586 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema dnd
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema dnd
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `dnd` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ;
+USE `dnd` ;
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_WEAPON_TYPES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_WEAPON_TYPES` (
+  `NAME` INT NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_DAMAGE_TYPES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_DAMAGE_TYPES` (
+  `NAME` INT NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`DICETHROWS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`DICETHROWS` (
+  `DICETHROW_ID` INT NOT NULL AUTO_INCREMENT,
+  `DICE_COUNT` INT NOT NULL,
+  `DICE_TYPE` INT NOT NULL,
+  PRIMARY KEY (`DICETHROW_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`ITEMS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`ITEMS` (
+  `ITEM_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  `PRICE` INT NOT NULL,
+  `WEIGHT` INT NOT NULL,
+  PRIMARY KEY (`ITEM_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`WEAPONS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`WEAPONS` (
+  `WEAPON_ID` INT NOT NULL,
+  `WEAPON_TYPE` INT NOT NULL,
+  `DAMAGE_TYPES` INT NOT NULL,
+  `DAMAGE_DIE_ID` INT NOT NULL,
+  PRIMARY KEY (`WEAPON_ID`),
+  INDEX `fk_WEAPONS_E_WEAPON_TYPES1_idx` (`WEAPON_TYPE` ASC) VISIBLE,
+  INDEX `fk_WEAPONS_E_DAMAGE_TYPES1_idx` (`DAMAGE_TYPES` ASC) VISIBLE,
+  INDEX `fk_WEAPONS_DICETHROWS1_idx` (`DAMAGE_DIE_ID` ASC) VISIBLE,
+  INDEX `fk_WEAPONS_ITEMS1_idx` (`WEAPON_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_WEAPONS_E_WEAPON_TYPES1`
+    FOREIGN KEY (`WEAPON_TYPE`)
+    REFERENCES `dnd`.`E_WEAPON_TYPES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_WEAPONS_E_DAMAGE_TYPES1`
+    FOREIGN KEY (`DAMAGE_TYPES`)
+    REFERENCES `dnd`.`E_DAMAGE_TYPES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_WEAPONS_DICETHROWS1`
+    FOREIGN KEY (`DAMAGE_DIE_ID`)
+    REFERENCES `dnd`.`DICETHROWS` (`DICETHROW_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_WEAPONS_ITEMS1`
+    FOREIGN KEY (`WEAPON_ID`)
+    REFERENCES `dnd`.`ITEMS` (`ITEM_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_SIZE`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_SIZE` (
+  `LABEL` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`LABEL`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`RACES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`RACES` (
+  `RACE_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  `SIZE` VARCHAR(45) NOT NULL,
+  `SPEED` INT NOT NULL,
+  `PARENT_RACE_ID` INT NULL,
+  PRIMARY KEY (`RACE_ID`),
+  INDEX `fk_RACES_E_SIZE_idx` (`SIZE` ASC) VISIBLE,
+  INDEX `fk_RACES_RACES1_idx` (`PARENT_RACE_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_RACES_E_SIZE`
+    FOREIGN KEY (`SIZE`)
+    REFERENCES `dnd`.`E_SIZE` (`LABEL`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_RACES_RACES1`
+    FOREIGN KEY (`PARENT_RACE_ID`)
+    REFERENCES `dnd`.`RACES` (`RACE_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CLASSES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CLASSES` (
+  `CLASS_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  `HIT_DIE_ID` INT NOT NULL,
+  PRIMARY KEY (`CLASS_ID`),
+  INDEX `fk_CLASSES_DICETHROWS1_idx` (`HIT_DIE_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CLASSES_DICETHROWS1`
+    FOREIGN KEY (`HIT_DIE_ID`)
+    REFERENCES `dnd`.`DICETHROWS` (`DICETHROW_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`BACKGROUNDS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`BACKGROUNDS` (
+  `BACKGROUND_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `SKILL_PROFICIENCIES` TEXT NOT NULL,
+  PRIMARY KEY (`BACKGROUND_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`SPELLS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`SPELLS` (
+  `SPELL_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `LEVEL` INT NOT NULL,
+  `RANGE` VARCHAR(45) NOT NULL,
+  `DURATION` VARCHAR(45) NOT NULL,
+  `COMPONENTS` TEXT NOT NULL,
+  `DAMAGE_TYPE` INT NOT NULL,
+  `DAMAGE_DIE_ID` INT NOT NULL,
+  PRIMARY KEY (`SPELL_ID`),
+  INDEX `fk_SPELLS_E_DAMAGE_TYPES1_idx` (`DAMAGE_TYPE` ASC) VISIBLE,
+  INDEX `fk_SPELLS_DICETHROWS1_idx` (`DAMAGE_DIE_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_SPELLS_E_DAMAGE_TYPES1`
+    FOREIGN KEY (`DAMAGE_TYPE`)
+    REFERENCES `dnd`.`E_DAMAGE_TYPES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SPELLS_DICETHROWS1`
+    FOREIGN KEY (`DAMAGE_DIE_ID`)
+    REFERENCES `dnd`.`DICETHROWS` (`DICETHROW_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CHARACTERS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CHARACTERS` (
+  `CHARACTER_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `RACE_ID` INT NOT NULL,
+  `CLASS_ID` INT NOT NULL,
+  `BACKGROUND_ID` INT NOT NULL,
+  `MAX_HP` INT NOT NULL,
+  `CURRENT_HP` INT NOT NULL,
+  `TEMPORARY_HP` INT NOT NULL,
+  `INSPIRATION` TINYINT NOT NULL,
+  `XP` INT NOT NULL,
+  `BRONZE_COINS` INT NOT NULL,
+  `SPEED` INT NOT NULL,
+  `ALIGNMENT` VARCHAR(45) NOT NULL,
+  `HIT_DICE` INT NOT NULL,
+  `ARMOR_CLASS` INT NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`),
+  INDEX `fk_CHARACTERS_RACES1_idx` (`RACE_ID` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_CLASSES1_idx` (`CLASS_ID` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_BACKGROUNDS1_idx` (`BACKGROUND_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CHARACTERS_RACES1`
+    FOREIGN KEY (`RACE_ID`)
+    REFERENCES `dnd`.`RACES` (`RACE_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_CLASSES1`
+    FOREIGN KEY (`CLASS_ID`)
+    REFERENCES `dnd`.`CLASSES` (`CLASS_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_BACKGROUNDS1`
+    FOREIGN KEY (`BACKGROUND_ID`)
+    REFERENCES `dnd`.`BACKGROUNDS` (`BACKGROUND_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`FEATURES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`FEATURES` (
+  `FEATURE_ID` INT NOT NULL AUTO_INCREMENT,
+  `LABEL` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  `LEVEL` INT NOT NULL,
+  PRIMARY KEY (`FEATURE_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`TRAITS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`TRAITS` (
+  `TRAIT_ID` INT NOT NULL AUTO_INCREMENT,
+  `LABEL` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  PRIMARY KEY (`TRAIT_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`RACE_has_TRAITS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`RACE_has_TRAITS` (
+  `TRAIT_ID` INT NOT NULL,
+  `RACE_ID` INT NOT NULL,
+  PRIMARY KEY (`TRAIT_ID`, `RACE_ID`),
+  INDEX `fk_TRAITS_has_RACES_RACES1_idx` (`RACE_ID` ASC) VISIBLE,
+  INDEX `fk_TRAITS_has_RACES_TRAITS1_idx` (`TRAIT_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_TRAITS_has_RACES_TRAITS1`
+    FOREIGN KEY (`TRAIT_ID`)
+    REFERENCES `dnd`.`TRAITS` (`TRAIT_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_TRAITS_has_RACES_RACES1`
+    FOREIGN KEY (`RACE_ID`)
+    REFERENCES `dnd`.`RACES` (`RACE_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_LANGUAGES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_LANGUAGES` (
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`RACES_has_E_LANGUAGES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`RACES_has_E_LANGUAGES` (
+  `RACE_ID` INT NOT NULL,
+  `LANGUAGE_NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`RACE_ID`, `LANGUAGE_NAME`),
+  INDEX `fk_RACES_has_E_LANGUAGES_E_LANGUAGES1_idx` (`LANGUAGE_NAME` ASC) VISIBLE,
+  INDEX `fk_RACES_has_E_LANGUAGES_RACES1_idx` (`RACE_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_RACES_has_E_LANGUAGES_RACES1`
+    FOREIGN KEY (`RACE_ID`)
+    REFERENCES `dnd`.`RACES` (`RACE_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_RACES_has_E_LANGUAGES_E_LANGUAGES1`
+    FOREIGN KEY (`LANGUAGE_NAME`)
+    REFERENCES `dnd`.`E_LANGUAGES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_ABILITY_NAMES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_ABILITY_NAMES` (
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`ABILITIES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`ABILITIES` (
+  `ABILITY_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `ABILITY_SCORE` INT NOT NULL,
+  `PROFICIENT` TINYINT NOT NULL,
+  `CHARACTER_ID` INT NOT NULL,
+  PRIMARY KEY (`ABILITY_ID`),
+  INDEX `fk_E_ABILITIES_E_ABILITY_NAMES1_idx` (`NAME` ASC) VISIBLE,
+  INDEX `fk_ABILITIES_CHARACTERS1_idx` (`CHARACTER_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_E_ABILITIES_E_ABILITY_NAMES1`
+    FOREIGN KEY (`NAME`)
+    REFERENCES `dnd`.`E_ABILITY_NAMES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ABILITIES_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_SKILL_NAMES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_SKILL_NAMES` (
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`SKILLS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`SKILLS` (
+  `SKILL_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `PROFICIENT` TINYINT NOT NULL,
+  `ABILITY_ID` INT NOT NULL,
+  PRIMARY KEY (`SKILL_ID`),
+  INDEX `fk_SKILLS_E_SKILL_NAMES1_idx` (`NAME` ASC) VISIBLE,
+  INDEX `fk_SKILLS_ABILITIES1_idx` (`ABILITY_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_SKILLS_E_SKILL_NAMES1`
+    FOREIGN KEY (`NAME`)
+    REFERENCES `dnd`.`E_SKILL_NAMES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SKILLS_ABILITIES1`
+    FOREIGN KEY (`ABILITY_ID`)
+    REFERENCES `dnd`.`ABILITIES` (`ABILITY_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CHARACTER_has_SPELLS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CHARACTER_has_SPELLS` (
+  `CHARACTER_ID` INT NOT NULL,
+  `SPELL_ID` INT NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`, `SPELL_ID`),
+  INDEX `fk_CHARACTERS_has_SPELLS_SPELLS1_idx` (`SPELL_ID` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_has_SPELLS_CHARACTERS1_idx` (`CHARACTER_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CHARACTERS_has_SPELLS_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_has_SPELLS_SPELLS1`
+    FOREIGN KEY (`SPELL_ID`)
+    REFERENCES `dnd`.`SPELLS` (`SPELL_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_ARMOR_TYPE`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_ARMOR_TYPE` (
+  `LABEL` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`LABEL`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`ARMORS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`ARMORS` (
+  `ARMOR_ID` INT NOT NULL,
+  `ARMOR_TYPE` VARCHAR(45) NOT NULL,
+  `ARMOR_CLASS` INT NOT NULL,
+  PRIMARY KEY (`ARMOR_ID`),
+  INDEX `fk_ARMORS_E_ARMOR_TYPE1_idx` (`ARMOR_TYPE` ASC) VISIBLE,
+  CONSTRAINT `fk_ARMORS_ITEMS1`
+    FOREIGN KEY (`ARMOR_ID`)
+    REFERENCES `dnd`.`ITEMS` (`ITEM_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ARMORS_E_ARMOR_TYPE1`
+    FOREIGN KEY (`ARMOR_TYPE`)
+    REFERENCES `dnd`.`E_ARMOR_TYPE` (`LABEL`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CHARACTERS_has_ITEMS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CHARACTERS_has_ITEMS` (
+  `CHARACTER_ID` INT NOT NULL,
+  `ITEM_ID` INT NOT NULL,
+  `AMOUNT` INT NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`, `ITEM_ID`),
+  INDEX `fk_CHARACTERS_has_ITEMS_ITEMS1_idx` (`ITEM_ID` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_has_ITEMS_CHARACTERS1_idx` (`CHARACTER_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CHARACTERS_has_ITEMS_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_has_ITEMS_ITEMS1`
+    FOREIGN KEY (`ITEM_ID`)
+    REFERENCES `dnd`.`ITEMS` (`ITEM_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CLASS_has_PROFICIENCIES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CLASS_has_PROFICIENCIES` (
+  `ITEM_ID` INT NOT NULL,
+  `CLASS_ID` INT NOT NULL,
+  PRIMARY KEY (`ITEM_ID`, `CLASS_ID`),
+  INDEX `fk_ITEMS_has_CLASSES_CLASSES1_idx` (`CLASS_ID` ASC) VISIBLE,
+  INDEX `fk_ITEMS_has_CLASSES_ITEMS1_idx` (`ITEM_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_ITEMS_has_CLASSES_ITEMS1`
+    FOREIGN KEY (`ITEM_ID`)
+    REFERENCES `dnd`.`ITEMS` (`ITEM_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ITEMS_has_CLASSES_CLASSES1`
+    FOREIGN KEY (`CLASS_ID`)
+    REFERENCES `dnd`.`CLASSES` (`CLASS_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`FEATURES_has_CLASSES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`FEATURES_has_CLASSES` (
+  `FEATURE_ID` INT NOT NULL,
+  `CLASS_ID` INT NOT NULL,
+  PRIMARY KEY (`FEATURE_ID`, `CLASS_ID`),
+  INDEX `fk_FEATURES_has_CLASSES_CLASSES1_idx` (`CLASS_ID` ASC) VISIBLE,
+  INDEX `fk_FEATURES_has_CLASSES_FEATURES1_idx` (`FEATURE_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_FEATURES_has_CLASSES_FEATURES1`
+    FOREIGN KEY (`FEATURE_ID`)
+    REFERENCES `dnd`.`FEATURES` (`FEATURE_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_FEATURES_has_CLASSES_CLASSES1`
+    FOREIGN KEY (`CLASS_ID`)
+    REFERENCES `dnd`.`CLASSES` (`CLASS_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CLASS_has_SPELLS`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CLASS_has_SPELLS` (
+  `CLASS_ID` INT NOT NULL,
+  `SPELL_ID` INT NOT NULL,
+  PRIMARY KEY (`CLASS_ID`, `SPELL_ID`),
+  INDEX `fk_CLASSES_has_SPELLS_SPELLS1_idx` (`SPELL_ID` ASC) VISIBLE,
+  INDEX `fk_CLASSES_has_SPELLS_CLASSES1_idx` (`CLASS_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CLASSES_has_SPELLS_CLASSES1`
+    FOREIGN KEY (`CLASS_ID`)
+    REFERENCES `dnd`.`CLASSES` (`CLASS_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CLASSES_has_SPELLS_SPELLS1`
+    FOREIGN KEY (`SPELL_ID`)
+    REFERENCES `dnd`.`SPELLS` (`SPELL_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CHARACTER_has_LANGUAGES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CHARACTER_has_LANGUAGES` (
+  `CHARACTER_ID` INT NOT NULL,
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`, `NAME`),
+  INDEX `fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1_idx` (`NAME` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1_idx` (`CHARACTER_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1`
+    FOREIGN KEY (`NAME`)
+    REFERENCES `dnd`.`E_LANGUAGES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`PERSONALITIES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`PERSONALITIES` (
+  `PERSONALITIES_ID` INT NOT NULL AUTO_INCREMENT,
+  `NAME` VARCHAR(45) NOT NULL,
+  `DESCRIPTION` TEXT NOT NULL,
+  PRIMARY KEY (`PERSONALITIES_ID`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`CHARACTERS_has_PERSONALITIES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`CHARACTERS_has_PERSONALITIES` (
+  `CHARACTER_ID` INT NOT NULL,
+  `PERSONALITIES_ID` INT NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`, `PERSONALITIES_ID`),
+  INDEX `fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1_idx` (`PERSONALITIES_ID` ASC) VISIBLE,
+  INDEX `fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1_idx` (`CHARACTER_ID` ASC) VISIBLE,
+  CONSTRAINT `fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1`
+    FOREIGN KEY (`PERSONALITIES_ID`)
+    REFERENCES `dnd`.`PERSONALITIES` (`PERSONALITIES_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`DEATH_SAVES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`DEATH_SAVES` (
+  `CHARACTER_ID` INT NOT NULL,
+  `SUCCESS` TINYINT NOT NULL,
+  `COUNT` SMALLINT NOT NULL,
+  PRIMARY KEY (`CHARACTER_ID`),
+  CONSTRAINT `fk_DEATH_SAVES_CHARACTERS1`
+    FOREIGN KEY (`CHARACTER_ID`)
+    REFERENCES `dnd`.`CHARACTERS` (`CHARACTER_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

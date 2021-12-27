@@ -9,9 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2569ff64-f3e1-49df-9d73-982b29aa024c" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Domain/Repositories/Implementations/ARepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Domain/Repositories/Interfaces/IRepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Model/Configurations/CharacterSheetDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.charactersheet/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.charactersheet/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.charactersheet/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Domain/Repositories/Implementations/ARepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Domain/Repositories/Implementations/ARepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Configurations/CharacterSheetDbContext.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Model/Model.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Model/Model.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/View/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/View.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/View/View.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/View/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/View/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../planning/er-model_v1.mwb" beforeDir="false" afterPath="$PROJECT_DIR$/../../planning/er-model_v1.mwb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,9 +47,12 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="app.teamhub.trackedBranches" value="9i3ts6/main" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="configurable.group.language" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -88,6 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1640605124888</updated>
       <workItem from="1640605132053" duration="464000" />
+      <workItem from="1640610171523" duration="1862000" />
     </task>
     <servers />
   </component>
@@ -95,7 +105,7 @@
     <option name="version" value="3" />
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
