@@ -16,7 +16,6 @@
         public string Components { get; set; } = null!;
         public int DamageType { get; set; }
         public int DamageDieId { get; set; }
-
         public virtual Dicethrow DamageDie { get; set; } = null!;
         public virtual EDamageType DamageTypeNavigation { get; set; } = null!;
 
