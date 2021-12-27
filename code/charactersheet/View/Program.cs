@@ -1,7 +1,10 @@
+using Domain.Repositories.Implementations;
+using Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Model.Configuration;
+using Model.Entities;
 using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +19,8 @@ builder.Services.AddDbContext<CharacterSheetDbContext>(
         new MySqlServerVersion(new Version(8, 0, 27))
     )
 );
+
+builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 
 
 var app = builder.Build();

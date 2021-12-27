@@ -6,8 +6,7 @@ namespace Model.Configuration{
         public CharacterSheetDbContext(){
         }
 
-        public CharacterSheetDbContext(DbContextOptions<CharacterSheetDbContext> options)
-            : base(options){
+        public CharacterSheetDbContext(DbContextOptions<CharacterSheetDbContext> options) : base(options){
         }
 
         public virtual DbSet<Ability> Abilities{ get; set; } = null!;
@@ -176,7 +175,7 @@ namespace Model.Configuration{
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CHARACTERS_RACES1");
 
-                entity.HasMany(d => d.Names)
+                entity.HasMany(d => d.Languages)
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharacterHasLanguage",
