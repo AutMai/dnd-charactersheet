@@ -1,4 +1,7 @@
-﻿namespace Model.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace Model.Entities
 {
     public partial class EDamageType
     {
@@ -8,7 +11,7 @@
             Weapons = new HashSet<Weapon>();
         }
 
-        public int Name { get; set; }
+        public string Name { get; set; } = null!;
 
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<Weapon> Weapons { get; set; }

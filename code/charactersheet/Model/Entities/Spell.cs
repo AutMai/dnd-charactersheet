@@ -1,4 +1,7 @@
-﻿namespace Model.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace Model.Entities
 {
     public partial class Spell
     {
@@ -14,8 +17,9 @@
         public string Range { get; set; } = null!;
         public string Duration { get; set; } = null!;
         public string Components { get; set; } = null!;
-        public int DamageType { get; set; }
+        public string DamageType { get; set; } = null!;
         public int DamageDieId { get; set; }
+
         public virtual Dicethrow DamageDie { get; set; } = null!;
         public virtual EDamageType DamageTypeNavigation { get; set; } = null!;
 

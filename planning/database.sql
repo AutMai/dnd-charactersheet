@@ -15,24 +15,6 @@ CREATE SCHEMA IF NOT EXISTS `dnd` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicod
 USE `dnd` ;
 
 -- -----------------------------------------------------
--- Table `dnd`.`E_WEAPON_TYPES`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `dnd`.`E_WEAPON_TYPES` (
-  `NAME` INT NOT NULL,
-  PRIMARY KEY (`NAME`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `dnd`.`E_DAMAGE_TYPES`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `dnd`.`E_DAMAGE_TYPES` (
-  `NAME` INT NOT NULL,
-  PRIMARY KEY (`NAME`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `dnd`.`DICETHROWS`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `dnd`.`DICETHROWS` (
@@ -57,28 +39,36 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `dnd`.`E_WEAPON_TYPES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_WEAPON_TYPES` (
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `dnd`.`E_DAMAGE_TYPES`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `dnd`.`E_DAMAGE_TYPES` (
+  `NAME` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`NAME`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `dnd`.`WEAPONS`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `dnd`.`WEAPONS` (
   `WEAPON_ID` INT NOT NULL,
-  `WEAPON_TYPE` INT NOT NULL,
-  `DAMAGE_TYPES` INT NOT NULL,
   `DAMAGE_DIE_ID` INT NOT NULL,
+  `WEAPON_TYPE` VARCHAR(45) NOT NULL,
+  `DAMAGE_TYPE` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`WEAPON_ID`),
-  INDEX `fk_WEAPONS_E_WEAPON_TYPES1_idx` (`WEAPON_TYPE` ASC) VISIBLE,
-  INDEX `fk_WEAPONS_E_DAMAGE_TYPES1_idx` (`DAMAGE_TYPES` ASC) VISIBLE,
   INDEX `fk_WEAPONS_DICETHROWS1_idx` (`DAMAGE_DIE_ID` ASC) VISIBLE,
   INDEX `fk_WEAPONS_ITEMS1_idx` (`WEAPON_ID` ASC) VISIBLE,
-  CONSTRAINT `fk_WEAPONS_E_WEAPON_TYPES1`
-    FOREIGN KEY (`WEAPON_TYPE`)
-    REFERENCES `dnd`.`E_WEAPON_TYPES` (`NAME`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_WEAPONS_E_DAMAGE_TYPES1`
-    FOREIGN KEY (`DAMAGE_TYPES`)
-    REFERENCES `dnd`.`E_DAMAGE_TYPES` (`NAME`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+  INDEX `fk_WEAPONS_E_WEAPON_TYPES1_idx` (`WEAPON_TYPE` ASC) VISIBLE,
+  INDEX `fk_WEAPONS_E_DAMAGE_TYPES1_idx` (`DAMAGE_TYPE` ASC) VISIBLE,
   CONSTRAINT `fk_WEAPONS_DICETHROWS1`
     FOREIGN KEY (`DAMAGE_DIE_ID`)
     REFERENCES `dnd`.`DICETHROWS` (`DICETHROW_ID`)
@@ -87,6 +77,16 @@ CREATE TABLE IF NOT EXISTS `dnd`.`WEAPONS` (
   CONSTRAINT `fk_WEAPONS_ITEMS1`
     FOREIGN KEY (`WEAPON_ID`)
     REFERENCES `dnd`.`ITEMS` (`ITEM_ID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_WEAPONS_E_WEAPON_TYPES1`
+    FOREIGN KEY (`WEAPON_TYPE`)
+    REFERENCES `dnd`.`E_WEAPON_TYPES` (`NAME`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_WEAPONS_E_DAMAGE_TYPES1`
+    FOREIGN KEY (`DAMAGE_TYPE`)
+    REFERENCES `dnd`.`E_DAMAGE_TYPES` (`NAME`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `dnd`.`SPELLS` (
   `RANGE` VARCHAR(45) NOT NULL,
   `DURATION` VARCHAR(45) NOT NULL,
   `COMPONENTS` TEXT NOT NULL,
-  `DAMAGE_TYPE` INT NOT NULL,
+  `DAMAGE_TYPE` VARCHAR(45) NOT NULL,
   `DAMAGE_DIE_ID` INT NOT NULL,
   PRIMARY KEY (`SPELL_ID`),
   INDEX `fk_SPELLS_E_DAMAGE_TYPES1_idx` (`DAMAGE_TYPE` ASC) VISIBLE,

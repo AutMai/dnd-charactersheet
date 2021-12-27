@@ -1,4 +1,7 @@
-﻿namespace Model.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace Model.Entities
 {
     public partial class Character
     {
@@ -6,7 +9,7 @@
         {
             Abilities = new HashSet<Ability>();
             CharactersHasItems = new HashSet<CharactersHasItem>();
-            Languages = new HashSet<ELanguage>();
+            Names = new HashSet<ELanguage>();
             Personalities = new HashSet<Personality>();
             Spells = new HashSet<Spell>();
         }
@@ -33,7 +36,8 @@
         public virtual DeathSafe DeathSafe { get; set; } = null!;
         public virtual ICollection<Ability> Abilities { get; set; }
         public virtual ICollection<CharactersHasItem> CharactersHasItems { get; set; }
-        public virtual ICollection<ELanguage> Languages { get; set; }
+
+        public virtual ICollection<ELanguage> Names { get; set; }
         public virtual ICollection<Personality> Personalities { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
     }

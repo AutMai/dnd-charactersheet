@@ -1,4 +1,7 @@
-﻿namespace Model.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace Model.Entities
 {
     public partial class Ability
     {

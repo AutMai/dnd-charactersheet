@@ -3,7 +3,7 @@ using Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
-using Model.Configuration;
+using Model.Configurations;
 using Model.Entities;
 using View.Data;
 

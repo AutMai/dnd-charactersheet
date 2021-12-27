@@ -1,6 +1,6 @@
 using Domain.Extensions;
 using Domain.Repositories.Interfaces;
-using Model.Configuration;
+using Model.Configurations;
 using Model.Entities;
 
 namespace Domain.Repositories.Implementations;

@@ -4,7 +4,7 @@ using Domain.Extensions;
 using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model;
-using Model.Configuration;
+using Model.Configurations;
 
 namespace Domain.Repositories.Implementations;
 
