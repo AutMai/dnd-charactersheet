@@ -1,7 +1,8 @@
 ﻿using System.Linq.Expressions;
 using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Model.Configurations;
+using Model;
+using Model.Configuration;
 
 namespace Domain.Repositories.Implementations; 
 
