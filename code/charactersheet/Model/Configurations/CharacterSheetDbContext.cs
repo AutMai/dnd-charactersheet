@@ -23,6 +23,7 @@ namespace Model.Configurations
         public virtual DbSet<Character> Characters { get; set; } = null!;
         public virtual DbSet<CharactersHasItem> CharactersHasItems { get; set; } = null!;
         public virtual DbSet<Class> Classes { get; set; } = null!;
+        public virtual DbSet<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; } = null!;
         public virtual DbSet<DeathSafe> DeathSaves { get; set; } = null!;
         public virtual DbSet<Dicethrow> Dicethrows { get; set; } = null!;
         public virtual DbSet<EAbilityName> EAbilityNames { get; set; } = null!;
@@ -326,6 +327,27 @@ namespace Model.Configurations
                             j.IndexerProperty<string>("ArmorType").HasMaxLength(45).HasColumnName("ARMOR_TYPE");
                         });
 
+                entity.HasMany(d => d.EAbilityNamesNames)
+                    .WithMany(p => p.ClassesClasses)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "ClassHasAbilityProficiency",
+                        l => l.HasOne<EAbilityName>().WithMany().HasForeignKey("EAbilityNamesName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassesClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1"),
+                        j =>
+                        {
+                            j.HasKey("ClassesClassId", "EAbilityNamesName").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                            j.ToTable("class_has_ability_proficiencies");
+
+                            j.HasIndex(new[] { "ClassesClassId" }, "fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1_idx");
+
+                            j.HasIndex(new[] { "EAbilityNamesName" }, "fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1_idx");
+
+                            j.IndexerProperty<int>("ClassesClassId").HasColumnName("CLASSES_CLASS_ID");
+
+                            j.IndexerProperty<string>("EAbilityNamesName").HasMaxLength(45).HasColumnName("E_ABILITY_NAMES_NAME");
+                        });
+
                 entity.HasMany(d => d.EWeaponTypesNames)
                     .WithMany(p => p.ClassesClasses)
                     .UsingEntity<Dictionary<string, object>>(
@@ -367,6 +389,39 @@ namespace Model.Configurations
 
                             j.IndexerProperty<int>("SpellId").HasColumnName("SPELL_ID");
                         });
+            });
+
+            modelBuilder.Entity<ClassHasSkillProficienciesChoice>(entity =>
+            {
+                entity.HasKey(e => new { e.ClassId, e.Skill })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                entity.ToTable("class_has_skill_proficiencies_choices");
+
+                entity.HasIndex(e => e.ClassId, "fk_CLASSES_has_E_SKILL_NAMES_CLASSES1_idx");
+
+                entity.HasIndex(e => e.Skill, "fk_CLASSES_has_E_SKILL_NAMES_E_SKILL_NAMES1_idx");
+
+                entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
+
+                entity.Property(e => e.Skill)
+                    .HasMaxLength(45)
+                    .HasColumnName("SKILL");
+
+                entity.Property(e => e.Amount).HasColumnName("AMOUNT");
+
+                entity.HasOne(d => d.Class)
+                    .WithMany(p => p.ClassHasSkillProficienciesChoices)
+                    .HasForeignKey(d => d.ClassId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_CLASSES1");
+
+                entity.HasOne(d => d.SkillNavigation)
+                    .WithMany(p => p.ClassHasSkillProficienciesChoices)
+                    .HasForeignKey(d => d.Skill)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_E_SKILL_NAMES1");
             });
 
             modelBuilder.Entity<DeathSafe>(entity =>
