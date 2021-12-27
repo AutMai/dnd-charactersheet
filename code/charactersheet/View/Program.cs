@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
-using Model.Entities;
 using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);

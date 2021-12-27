@@ -8,7 +8,6 @@ namespace Model.Entities
         public Item()
         {
             CharactersHasItems = new HashSet<CharactersHasItem>();
-            Classes = new HashSet<Class>();
         }
 
         public int ItemId { get; set; }
@@ -20,7 +19,5 @@ namespace Model.Entities
         public virtual Armor Armor { get; set; } = null!;
         public virtual Weapon Weapon { get; set; } = null!;
         public virtual ICollection<CharactersHasItem> CharactersHasItems { get; set; }
-
-        public virtual ICollection<Class> Classes { get; set; }
     }
 }

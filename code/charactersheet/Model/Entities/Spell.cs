@@ -13,6 +13,7 @@ namespace Model.Entities
 
         public int SpellId { get; set; }
         public string Name { get; set; } = null!;
+        public string Description { get; set; } = null!;
         public int Level { get; set; }
         public string Range { get; set; } = null!;
         public string Duration { get; set; } = null!;

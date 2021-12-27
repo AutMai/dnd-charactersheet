@@ -8,21 +8,22 @@ namespace Model.Entities
         public Class()
         {
             Characters = new HashSet<Character>();
+            ArmorTypes = new HashSet<EArmorType>();
+            EWeaponTypesNames = new HashSet<EWeaponType>();
             Features = new HashSet<Feature>();
-            Items = new HashSet<Item>();
             Spells = new HashSet<Spell>();
         }
 
         public int ClassId { get; set; }
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public int HitDieId { get; set; }
+        public int HitDie { get; set; }
 
-        public virtual Dicethrow HitDie { get; set; } = null!;
         public virtual ICollection<Character> Characters { get; set; }
 
+        public virtual ICollection<EArmorType> ArmorTypes { get; set; }
+        public virtual ICollection<EWeaponType> EWeaponTypesNames { get; set; }
         public virtual ICollection<Feature> Features { get; set; }
-        public virtual ICollection<Item> Items { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
     }
 }
