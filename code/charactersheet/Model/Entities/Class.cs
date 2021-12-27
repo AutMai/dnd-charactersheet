@@ -9,11 +9,11 @@ namespace Model.Entities
         {
             Characters = new HashSet<Character>();
             ClassHasSkillProficienciesChoices = new HashSet<ClassHasSkillProficienciesChoice>();
+            AbilityNames = new HashSet<EAbilityName>();
             ArmorTypes = new HashSet<EArmorType>();
-            EAbilityNamesNames = new HashSet<EAbilityName>();
-            EWeaponTypesNames = new HashSet<EWeaponType>();
             Features = new HashSet<Feature>();
             Spells = new HashSet<Spell>();
+            WeaponTypes = new HashSet<EWeaponType>();
         }
 
         public int ClassId { get; set; }
@@ -24,10 +24,10 @@ namespace Model.Entities
         public virtual ICollection<Character> Characters { get; set; }
         public virtual ICollection<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; }
 
+        public virtual ICollection<EAbilityName> AbilityNames { get; set; }
         public virtual ICollection<EArmorType> ArmorTypes { get; set; }
-        public virtual ICollection<EAbilityName> EAbilityNamesNames { get; set; }
-        public virtual ICollection<EWeaponType> EWeaponTypesNames { get; set; }
         public virtual ICollection<Feature> Features { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
+        public virtual ICollection<EWeaponType> WeaponTypes { get; set; }
     }
 }

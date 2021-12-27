@@ -19,9 +19,9 @@ namespace Model.Entities
         public string Duration { get; set; } = null!;
         public string Components { get; set; } = null!;
         public string DamageType { get; set; } = null!;
-        public int DamageDieId { get; set; }
+        public int DamageDieAmount { get; set; }
+        public int DamageDieType { get; set; }
 
-        public virtual Dicethrow DamageDie { get; set; } = null!;
         public virtual EDamageType DamageTypeNavigation { get; set; } = null!;
 
         public virtual ICollection<Character> Characters { get; set; }
