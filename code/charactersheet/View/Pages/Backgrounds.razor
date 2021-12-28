@@ -1,0 +1,31 @@
+﻿@page "/backgrounds"
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@inject IRepository<Background> _backgroundRepository;
+<h3>Backgrounds</h3>
+
+<DataInitializer Data="BackgroundList">
+    <ChildComponent Context="backgrounds">
+        <table>
+            @foreach (var b in backgrounds) {
+                <tr>
+                    <td>
+                        <details>
+                            <summary>@b.Name</summary>
+                            <b>Skill Proficiencies: </b>@b.SkillProficiencies
+                        </details>
+                    </td>
+                </tr>
+            }
+        </table>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+    private List<Background>? BackgroundList { get; set; }
+
+    protected override async Task OnInitializedAsync(){
+        BackgroundList = await _backgroundRepository.ReadAsync();
+    }
+
+}
