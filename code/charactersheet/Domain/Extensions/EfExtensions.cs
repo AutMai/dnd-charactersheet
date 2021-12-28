@@ -1,65 +1,64 @@
 using System.Collections;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Domain.Extensions;
 
 public static class EfExtensions{
-    public static IQueryable<TEntity> IncludeAllRecursively<TEntity>(this IQueryable<TEntity> queryable,
-        int maxDepth = int.MaxValue, bool addSeenTypesToIgnoreList = true, HashSet<Type>? ignoreTypes = null)
-        where TEntity : class{
-        var type = typeof(TEntity);
-        var includes = new List<string>();
-        ignoreTypes ??= new HashSet<Type>();
-        GetIncludeTypes(ref includes, prefix: string.Empty, type, ref ignoreTypes, addSeenTypesToIgnoreList, maxDepth);
-        foreach (var include in includes){
-            queryable = queryable.Include(include);
+    public static IQueryable<TEntity> IncludeAll<TEntity>(
+        this DbSet<TEntity> dbSet,
+        int maxDepth = int.MaxValue) where TEntity : class{
+        IQueryable<TEntity> result = dbSet;
+        var context = dbSet.GetService<ICurrentDbContext>().Context;
+        var includePaths = GetIncludePaths<TEntity>(context, maxDepth);
+
+        foreach (var includePath in includePaths){
+            result = result.Include(includePath);
         }
 
-        return queryable;
+        return result;
     }
 
-    private static void GetIncludeTypes(ref List<string> includes, string prefix, Type type,
-        ref HashSet<Type> ignoreSubTypes,
-        bool addSeenTypesToIgnoreList = true, int maxDepth = int.MaxValue){
-        var properties = type.GetProperties();
-        foreach (var property in properties){
-            var getter = property.GetGetMethod();
-            if (getter != null){
-                var isVirtual = getter.IsVirtual;
-                if (isVirtual){
-                    var propPath = (prefix + "." + property.Name).TrimStart('.');
-                    if (maxDepth <= propPath.Count(c => c == '.')){
-                        break;
-                    }
+    private static IEnumerable<string> GetIncludePaths<T>(DbContext context, int maxDepth = int.MaxValue){
+        if (maxDepth < 0)
+            throw new ArgumentOutOfRangeException(nameof(maxDepth));
 
-                    includes.Add(propPath);
+        var entityType = context.Model.FindEntityType(typeof(T));
+        var includedNavigations = new HashSet<INavigation>();
+        var stack = new Stack<IEnumerator<INavigation>>();
 
-                    var subType = property.PropertyType;
-                    if (ignoreSubTypes.Contains(subType)){
-                        continue;
-                    }
-                    else if (addSeenTypesToIgnoreList){
-                        // add each type that we have processed to ignore list to prevent recursions
-                        ignoreSubTypes.Add(type);
-                    }
+        while (true){
+            var entityNavigations = new List<INavigation>();
 
-                    var isEnumerableType = subType.GetInterface(nameof(IEnumerable)) != null;
-                    var genericArgs = subType.GetGenericArguments();
-                    if (isEnumerableType && genericArgs.Length == 1){
-                        // sub property is collection, use collection type and drill down
-                        var subTypeCollection = genericArgs[0];
-                        if (subTypeCollection != null){
-                            GetIncludeTypes(ref includes, propPath, subTypeCollection, ref ignoreSubTypes,
-                                addSeenTypesToIgnoreList, maxDepth);
-                        }
-                    }
-                    else{
-                        // sub property is no collection, drill down directly
-                        GetIncludeTypes(ref includes, propPath, subType, ref ignoreSubTypes, addSeenTypesToIgnoreList,
-                            maxDepth);
-                    }
+            if (stack.Count <= maxDepth){
+                foreach (var navigation in entityType.GetNavigations()){
+                    if (includedNavigations.Add(navigation))
+                        entityNavigations.Add(navigation);
                 }
             }
+
+            if (entityNavigations.Count == 0){
+                if (stack.Count > 0)
+                    yield return string.Join(".", stack.Reverse().Select(e => e.Current!.Name));
+            }
+            else{
+                foreach (var navigation in entityNavigations){
+                    var inverseNavigation = navigation.FindInverse();
+                    if (inverseNavigation != null)
+                        includedNavigations.Add(inverseNavigation);
+                }
+
+                stack.Push(entityNavigations.GetEnumerator());
+            }
+
+            while (stack.Count > 0 && !stack.Peek().MoveNext())
+                stack.Pop();
+
+            if (stack.Count == 0)
+                break;
+
+            entityType = stack.Peek().Current!.GetTargetType();
         }
     }
 }

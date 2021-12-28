@@ -1,5 +1,6 @@
 using Domain.Extensions;
 using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
 
@@ -14,7 +15,7 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository{
     }
 
 
-    public Character GetGraph(int id){
-        return _set.IncludeAllRecursively().FirstOrDefault(k => k.CharacterId == id)!;
+    public async Task<Character?> GetGraph(int id){
+        return await _set.IncludeAll().SingleOrDefaultAsync(k => k.CharacterId == id);
     }
 }
