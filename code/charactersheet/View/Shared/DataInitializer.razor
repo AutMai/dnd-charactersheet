@@ -1,0 +1,16 @@
+﻿@typeparam TData
+
+@if (Data is null) {
+    <img src="816008710836715520.png"/>
+}
+else {
+    @ChildComponent(Data)
+}
+
+@code {
+    [Parameter]
+    public RenderFragment<TData> ChildComponent { get; set; }
+
+    [Parameter]
+    public TData Data { get; set; }
+}
