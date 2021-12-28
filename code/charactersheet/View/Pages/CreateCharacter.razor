@@ -85,10 +85,10 @@
         </RadzenStepsItem>
 
         <RadzenStepsItem Text="Abilities" Disabled="@(selectedRace == null || selectedClass == null)">
-
+            
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="Background" Disabled="@(selectedRace == null || selectedClass == null)">
+        <RadzenStepsItem Text="@(selectedBackground == null ? "Background" : "Background: " + selectedBackground.Name)" Disabled="@(selectedRace == null || selectedClass == null)">
             <DataInitializer Data="Backgrounds">
                 <ChildComponent>
                     <div class="row">
@@ -102,7 +102,7 @@
                             </RadzenCard>
                             @if (tempBackground != null){
                                 <RadzenCard class="d-inline-blocks">
-                                    <RadzenButton Text="Choose Background" Click=@(_ => tempBackground = selectedBackground) ButtonStyle="ButtonStyle.Success"/>
+                                    <RadzenButton Text="Choose Background" Click=@(() => selectedBackground = tempBackground) ButtonStyle="ButtonStyle.Success"/>
                                 </RadzenCard>
                             }
                         </div>
@@ -116,6 +116,10 @@
                     </div>
                 </ChildComponent>
             </DataInitializer>
+        </RadzenStepsItem>
+
+        <RadzenStepsItem Text="Summary" Disabled="@(selectedRace == null || selectedClass == null)">
+
         </RadzenStepsItem>
     </Steps>
 </RadzenSteps>
