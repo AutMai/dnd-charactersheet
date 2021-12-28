@@ -1,0 +1,28 @@
+﻿@page "/Classes"
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@inject IClassRepository _classRepo
+<h3>Classes</h3>
+
+<DataInitializer Data="ClassesList">
+    <ChildComponent Context="classes">
+        <table>
+            @foreach (var c in classes) {
+                <tr>
+                    <td>
+                        <a href="class/@c.Name">@c.Name</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+    private List<Class>? ClassesList { get; set; }
+
+    protected override async Task OnInitializedAsync(){
+        ClassesList = await _classRepo.ReadAsync();
+    }
+
+}

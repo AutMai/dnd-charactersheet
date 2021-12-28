@@ -1,0 +1,72 @@
+﻿@page "/class/{ClassName}"
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@using Domain.Extensions
+@inject IClassRepository _classRepository;
+
+<DataInitializer Data="Class">
+    <ChildComponent>
+        <h3>@Class.Name</h3><hr/>
+        <p>@Class.Description</p>
+        <p>
+            <b>Armor: </b>
+            @if (Class.ArmorTypes.Count > 0){
+                @String.Join(", ", Class.ArmorTypes.Select(at => at.Label.FirstCharToUpper()))
+            }
+            else{
+                <span>None</span>
+            }
+        </p>
+        <p>
+            <b>Weapons: </b>
+            @if (Class.WeaponTypes.Count > 0){
+                @String.Join(", ", Class.WeaponTypes.Select(wt => wt.Name.FirstCharToUpper()))
+            }
+            else{
+                <span>None</span>
+            }
+        </p>
+        <p>
+            <b>Saving Throws: </b>
+            @if (Class.AbilityNames.Count > 0){
+                @String.Join(",", Class.AbilityNames.Select(an => an.Name.FirstCharToUpper()))
+            }
+            else{
+                <span>None</span>
+            }
+        </p>
+        <p>
+            <b>Skills: </b>
+            @if (Class.ClassHasSkillProficienciesChoices.Count > 0){
+                <span>Choose @Class.ClassHasSkillProficienciesChoices.FirstOrDefault().Amount from </span>
+                @String.Join(", ", Class.ClassHasSkillProficienciesChoices.Select(an => an.SkillName.FirstCharToUpper()))
+            }
+            else{
+                <span>None</span>
+            }
+        </p>
+        <hr/>
+        <h4>Features</h4><br/>
+        @foreach (var feature in Class.Features.OrderBy(x=> x.Level)){
+            <h6>
+                <b>@feature.Label</b>
+            </h6>
+            <p>@feature.Description</p>
+        }
+        <hr/>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [Parameter]
+    public string ClassName { get; set; }
+
+    public Class Class { get; set; }
+
+    protected override async Task OnParametersSetAsync(){
+        Class = await _classRepository.ReadGraphAsync(ClassName);
+    }
+
+
+}
