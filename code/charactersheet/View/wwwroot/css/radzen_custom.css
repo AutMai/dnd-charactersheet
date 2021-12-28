@@ -1,0 +1,8 @@
+﻿.rz-navigation-item-wrapper, .rz-panel-menu {
+    background-color: white !important;
+    color: black !important;
+}
+
+.rz-navigation-item-wrapper:hover {
+    background-color: lightgrey !important;
+}
