@@ -1,35 +1,103 @@
 ﻿@page "/createcharacter"
-@inject IClassRepository _classRepository; 
-@using Microsoft.EntityFrameworkCore
+
 @using Domain.Repositories.Interfaces
 @using Model.Entities
+@using System.Linq
+@inject IRaceRepository _raceRepository;
+@inject IClassRepository _classRepository;
+@inject DialogService DialogService;
+@implements IDisposable;
 
-<RadzenSteps Change=@OnChange>
+<RadzenSteps>
     <Steps>
-        <RadzenStepsItem Text="Classes">
+        <RadzenStepsItem Text="Race">
+            <DataInitializer Data="Races">
+                <ChildComponent>
+                    <RadzenPanelMenu Style="width:300px">
+                        @foreach (var race in Races){
+                            if (race.SubRaces.Count > 0){
+                                // has childraces
+                                <RadzenPanelMenuItem Text="@race.Name">
+                                    @foreach (var subrace in race.SubRaces){
+                                        <RadzenPanelMenuItem Text="@subrace.Name" Path="@subrace.Name"></RadzenPanelMenuItem>
+                                    }
+                                </RadzenPanelMenuItem>
+                            }
+                            else{
+                                <RadzenButton Text=@($"hurensohn") ButtonStyle="ButtonStyle.Secondary" Click=@OpenInfo />
+                                //<RadzenPanelMenuItem Text="@race.Name" Click="@(() => OpenInfo(race.Name))"></RadzenPanelMenuItem>
+                            }
+                        }
+                    </RadzenPanelMenu>
+                </ChildComponent>
+            </DataInitializer>
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Class" Disabled="@(selectedClass == null || selectedClass != null)">
+
+        </RadzenStepsItem>@*
+        <RadzenStepsItem Text="Spells" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
 
         </RadzenStepsItem>
-        <RadzenStepsItem Text="classes" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+        <RadzenStepsItem Text="Abilities" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
 
         </RadzenStepsItem>
-        <RadzenStepsItem Text="Class Details" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+        <RadzenStepsItem Text="Background" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
 
-        </RadzenStepsItem>
+        </RadzenStepsItem>*@
     </Steps>
 </RadzenSteps>
 
 
 @code {
-    IEnumerable<Class> classes;
+    public EventCallback<MenuItemEventArgs> Click { get; set; }
+    
+    Race selectedRace { get; set; }
+    Class selectedClass { get; set; }
+    IEnumerable<Spell> selectedSpells { get; set; }
+    IEnumerable<Ability> selectedAbilities { get; set; }
+    Background selectedBackgrounds { get; set; }
+    IEnumerable<Personality> selectedPersonalities { get; set; }
+    string selectedName { get; set; }
 
-    IList<Class> selectedClass;
+    List<Race> Races { get; set; } = default;
+    IEnumerable<Class> Classes { get; set; }
+    IEnumerable<Spell> Spells { get; set; }
+    IEnumerable<Ability> Abilities { get; set; }
+    IEnumerable<Background> Backgrounds { get; set; }
+    IEnumerable<Personality> Personalities { get; set; }
 
-    protected override async Task OnInitializedAsync() {
-        classes = await _classRepository.ReadAsync();
+    protected override async Task OnInitializedAsync(){
+        Races = await _raceRepository.ReadParentRaces();
+        Classes = await _classRepository.ReadAsync();
     }
 
-    void OnChange(int index) {
-        Console.WriteLine($"Step with index {index} was selected.");
+    public async Task OpenInfo(){
+        string raceName = "Dragonborn";
+        Console.WriteLine("click");
+        await DialogService.OpenAsync<RaceDetail>($"Race",
+            new Dictionary<string, object>(){ { "RaceName", raceName } },
+            new DialogOptions{ Width = "700px", Height = "570px", Resizable = true, Draggable = true });
     }
+
+    protected override void OnInitialized(){
+        
+        DialogService.OnOpen += Open;
+        DialogService.OnClose += Close;
+    }
+
+    public void Dispose(){
+    // The DialogService is a singleton so it is advisable to unsubscribe.
+        DialogService.OnOpen -= Open;
+        DialogService.OnClose -= Close;
+    }
+
+    void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options){
+        Console.WriteLine("Dialog opened");
+    }
+
+    void Close(dynamic result){
+        Console.WriteLine("Dialog closed");
+    }
+
 
 }

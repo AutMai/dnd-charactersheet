@@ -631,7 +631,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Speed).HasColumnName("SPEED");
 
                 entity.HasOne(d => d.ParentRace)
-                    .WithMany(p => p.InverseParentRace)
+                    .WithMany(p => p.SubRaces)
                     .HasForeignKey(d => d.ParentRaceId)
                     .HasConstraintName("fk_RACES_RACES1");
 

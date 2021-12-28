@@ -6,9 +6,9 @@
 <DataInitializer Data="Race">
     <ChildComponent>
         <RaceData Race="Race"></RaceData><hr/>
-        @if (Race.InverseParentRace.Count > 0) {
+        @if (Race.SubRaces.Count > 0) {
             <h4>Subraces</h4>
-            foreach (var subrace in Race.InverseParentRace) {
+            foreach (var subrace in Race.SubRaces) {
                 <RaceData Race="subrace"></RaceData>
             }
         }

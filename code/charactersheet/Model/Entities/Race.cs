@@ -8,7 +8,7 @@ namespace Model.Entities
         public Race()
         {
             Characters = new HashSet<Character>();
-            InverseParentRace = new HashSet<Race>();
+            SubRaces = new HashSet<Race>();
             LanguageNames = new HashSet<ELanguage>();
             Traits = new HashSet<Trait>();
         }
@@ -23,7 +23,7 @@ namespace Model.Entities
         public virtual Race? ParentRace { get; set; }
         public virtual ESize SizeNavigation { get; set; } = null!;
         public virtual ICollection<Character> Characters { get; set; }
-        public virtual ICollection<Race> InverseParentRace { get; set; }
+        public virtual ICollection<Race> SubRaces { get; set; }
 
         public virtual ICollection<ELanguage> LanguageNames { get; set; }
         public virtual ICollection<Trait> Traits { get; set; }
