@@ -1,0 +1,48 @@
+﻿@page "/spells/{SpellName}"
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+@inject ISpellRepository _spellRepository;
+
+<DataInitializer Data="Spell">
+    <ChildComponent>
+        <h3>@Spell.Name</h3><hr/>
+        <p>
+            <b>Level: </b> @Spell.Level
+        </p>
+        <p>
+            <b>Range: </b> @Spell.Range
+        </p>
+        <p>
+            <b>Components: </b> @Spell.Components
+        </p>
+        <p>
+            <b>Duration: </b> @Spell.Duration
+        </p>
+        <p>@Spell.Description</p>
+        <p>
+            <b>Classes: </b>
+            @if (Spell.Classes.Count > 0) {
+                foreach (var c in Spell.Classes) {
+                    @c.Name
+                }
+            }
+            else {
+                <span>None</span>
+            }
+        </p>
+        <hr/>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [Parameter]
+    public string SpellName { get; set; }
+
+    private Spell? Spell { get; set; }
+
+    protected override async Task OnParametersSetAsync() {
+        Spell = await _spellRepository.ReadGraphAsync(SpellName);
+    }
+
+}
