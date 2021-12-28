@@ -11,29 +11,72 @@
 
 <RadzenSteps>
     <Steps>
-        <RadzenStepsItem Text="Race">
+        <RadzenStepsItem Text="@((selectedRace == null) ? "Race" : "Race: " + selectedRace.Name)">
             <DataInitializer Data="Races">
                 <ChildComponent>
-                    <RadzenPanelMenu Style="width:300px" Click="args => OpenInfo(args)">
-                        @foreach (var race in Races){
-                            if (race.SubRaces.Count > 0){
-                                // has childraces
-                                <RadzenPanelMenuItem Text="@race.Name">
-                                    @foreach (var subrace in race.SubRaces){
-                                        <RadzenPanelMenuItem Text="@subrace.Name" Path="@subrace.Name"></RadzenPanelMenuItem>
+                    <div class="row">
+                        <div class="col-md-3 d-inline-block">
+                            <RadzenCard class="d-inline-blocks">
+                                <RadzenPanelMenu Click="async args => tempRace = await _raceRepository.ReadGraphAsync(args.Text)">
+                                    @foreach (var race in Races) {
+                                        if (race.SubRaces.Count > 0) {
+                                            <RadzenPanelMenuItem Text="@race.Name">
+                                                @foreach (var subrace in race.SubRaces) {
+                                                    <RadzenPanelMenuItem Text="@subrace.Name"></RadzenPanelMenuItem>
+                                                }
+                                            </RadzenPanelMenuItem>
+                                        }
+                                        else {
+                                            <RadzenPanelMenuItem Text="@race.Name"></RadzenPanelMenuItem>
+                                        }
                                     }
-                                </RadzenPanelMenuItem>
+                                </RadzenPanelMenu>
+                            </RadzenCard>
+                            @if (tempRace != null && (tempRace.SubRaces.Count == 0 || tempRace.ParentRace is not null)) {
+                                <RadzenCard class="d-inline-blocks">
+                                    <RadzenButton Text="Choose Race" Click=@(_ => selectedRace = tempRace) ButtonStyle="ButtonStyle.Success"/>
+                                </RadzenCard>
                             }
-                            else{
-                                <RadzenPanelMenuItem Text="@race.Name"></RadzenPanelMenuItem>
-                            }
+                        </div>
+                        @if (tempRace != null) {
+                            <div class="col-md-8 d-flex">
+                                <RadzenCard>
+                                    <RaceDetail RaceName="@tempRace.Name"></RaceDetail>
+                                </RadzenCard>
+                            </div>
                         }
-                    </RadzenPanelMenu>
+                    </div>
                 </ChildComponent>
             </DataInitializer>
         </RadzenStepsItem>
-        <RadzenStepsItem Text="Class" Disabled="@(selectedClass == null || selectedClass != null)">
-
+        <RadzenStepsItem Text="@((selectedClass == null) ? "Class" : "Class: " + selectedClass.Name)" Disabled="@(selectedRace == null)">
+            <DataInitializer Data="Classes">
+                <ChildComponent>
+                    <div class="row">
+                        <div class="col-md-3 d-inline-block">
+                            <RadzenCard class="d-inline-blocks">
+                                <RadzenPanelMenu Click="async args => tempClass = await _classRepository.ReadGraphAsync(args.Text)">
+                                    @foreach (var c in Classes) {
+                                        <RadzenPanelMenuItem Text="@c.Name"></RadzenPanelMenuItem>
+                                    }
+                                </RadzenPanelMenu>
+                            </RadzenCard>
+                            @if (tempClass != null) {
+                                <RadzenCard class="d-inline-blocks">
+                                    <RadzenButton Text="Choose Class" Click=@(_ => selectedClass = tempClass) ButtonStyle="ButtonStyle.Success"/>
+                                </RadzenCard>
+                            }
+                        </div>
+                        @if (tempClass != null) {
+                            <div class="col-md-8 d-flex">
+                                <RadzenCard>
+                                    <ClassDetail ClassName="@tempClass.Name"></ClassDetail>
+                                </RadzenCard>
+                            </div>
+                        }
+                    </div>
+                </ChildComponent>
+            </DataInitializer>
         </RadzenStepsItem>@*
         <RadzenStepsItem Text="Spells" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
 
@@ -51,36 +94,19 @@
 @code {
     public EventCallback<MenuItemEventArgs> Click { get; set; }
 
-    Race selectedRace { get; set; }
-    Class selectedClass { get; set; }
-    IEnumerable<Spell> selectedSpells { get; set; }
-    IEnumerable<Ability> selectedAbilities { get; set; }
-    Background selectedBackgrounds { get; set; }
-    IEnumerable<Personality> selectedPersonalities { get; set; }
-    string selectedName { get; set; }
+    Race tempRace { get; set; }
+    Class tempClass { get; set; }
+    Race? selectedRace { get; set; }
+    Class? selectedClass { get; set; }
 
-    List<Race> Races { get; set; } = default;
-    IEnumerable<Class> Classes { get; set; }
-    IEnumerable<Spell> Spells { get; set; }
-    IEnumerable<Ability> Abilities { get; set; }
-    IEnumerable<Background> Backgrounds { get; set; }
-    IEnumerable<Personality> Personalities { get; set; }
+    List<Race> Races { get; set; }
+    List<Class> Classes { get; set; }
 
-    protected override async Task OnInitializedAsync(){
+
+    protected override async Task OnInitializedAsync() {
         Races = await _raceRepository.ReadParentRaces();
         Classes = await _classRepository.ReadAsync();
     }
 
-
-    public async Task OpenInfo(MenuItemEventArgs args){
-        Console.WriteLine("Path: " + args.Path);
-        Console.WriteLine("Value: " + args.Value);
-        Console.WriteLine("Text: " + args.Text);
-        await DialogService.OpenAsync<RaceDetail>($"Race",
-            new Dictionary<string, object>(){ { "RaceName", args.Text } },
-            new DialogOptions{ Width = "700px", Height = "570px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
-        
-        await DialogService.Confirm("Are you sure?", "MyTitle", new ConfirmOptions(){ OkButtonText = "Yes", CancelButtonText = "No", Top = "90vh", Left = "50vw"});
-    }
 
 }
