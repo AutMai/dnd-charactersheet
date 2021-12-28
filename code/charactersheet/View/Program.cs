@@ -20,7 +20,7 @@ builder.Services.AddDbContext<CharacterSheetDbContext>(
 );
 
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
-
+builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 
 var app = builder.Build();
 
