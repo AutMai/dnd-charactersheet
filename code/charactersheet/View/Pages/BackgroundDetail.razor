@@ -1,0 +1,31 @@
+﻿@page "/background/{BackgroundName}"
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+@inject IRepository<Background> _backgroundRepository;
+
+<DataInitializer Data="Background">
+    <ChildComponent Context="background">
+        <table>
+            <tr>
+                <td>
+                    <h3>@background.Name</h3>
+                    <b>Skill Proficiencies: </b>@background.SkillProficiencies
+                </td>
+            </tr>
+
+        </table>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [Parameter]
+    public string BackgroundName { get; set; }
+
+    public Background? Background { get; set; }
+
+    protected override async Task OnParametersSetAsync(){
+        Background = (await _backgroundRepository.ReadAsync(b => b.Name == BackgroundName)).SingleOrDefault();
+    }
+
+}

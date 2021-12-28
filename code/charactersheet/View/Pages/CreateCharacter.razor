@@ -2,10 +2,10 @@
 
 @using Domain.Repositories.Interfaces
 @using Model.Entities
-@using System.Linq
 @inject IRaceRepository _raceRepository;
 @inject IClassRepository _classRepository;
 @inject DialogService DialogService;
+@inject IRepository<Background> _backgroundRepository;
 
 <RadzenDialog/>
 
@@ -18,27 +18,27 @@
                         <div class="col-md-3 d-inline-block">
                             <RadzenCard class="d-inline-blocks">
                                 <RadzenPanelMenu Click="async args => tempRace = await _raceRepository.ReadGraphAsync(args.Text)">
-                                    @foreach (var race in Races) {
-                                        if (race.SubRaces.Count > 0) {
+                                    @foreach (var race in Races){
+                                        if (race.SubRaces.Count > 0){
                                             <RadzenPanelMenuItem Text="@race.Name">
-                                                @foreach (var subrace in race.SubRaces) {
+                                                @foreach (var subrace in race.SubRaces){
                                                     <RadzenPanelMenuItem Text="@subrace.Name"></RadzenPanelMenuItem>
                                                 }
                                             </RadzenPanelMenuItem>
                                         }
-                                        else {
+                                        else{
                                             <RadzenPanelMenuItem Text="@race.Name"></RadzenPanelMenuItem>
                                         }
                                     }
                                 </RadzenPanelMenu>
                             </RadzenCard>
-                            @if (tempRace != null && (tempRace.SubRaces.Count == 0 || tempRace.ParentRace is not null)) {
+                            @if (tempRace != null && (tempRace.SubRaces.Count == 0 || tempRace.ParentRace is not null)){
                                 <RadzenCard class="d-inline-blocks">
                                     <RadzenButton Text="Choose Race" Click=@(_ => selectedRace = tempRace) ButtonStyle="ButtonStyle.Success"/>
                                 </RadzenCard>
                             }
                         </div>
-                        @if (tempRace != null) {
+                        @if (tempRace != null){
                             <div class="col-md-8 d-flex">
                                 <RadzenCard>
                                     <RaceDetail RaceName="@tempRace.Name"></RaceDetail>
@@ -49,25 +49,26 @@
                 </ChildComponent>
             </DataInitializer>
         </RadzenStepsItem>
-        <RadzenStepsItem Text="@((selectedClass == null) ? "Class" : "Class: " + selectedClass.Name)" Disabled="@(selectedRace == null)">
+
+        <RadzenStepsItem Text="@(selectedClass == null ? "Class" : "Class: " + selectedClass.Name)" Disabled="@(selectedRace == null)">
             <DataInitializer Data="Classes">
                 <ChildComponent>
                     <div class="row">
                         <div class="col-md-3 d-inline-block">
                             <RadzenCard class="d-inline-blocks">
                                 <RadzenPanelMenu Click="async args => tempClass = await _classRepository.ReadGraphAsync(args.Text)">
-                                    @foreach (var c in Classes) {
+                                    @foreach (var c in Classes){
                                         <RadzenPanelMenuItem Text="@c.Name"></RadzenPanelMenuItem>
                                     }
                                 </RadzenPanelMenu>
                             </RadzenCard>
-                            @if (tempClass != null) {
+                            @if (tempClass != null){
                                 <RadzenCard class="d-inline-blocks">
                                     <RadzenButton Text="Choose Class" Click=@(_ => selectedClass = tempClass) ButtonStyle="ButtonStyle.Success"/>
                                 </RadzenCard>
                             }
                         </div>
-                        @if (tempClass != null) {
+                        @if (tempClass != null){
                             <div class="col-md-8 d-flex">
                                 <RadzenCard>
                                     <ClassDetail ClassName="@tempClass.Name"></ClassDetail>
@@ -77,35 +78,67 @@
                     </div>
                 </ChildComponent>
             </DataInitializer>
-        </RadzenStepsItem>@*
-        <RadzenStepsItem Text="Spells" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+        </RadzenStepsItem>
+
+        <RadzenStepsItem Text="Spells" Disabled="@(selectedRace == null || selectedClass == null)">
 
         </RadzenStepsItem>
-        <RadzenStepsItem Text="Abilities" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+
+        <RadzenStepsItem Text="Abilities" Disabled="@(selectedRace == null || selectedClass == null)">
 
         </RadzenStepsItem>
-        <RadzenStepsItem Text="Background" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
 
-        </RadzenStepsItem>*@
+        <RadzenStepsItem Text="Background" Disabled="@(selectedRace == null || selectedClass == null)">
+            <DataInitializer Data="Backgrounds">
+                <ChildComponent>
+                    <div class="row">
+                        <div class="col-md-3 d-inline-block">
+                            <RadzenCard class="d-inline-blocks">
+                                <RadzenPanelMenu Click="async args => tempBackground = (await _backgroundRepository.ReadAsync(b => b.Name == args.Text)).FirstOrDefault()">
+                                    @foreach (var b in Backgrounds){
+                                        <RadzenPanelMenuItem Text="@b.Name"></RadzenPanelMenuItem>
+                                    }
+                                </RadzenPanelMenu>
+                            </RadzenCard>
+                            @if (tempBackground != null){
+                                <RadzenCard class="d-inline-blocks">
+                                    <RadzenButton Text="Choose Background" Click=@(_ => tempBackground = selectedBackground) ButtonStyle="ButtonStyle.Success"/>
+                                </RadzenCard>
+                            }
+                        </div>
+                        @if (tempBackground != null){
+                            <div class="col-md-8 d-flex">
+                                <RadzenCard>
+                                    <BackgroundDetail BackgroundName="@tempBackground.Name"></BackgroundDetail>
+                                </RadzenCard>
+                            </div>
+                        }
+                    </div>
+                </ChildComponent>
+            </DataInitializer>
+        </RadzenStepsItem>
     </Steps>
 </RadzenSteps>
 
 
 @code {
-    public EventCallback<MenuItemEventArgs> Click { get; set; }
-
     Race tempRace { get; set; }
     Class tempClass { get; set; }
+    Background tempBackground { get; set; }
+
     Race? selectedRace { get; set; }
     Class? selectedClass { get; set; }
+    Background? selectedBackground { get; set; }
 
     List<Race> Races { get; set; }
     List<Class> Classes { get; set; }
+    List<Background> Backgrounds { get; set; }
 
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync(){
         Races = await _raceRepository.ReadParentRaces();
         Classes = await _classRepository.ReadAsync();
+        Backgrounds = await _backgroundRepository.ReadAsync();
     }
 
 
