@@ -14,7 +14,7 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository{
     }
 
 
-    public Character GetGraph(int id){
-        return _set.IncludeAllRecursively().FirstOrDefault(k => k.CharacterId == id)!;
+    public Character? GetGraph(int id){
+        return _set.IncludeAll().FirstOrDefault(k => k.CharacterId == id);
     }
 }

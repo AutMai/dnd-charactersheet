@@ -46,6 +46,6 @@ public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class{
 
     public async Task<TEntity?> ReadWithAllIncludes(int id){
         var e = await _set.FindAsync(id);
-        return _set.IncludeAllRecursively().FirstOrDefault(k => Equals(k, e));
+        return _set.IncludeAll().FirstOrDefault(k => Equals(k, e));
     }
 }
