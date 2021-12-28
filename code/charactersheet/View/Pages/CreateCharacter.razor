@@ -6,14 +6,15 @@
 @inject IRaceRepository _raceRepository;
 @inject IClassRepository _classRepository;
 @inject DialogService DialogService;
-@implements IDisposable;
+
+<RadzenDialog/>
 
 <RadzenSteps>
     <Steps>
         <RadzenStepsItem Text="Race">
             <DataInitializer Data="Races">
                 <ChildComponent>
-                    <RadzenPanelMenu Style="width:300px">
+                    <RadzenPanelMenu Style="width:300px" Click="args => OpenInfo(args)">
                         @foreach (var race in Races){
                             if (race.SubRaces.Count > 0){
                                 // has childraces
@@ -24,8 +25,7 @@
                                 </RadzenPanelMenuItem>
                             }
                             else{
-                                <RadzenButton Text=@($"hurensohn") ButtonStyle="ButtonStyle.Secondary" Click=@OpenInfo />
-                                //<RadzenPanelMenuItem Text="@race.Name" Click="@(() => OpenInfo(race.Name))"></RadzenPanelMenuItem>
+                                <RadzenPanelMenuItem Text="@race.Name"></RadzenPanelMenuItem>
                             }
                         }
                     </RadzenPanelMenu>
@@ -50,7 +50,7 @@
 
 @code {
     public EventCallback<MenuItemEventArgs> Click { get; set; }
-    
+
     Race selectedRace { get; set; }
     Class selectedClass { get; set; }
     IEnumerable<Spell> selectedSpells { get; set; }
@@ -71,33 +71,16 @@
         Classes = await _classRepository.ReadAsync();
     }
 
-    public async Task OpenInfo(){
-        string raceName = "Dragonborn";
-        Console.WriteLine("click");
+
+    public async Task OpenInfo(MenuItemEventArgs args){
+        Console.WriteLine("Path: " + args.Path);
+        Console.WriteLine("Value: " + args.Value);
+        Console.WriteLine("Text: " + args.Text);
         await DialogService.OpenAsync<RaceDetail>($"Race",
-            new Dictionary<string, object>(){ { "RaceName", raceName } },
-            new DialogOptions{ Width = "700px", Height = "570px", Resizable = true, Draggable = true });
-    }
-
-    protected override void OnInitialized(){
+            new Dictionary<string, object>(){ { "RaceName", args.Text } },
+            new DialogOptions{ Width = "700px", Height = "570px", Resizable = true, Draggable = true, CloseDialogOnOverlayClick = true });
         
-        DialogService.OnOpen += Open;
-        DialogService.OnClose += Close;
+        await DialogService.Confirm("Are you sure?", "MyTitle", new ConfirmOptions(){ OkButtonText = "Yes", CancelButtonText = "No", Top = "90vh", Left = "50vw"});
     }
-
-    public void Dispose(){
-    // The DialogService is a singleton so it is advisable to unsubscribe.
-        DialogService.OnOpen -= Open;
-        DialogService.OnClose -= Close;
-    }
-
-    void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options){
-        Console.WriteLine("Dialog opened");
-    }
-
-    void Close(dynamic result){
-        Console.WriteLine("Dialog closed");
-    }
-
 
 }

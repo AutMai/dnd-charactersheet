@@ -27,6 +27,7 @@ builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
 builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 
