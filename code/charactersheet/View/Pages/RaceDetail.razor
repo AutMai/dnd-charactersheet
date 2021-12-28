@@ -3,21 +3,14 @@
 @using Domain.Repositories.Interfaces
 @inject IRaceRepository _raceRepository;
 
-<h3>@RaceName</h3>
-
 <DataInitializer Data="Race">
     <ChildComponent>
-        <p>@Race.Description</p>
-        <p><b>Speed: </b>@Race.Speed</p>
-        <p><b>Size: </b>@Race.Size</p>
-        <hr/>
-        <h4>Traits</h4><br/>
-        @foreach (var trait in Race.Traits) {
-            <h6><b>@trait.Label</b></h6>
-            <p>@trait.Description</p>
-        }
+        <RaceData Race="Race"></RaceData><hr/>
         @if (Race.InverseParentRace.Count > 0) {
-            <h4></h4>
+            <h4>Subraces</h4>
+            foreach (var subrace in Race.InverseParentRace) {
+                <RaceData Race="subrace"></RaceData>
+            }
         }
     </ChildComponent>
 </DataInitializer>

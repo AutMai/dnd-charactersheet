@@ -9,7 +9,7 @@
     <DataInitializer Data="@RaceList">
         <ChildComponent>
             <table>
-                @foreach (var race in RaceList) {
+                @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
                     <tr>
                         <td>
                             <a href="race/@race.Name">@race.Name</a>

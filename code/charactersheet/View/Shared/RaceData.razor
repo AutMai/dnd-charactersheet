@@ -1,0 +1,28 @@
+﻿@using Model.Entities
+
+<div>
+    <h3>@Race.Name</h3><hr/>
+    <p>@Race.Description</p>
+    <p>
+        <b>Speed: </b>@Race.Speed
+    </p>
+    <p>
+        <b>Size: </b>@Race.Size
+    </p>
+    <hr/>
+    <h4>Traits</h4><br/>
+    @foreach (var trait in Race.Traits) {
+        <h6>
+            <b>@trait.Label</b>
+        </h6>
+        <p>@trait.Description</p>
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public Race Race { get; set; }
+
+}
