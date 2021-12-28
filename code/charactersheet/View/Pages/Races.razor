@@ -1,0 +1,32 @@
+﻿@page "/races"
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@inject IRaceRepository _raceRepository;
+
+<h3>Races</h3>
+
+<div>
+    <DataInitializer Data="@RaceList">
+        <ChildComponent>
+            <table>
+                @foreach (var race in RaceList) {
+                    <tr>
+                        <td>
+                            <a href="race/@race.Name">@race.Name</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </ChildComponent>
+    </DataInitializer>
+</div>
+
+
+@code {
+    public List<Race> RaceList { get; set; }
+
+    protected override async Task OnParametersSetAsync() {
+        RaceList = await _raceRepository.ReadAsync();
+    }
+
+}
