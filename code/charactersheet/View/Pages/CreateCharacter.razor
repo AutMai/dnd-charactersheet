@@ -1,0 +1,35 @@
+﻿@page "/createcharacter"
+@inject IClassRepository _classRepository; 
+@using Microsoft.EntityFrameworkCore
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+
+<RadzenSteps Change=@OnChange>
+    <Steps>
+        <RadzenStepsItem Text="Classes">
+
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="classes" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+
+        </RadzenStepsItem>
+        <RadzenStepsItem Text="Class Details" Disabled="@(selectedClass == null || selectedClass != null && !selectedClass.Any())">
+
+        </RadzenStepsItem>
+    </Steps>
+</RadzenSteps>
+
+
+@code {
+    IEnumerable<Class> classes;
+
+    IList<Class> selectedClass;
+
+    protected override async Task OnInitializedAsync() {
+        classes = await _classRepository.ReadAsync();
+    }
+
+    void OnChange(int index) {
+        Console.WriteLine($"Step with index {index} was selected.");
+    }
+
+}
