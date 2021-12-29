@@ -10,8 +10,8 @@ public class ClassRepository : ARepository<Class>, IClassRepository{
     }
 
     public async Task<Class> ReadGraphAsync(int id) => (await _set
-        .Include(c => c.SavingThrowProficiencies)
-        .Include(c => c.SavingThrowProficiencies)
+        .Include(c => c.ClassHasSkillProficienciesChoices)
+        .Include(c => c.ClassHasSkillProficienciesChoices)
         .Include(c => c.ArmorTypes)
         .Include(c => c.Features)
         .Include(c => c.Spells)
@@ -19,8 +19,8 @@ public class ClassRepository : ARepository<Class>, IClassRepository{
         .SingleOrDefaultAsync(c => c.ClassId == id))!;
 
     public async Task<Class> ReadGraphAsync(string name) => (await _set
-        .Include(c => c.SavingThrowProficiencies)
-        .Include(c => c.SavingThrowProficiencies)
+        .Include(c => c.ClassHasSkillProficienciesChoices)
+        .Include(c => c.ClassHasSkillProficienciesChoices)
         .Include(c => c.ArmorTypes)
         .Include(c => c.Features)
         .Include(c => c.Spells)

@@ -306,7 +306,7 @@ namespace Model.Configurations
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
 
-                entity.HasMany(d => d.AbilityNames)
+                entity.HasMany(d => d.SavingThrowProficiencies)
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasAbilityProficiency",
@@ -433,7 +433,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Amount).HasColumnName("AMOUNT");
 
                 entity.HasOne(d => d.Class)
-                    .WithMany(p => p.SavingThrowProficiencies)
+                    .WithMany(p => p.ClassHasSkillProficienciesChoices)
                     .HasForeignKey(d => d.ClassId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_CLASSES1");

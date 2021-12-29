@@ -28,8 +28,8 @@
         </p>
         <p>
             <b>Saving Throws: </b>
-            @if (Class.SavingThrowProficiencies.Count > 0){
-                @String.Join(", ", Class.SavingThrowProficiencies.Select(an => an.SkillName.FirstCharToUpper()))
+            @if (Class.ClassHasSkillProficienciesChoices.Count > 0){
+                @String.Join(", ", Class.ClassHasSkillProficienciesChoices.Select(an => an.SkillName.FirstCharToUpper()))
             }
             else{
                 <span>None</span>
@@ -37,9 +37,9 @@
         </p>
         <p>
             <b>Skills: </b>
-            @if (Class.SavingThrowProficiencies.Count > 0){
-                <span>Choose @Class.SavingThrowProficiencies.FirstOrDefault().Amount from </span>
-                @String.Join(", ", Class.SavingThrowProficiencies.Select(an => an.SkillName.FirstCharToUpper()))
+            @if (Class.ClassHasSkillProficienciesChoices.Count > 0){
+                <span>Choose @Class.ClassHasSkillProficienciesChoices.FirstOrDefault().Amount from </span>
+                @String.Join(", ", Class.ClassHasSkillProficienciesChoices.Select(an => an.SkillName.FirstCharToUpper()))
             }
             else{
                 <span>None</span>
