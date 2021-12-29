@@ -9,6 +9,7 @@ namespace Model.Entities
         {
             Characters = new HashSet<Character>();
             SubRaces = new HashSet<Race>();
+            RaceHasAbilityScoreIncreases = new HashSet<RaceHasAbilityScoreIncrease>();
             LanguageNames = new HashSet<ELanguage>();
             Traits = new HashSet<Trait>();
         }
@@ -24,6 +25,7 @@ namespace Model.Entities
         public virtual ESize SizeNavigation { get; set; } = null!;
         public virtual ICollection<Character> Characters { get; set; }
         public virtual ICollection<Race> SubRaces { get; set; }
+        public virtual ICollection<RaceHasAbilityScoreIncrease> RaceHasAbilityScoreIncreases { get; set; }
 
         public virtual ICollection<ELanguage> LanguageNames { get; set; }
         public virtual ICollection<Trait> Traits { get; set; }
