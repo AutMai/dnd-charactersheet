@@ -251,8 +251,8 @@
         abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
     }
 
-    private void InsertCharacter() {
-        _characterRepository.CreateAsync(new Character { Name = SelectedName, Race = SelectedRace, Class = SelectedClass, Background = SelectedBackground});
+    private async void InsertCharacter() {
+        await _characterRepository.CreateAsync(new Character { Name = SelectedName, Race = SelectedRace, Class = SelectedClass, Background = SelectedBackground});
     }
 
 }

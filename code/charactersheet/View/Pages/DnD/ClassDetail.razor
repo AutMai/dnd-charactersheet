@@ -47,7 +47,7 @@
         </p>
         <hr/>
         <h4>Features</h4><br/>
-        @foreach (var feature in Class.Features.OrderBy(x=> x.Level)){
+        @foreach (var feature in Class.Features.OrderBy(x => x.Level)){
             <h6>
                 <b>@feature.Label</b>
             </h6>
@@ -66,8 +66,9 @@
     public Class? Class { get; set; }
 
     protected override async Task OnParametersSetAsync(){
-        if (Class is null) {
+        if (Class is null){
             Class = await _classRepository.ReadGraphAsync(ClassName);
         }
     }
+
 }

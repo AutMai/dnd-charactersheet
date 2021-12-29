@@ -21,12 +21,12 @@
         <p>@Spell.Description</p>
         <p>
             <b>Classes: </b>
-            @if (Spell.Classes.Count > 0) {
-                foreach (var c in Spell.Classes) {
+            @if (Spell.Classes.Count > 0){
+                foreach (var c in Spell.Classes){
                     @c.Name
                 }
             }
-            else {
+            else{
                 <span>None</span>
             }
         </p>
@@ -41,7 +41,7 @@
 
     private Spell? Spell { get; set; }
 
-    protected override async Task OnParametersSetAsync() {
+    protected override async Task OnParametersSetAsync(){
         Spell = await _spellRepository.ReadGraphAsync(SpellName);
     }
 
