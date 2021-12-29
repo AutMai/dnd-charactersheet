@@ -29,5 +29,9 @@ namespace Model.Entities
         public virtual ICollection<Feature> Features { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<EWeaponType> WeaponTypes { get; set; }
+        
+        public override string ToString() {
+            return Name;
+        }
     }
 }

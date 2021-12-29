@@ -1,0 +1,17 @@
+﻿@page "/characters"
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+@inject ICharacterRepository _characterRepository; 
+<h3>Characters</h3>
+
+@foreach (var character in CharacterList) {
+    <a href="character/@character.CharacterId">@character.Name</a>
+}
+
+@code {
+    List<Character> CharacterList { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        CharacterList = await _characterRepository.ReadAsync();
+    }
+}

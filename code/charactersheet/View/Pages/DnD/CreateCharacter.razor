@@ -265,6 +265,8 @@
     string? SelectedAlignment1 { get; set; }
     string? SelectedAlignment2 { get; set; }
     public string Alignment => SelectedAlignment1 + " " + SelectedAlignment2;
+    private int GetAbilityScore(string abilityName) => Convert.ToInt32(abilityRolls[abilityName].Split(' ')[0]);
+    private int HP => GetAbilityScore("CONSTITUTION") + SelectedClass.HitDie;
     
     string? PersonalityTraits { get; set; }
     string? Ideals { get; set; }
@@ -318,7 +320,10 @@
                 new() { Name = "Flaws", Description = Flaws }
             },
             ArmorClass = 10,
-            Spells = SelectedSpells
+            Spells = SelectedSpells,
+            MaxHp = HP,
+            CurrentHp = HP,
+            // hier aufgehört: fehlt: (speed, abilities, ...) ; ability scores von parten klasen werden nd dazugezählt
         });
     }
 
