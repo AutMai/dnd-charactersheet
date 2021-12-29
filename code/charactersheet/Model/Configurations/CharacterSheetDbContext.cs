@@ -306,7 +306,7 @@ namespace Model.Configurations
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
 
-                entity.HasMany(d => d.SavingThrowProficiencies)
+                entity.HasMany(d => d.AbilityNames)
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasAbilityProficiency",
@@ -433,7 +433,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Amount).HasColumnName("AMOUNT");
 
                 entity.HasOne(d => d.Class)
-                    .WithMany(p => p.ClassHasSkillProficienciesChoices)
+                    .WithMany(p => p.SavingThrowProficiencies)
                     .HasForeignKey(d => d.ClassId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_CLASSES1");
@@ -477,6 +477,27 @@ namespace Model.Configurations
                 entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
+
+                entity.HasMany(d => d.SkillNames)
+                    .WithMany(p => p.AbilityNames)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "AbilityHasSkill",
+                        l => l.HasOne<ESkillName>().WithMany().HasForeignKey("SkillName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1"),
+                        r => r.HasOne<EAbilityName>().WithMany().HasForeignKey("AbilityName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1"),
+                        j =>
+                        {
+                            j.HasKey("AbilityName", "SkillName").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                            j.ToTable("ability_has_skills");
+
+                            j.HasIndex(new[] { "AbilityName" }, "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1_idx");
+
+                            j.HasIndex(new[] { "SkillName" }, "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1_idx");
+
+                            j.IndexerProperty<string>("AbilityName").HasMaxLength(45).HasColumnName("ABILITY_NAME");
+
+                            j.IndexerProperty<string>("SkillName").HasMaxLength(45).HasColumnName("SKILL_NAME");
+                        });
             });
 
             modelBuilder.Entity<EArmorType>(entity =>

@@ -29,9 +29,5 @@ namespace Model.Entities
 
         public virtual ICollection<ELanguage> LanguageNames { get; set; }
         public virtual ICollection<Trait> Traits { get; set; }
-        
-        public override string ToString() {
-            return Name;
-        }
     }
 }

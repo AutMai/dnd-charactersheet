@@ -15,9 +15,5 @@ namespace Model.Entities
         public string SkillProficiencies { get; set; } = null!;
 
         public virtual ICollection<Character> Characters { get; set; }
-
-        public override string ToString() {
-            return Name;
-        }
     }
 }

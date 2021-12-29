@@ -67,9 +67,9 @@
                     @if (TempClass != null) {
                         <RadzenCard>
                             <h3>Choose Your Skills for @TempClass.Name Class</h3>
-                            <RadzenSelectBar @bind-Value=@selectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(selectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
+                            <RadzenSelectBar @bind-Value=@selectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(selectedSkillProficiencies.Count() >= TempClass.SavingThrowProficiencies.First().Amount)" class="skillSelect">
                                 <Items>
-                                    @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
+                                    @foreach (var skill in TempClass.SavingThrowProficiencies) {
                                         <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
                                     }
                                 </Items>
@@ -77,7 +77,7 @@
                             <RadzenButton class="mt-2" Text="Reset" Click="@(_ => selectedSkillProficiencies = new List<string>())" ButtonStyle="ButtonStyle.Info"/>
                         </RadzenCard>
                         <RadzenCard>
-                            <RadzenButton Text="Choose Class" Click=@(SelectClass) ButtonStyle="ButtonStyle.Success" Disabled="@(selectedSkillProficiencies.Count() < TempClass.ClassHasSkillProficienciesChoices.First().Amount)"/>
+                            <RadzenButton Text="Choose Class" Click=@(SelectClass) ButtonStyle="ButtonStyle.Success" Disabled="@(selectedSkillProficiencies.Count() < TempClass.SavingThrowProficiencies.First().Amount)"/>
                         </RadzenCard>
                     }
                 </div>

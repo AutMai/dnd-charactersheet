@@ -10,6 +10,7 @@ namespace Model.Entities
             Abilities = new HashSet<Ability>();
             RaceHasAbilityScoreIncreases = new HashSet<RaceHasAbilityScoreIncrease>();
             Classes = new HashSet<Class>();
+            SkillNames = new HashSet<ESkillName>();
         }
 
         public string Name { get; set; } = null!;
@@ -18,5 +19,6 @@ namespace Model.Entities
         public virtual ICollection<RaceHasAbilityScoreIncrease> RaceHasAbilityScoreIncreases { get; set; }
 
         public virtual ICollection<Class> Classes { get; set; }
+        public virtual ICollection<ESkillName> SkillNames { get; set; }
     }
 }

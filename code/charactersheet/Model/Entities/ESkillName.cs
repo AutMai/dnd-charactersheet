@@ -9,11 +9,14 @@ namespace Model.Entities
         {
             ClassHasSkillProficienciesChoices = new HashSet<ClassHasSkillProficienciesChoice>();
             Skills = new HashSet<Skill>();
+            AbilityNames = new HashSet<EAbilityName>();
         }
 
         public string Name { get; set; } = null!;
 
         public virtual ICollection<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; }
         public virtual ICollection<Skill> Skills { get; set; }
+
+        public virtual ICollection<EAbilityName> AbilityNames { get; set; }
     }
 }

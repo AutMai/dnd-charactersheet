@@ -8,8 +8,8 @@ namespace Model.Entities
         public Class()
         {
             Characters = new HashSet<Character>();
-            ClassHasSkillProficienciesChoices = new HashSet<ClassHasSkillProficienciesChoice>();
-            SavingThrowProficiencies = new HashSet<EAbilityName>();
+            SavingThrowProficiencies = new HashSet<ClassHasSkillProficienciesChoice>();
+            AbilityNames = new HashSet<EAbilityName>();
             ArmorTypes = new HashSet<EArmorType>();
             Features = new HashSet<Feature>();
             Spells = new HashSet<Spell>();
@@ -22,16 +22,12 @@ namespace Model.Entities
         public int HitDie { get; set; }
 
         public virtual ICollection<Character> Characters { get; set; }
-        public virtual ICollection<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; }
+        public virtual ICollection<ClassHasSkillProficienciesChoice> SavingThrowProficiencies { get; set; }
 
-        public virtual ICollection<EAbilityName> SavingThrowProficiencies { get; set; }
+        public virtual ICollection<EAbilityName> AbilityNames { get; set; }
         public virtual ICollection<EArmorType> ArmorTypes { get; set; }
         public virtual ICollection<Feature> Features { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }
         public virtual ICollection<EWeaponType> WeaponTypes { get; set; }
-        
-        public override string ToString() {
-            return Name;
-        }
     }
 }
