@@ -1,5 +1,9 @@
-﻿namespace Domain.Repositories.Implementations; 
+﻿using Model.Configurations;
+using Model.Entities;
 
-public class SkillNameRepository {
-    
+namespace Domain.Repositories.Implementations; 
+
+public class SkillNameRepository:ARepository<ESkillName> {
+    public SkillNameRepository(CharacterSheetDbContext context) : base(context) {
+    }
 }

@@ -7,6 +7,7 @@
 @inject IClassRepository _classRepository;
 @inject IRepository<Background> _backgroundRepository;
 @inject IRepository<EAbilityName> _abilityRepository;
+@inject IRepository<ESkillName> _skillRepository;
 @inject ICharacterRepository _characterRepository;
 @inject DialogService DialogService;
 <RadzenDialog/>
@@ -65,7 +66,18 @@
                     </RadzenCard>
                     @if (TempClass != null) {
                         <RadzenCard>
-                            <RadzenButton Text="Choose Class" Click=@(SelectClass) ButtonStyle="ButtonStyle.Success"/>
+                            <h3>Choose Your Skills for @TempClass.Name Class</h3>
+                            <RadzenSelectBar @bind-Value=@selectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(selectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
+                                <Items>
+                                    @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
+                                        <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
+                                    }
+                                </Items>
+                            </RadzenSelectBar>
+                            <RadzenButton class="mt-2" Text="Reset" Click="@(_ => selectedSkillProficiencies = new List<string>())" ButtonStyle="ButtonStyle.Info"/>
+                        </RadzenCard>
+                        <RadzenCard>
+                            <RadzenButton Text="Choose Class" Click=@(SelectClass) ButtonStyle="ButtonStyle.Success" Disabled="@(selectedSkillProficiencies.Count() < TempClass.ClassHasSkillProficienciesChoices.First().Amount)"/>
                         </RadzenCard>
                     }
                 </div>
@@ -262,12 +274,15 @@
     Background? SelectedBackground { get; set; }
     List<Spell> SelectedSpells = new();
     string? SelectedName { get; set; }
+
+    IEnumerable<string> selectedSkillProficiencies = new List<string>();
+
     string? SelectedAlignment1 { get; set; }
     string? SelectedAlignment2 { get; set; }
-    public string Alignment => SelectedAlignment1 + " " + SelectedAlignment2;
+    private string Alignment => SelectedAlignment1 + " " + SelectedAlignment2;
     private int GetAbilityScore(string abilityName) => Convert.ToInt32(abilityRolls[abilityName].Split(' ')[0]);
-    private int HP => GetAbilityScore("CONSTITUTION") + SelectedClass.HitDie;
-    
+    private int Hp => GetAbilityScore("CONSTITUTION") + SelectedClass.HitDie;
+
     string? PersonalityTraits { get; set; }
     string? Ideals { get; set; }
     string? Bonds { get; set; }
@@ -277,6 +292,7 @@
     List<Class> Classes { get; set; }
     List<Background> Backgrounds { get; set; }
     List<EAbilityName> Abilities { get; set; }
+    List<ESkillName> Skills { get; set; }
 
 
     protected override async Task OnInitializedAsync() {
@@ -284,8 +300,7 @@
         Classes = await _classRepository.ReadAsync();
         Backgrounds = await _backgroundRepository.ReadAsync();
         Abilities = await _abilityRepository.ReadAsync();
-
-        stepIndex = 4;
+        Skills = await _skillRepository.ReadAsync();
     }
 
     private void SelectClass() {
@@ -299,14 +314,34 @@
 
     private void RollAbilityScore(string abilityName) {
         var rolledScore = DnDExtensions.RollDice(4, 6, true).Sum();
-        var increase = 0;
-        foreach (var abilityScoreIncrease in SelectedRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName)) {
-            increase += abilityScoreIncrease.Increase;
-        }
+        var increase = SelectedRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase);
         abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
     }
 
     private async void InsertCharacter() {
+        List<Ability> abilityList = new List<Ability>();
+
+        foreach (var abilityRoll in abilityRolls) {
+            var proficient = SelectedClass.SavingThrowProficiencies.Count(s => s.Name == abilityRoll.Key) > 0;
+
+            List<Skill> skillList = new List<Skill>();
+
+            foreach (var skill in Skills.Where(s=>s.)) {
+                var skillProficient = selectedSkillProficiencies.Contains(skill.Name);
+                skillList.Add(new Skill() {
+                    Name = skill.Name,
+                    Proficient = Convert.ToSByte(skillProficient)
+                });
+            }
+
+            abilityList.Add(new Ability() {
+                Name = abilityRoll.Key,
+                AbilityScore = Convert.ToInt32(abilityRoll.Value.Split(' ')[0]),
+                Proficient = Convert.ToSByte(proficient),
+                Skills = skillList
+            });
+        }
+
         await _characterRepository.CreateAsync(new Character {
             Name = SelectedName,
             Race = SelectedRace,
@@ -321,10 +356,11 @@
             },
             ArmorClass = 10,
             Spells = SelectedSpells,
-            MaxHp = HP,
-            CurrentHp = HP,
-            // hier aufgehört: fehlt: (speed, abilities, ...) ; ability scores von parten klasen werden nd dazugezählt
+            MaxHp = Hp,
+            CurrentHp = Hp,
+            Abilities = abilityList
         });
     }
-
+    // ability von parent class nicht erhöht
 }
+

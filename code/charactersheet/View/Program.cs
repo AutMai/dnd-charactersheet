@@ -27,6 +27,7 @@ builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
 builder.Services.AddScoped<IRepository<EAbilityName>, AbilityNameRepository>();
+builder.Services.AddScoped<IRepository<ESkillName>, SkillNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();

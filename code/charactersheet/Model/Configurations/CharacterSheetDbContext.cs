@@ -306,7 +306,7 @@ namespace Model.Configurations
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
 
-                entity.HasMany(d => d.AbilityNames)
+                entity.HasMany(d => d.SavingThrowProficiencies)
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasAbilityProficiency",

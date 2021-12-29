@@ -9,7 +9,7 @@ namespace Model.Entities
         {
             Characters = new HashSet<Character>();
             ClassHasSkillProficienciesChoices = new HashSet<ClassHasSkillProficienciesChoice>();
-            AbilityNames = new HashSet<EAbilityName>();
+            SavingThrowProficiencies = new HashSet<EAbilityName>();
             ArmorTypes = new HashSet<EArmorType>();
             Features = new HashSet<Feature>();
             Spells = new HashSet<Spell>();
@@ -24,7 +24,7 @@ namespace Model.Entities
         public virtual ICollection<Character> Characters { get; set; }
         public virtual ICollection<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; }
 
-        public virtual ICollection<EAbilityName> AbilityNames { get; set; }
+        public virtual ICollection<EAbilityName> SavingThrowProficiencies { get; set; }
         public virtual ICollection<EArmorType> ArmorTypes { get; set; }
         public virtual ICollection<Feature> Features { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }

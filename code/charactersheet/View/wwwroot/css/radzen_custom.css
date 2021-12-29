@@ -19,3 +19,8 @@
     width: 33%;
     text-align: center;
 }
+
+.skillSelect .rz-button{
+    padding: 0px;
+    width: 50%;
+}
