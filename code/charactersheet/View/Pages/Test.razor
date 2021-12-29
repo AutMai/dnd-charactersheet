@@ -1,0 +1,19 @@
+@page "/test"
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+<h3>test</h3>
+@inject IRaceRepository _raceRepository;
+
+<div>
+    @Character
+</div>
+
+
+@code {
+    public Race? Character { get; set; }
+
+    protected async override Task OnInitializedAsync(){
+        Character = (await _raceRepository.ReadWithAllIncludes(1))!;
+    }
+
+}
