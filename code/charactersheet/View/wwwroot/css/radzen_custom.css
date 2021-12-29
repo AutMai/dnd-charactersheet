@@ -1,4 +1,4 @@
-﻿.rz-navigation-item-wrapper, .rz-panel-menu {
+﻿.rz-navigation-item,.rz-navigation-item-wrapper, .rz-panel-menu {
     background-color: white !important;
     color: black !important;
 }

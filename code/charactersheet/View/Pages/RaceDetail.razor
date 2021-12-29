@@ -5,11 +5,11 @@
 
 <DataInitializer Data="Race">
     <ChildComponent>
-        <RaceData Race="Race"></RaceData><hr/>
+        <RaceData Race="Race"></RaceData><hr/><br/>
         @if (Race.SubRaces.Count > 0) {
-            <h4>Subraces</h4>
+            <h2>Subraces</h2><hr/>
             foreach (var subrace in Race.SubRaces) {
-                <RaceData Race="subrace"></RaceData>
+                <RaceData Race="subrace"></RaceData><br/>
             }
         }
     </ChildComponent>
@@ -24,6 +24,4 @@
     protected override async Task OnParametersSetAsync() {
         Race = await _raceRepository.ReadGraphAsync(RaceName);
     }
-    
-    
 }

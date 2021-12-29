@@ -29,7 +29,7 @@
         <p>
             <b>Saving Throws: </b>
             @if (Class.AbilityNames.Count > 0){
-                @String.Join(",", Class.AbilityNames.Select(an => an.Name.FirstCharToUpper()))
+                @String.Join(", ", Class.AbilityNames.Select(an => an.Name.FirstCharToUpper()))
             }
             else{
                 <span>None</span>
