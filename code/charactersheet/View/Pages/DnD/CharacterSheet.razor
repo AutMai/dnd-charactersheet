@@ -6,256 +6,260 @@
 <h3>CharacterSheet</h3>
 
 <DataInitializer Data="Character">
-    <ChildComponent>
-        <form class="charsheet">
-            <header>
-                <section class="charname">
-                    <label for="charname">Character Name</label>
-                    <input name="charname" value="@Character.Name"/>
-                </section>
-                <section class="misc">
-                    <ul>
+<ChildComponent>
+<form class="charsheet">
+<header>
+    <section class="charname">
+        <label for="charname">Character Name</label>
+        <input name="charname" value="@Character.Name"/>
+    </section>
+    <section class="misc">
+        <ul>
+            <li>
+                <label for="classlevel">Class & Level</label>
+                <input name="classlevel" placeholder="@Character.Class.Name 2"/>
+            </li>
+            <li>
+                <label for="background">Background</label>
+                <input name="background" placeholder="@Character.Background.Name"/>
+            </li>
+            <li>
+                <label for="playername">Player Name</label>
+                <input name="playername" placeholder="Player McPlayerface">
+            </li>
+            <li>
+                <label for="race">Race</label>
+                <input name="race" placeholder="@Character.Race.Name"/>
+            </li>
+            <li>
+                <label for="alignment">Alignment</label>
+                <input name="alignment" placeholder="@Character.Alignment"/>
+            </li>
+            <li>
+                <label for="experiencepoints">Experience Points</label>
+                <input name="experiencepoints" placeholder="@Character.Xp"/>
+            </li>
+        </ul>
+    </section>
+</header>
+
+<main>
+<section>
+    <section class="attributes">
+        <div class="scores">
+            <ul>
+                @foreach (var a in Character.Abilities) {
+                    <li>
+                        <div class="score">
+                            <label for="@a.Name">@a.Name</label>
+                            <input name="@a.Name" value="@a.AbilityScore"/>
+                        </div>
+                        <div class="modifier">
+                            <input name="<%= attr %>mod" placeholder="+0"/>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="attr-applications">
+            <div class="inspiration box">
+                <div class="label-container">
+                    <label for="inspiration">Inspiration</label>
+                </div>
+                <input name="inspiration" type="checkbox" value="@Character.Inspiration"/>
+            </div>
+            <div class="proficiencybonus box">
+                <div class="label-container">
+                    <label for="proficiencybonus">Proficiency Bonus</label>
+                </div>
+                <input name="proficiencybonus" placeholder="+2"/>
+            </div>
+            <div class="saves list-section box">
+                <ul>
+                    @foreach (var savingThrow in Character.Abilities) {
                         <li>
-                            <label for="classlevel">Class & Level</label>
-                            <input name="classlevel" placeholder="@Character.Class 2"/>
+                            <label for="@savingThrow.Name">@savingThrow.Name</label>
+                            <input name="@savingThrow.Name" placeholder="+@savingThrow.AbilityScore" type="text"/>
+                            <input name="@savingThrow.Name-prof" type="checkbox" value="@savingThrow.Proficient"/>
                         </li>
-                        <li>
-                            <label for="background">Background</label>
-                            <input name="background" placeholder="@Character.Background"/>
-                        </li>
-                        <li>
-                            <label for="playername">Player Name</label>
-                            <input name="playername" placeholder="Player McPlayerface">
-                        </li>
-                        <li>
-                            <label for="race">Race</label>
-                            <input name="race" placeholder="@Character.Race"/>
-                        </li>
-                        <li>
-                            <label for="alignment">Alignment</label>
-                            <input name="alignment" placeholder="@Character.Alignment"/>
-                        </li>
-                        <li>
-                            <label for="experiencepoints">Experience Points</label>
-                            <input name="experiencepoints" placeholder="@Character.Xp"/>
-                        </li>
-                    </ul>
-                </section>
-            </header>
-        </form>
-        <main>
-        <section>
-            <section class="attributes">
-                <div class="scores">
-                    <ul>
-                        @foreach (var a in Character.Abilities) {
+                    }
+                </ul>
+                <div class="label">
+                    Saving Throws
+                </div>
+            </div>
+            <div class="skills list-section box">
+                <ul>
+                    @foreach (var ability in Character.Abilities) {
+                        foreach (var skill in ability.Skills) {
                             <li>
-                                <div class="score">
-                                    <label for="@a.Name">@a.Name</label>
-                                    <input name="@a.Name" value="@a.AbilityScore"/>
-                                </div>
-                                <div class="modifier">
-                                    <input name="<%= attr %>mod" placeholder="+0"/>
-                                </div>
+                                <label for="@skill.Name">@skill.Name<span class="skill">@ability.Name.Substring(0,3)</span></label>
+                                <input name="@skill.Name" placeholder="+@ability.AbilityScore" type="text"/>
+                                <input name="@skill.Name-prof" type="checkbox"/>
                             </li>
                         }
-                    </ul>
+                    }
+                </ul>
+                <div class="label">
+                    Skills
                 </div>
-                <div class="attr-applications">
-                    <div class="inspiration box">
-                        <div class="label-container">
-                            <label for="inspiration">Inspiration</label>
-                        </div>
-                        <input name="inspiration" type="checkbox" value="@Character.Inspiration"/>
-                    </div>
-                    <div class="proficiencybonus box">
-                        <div class="label-container">
-                            <label for="proficiencybonus">Proficiency Bonus</label>
-                        </div>
-                        <input name="proficiencybonus" placeholder="+2"/>
-                    </div>
-                    <div class="saves list-section box">
-                        <ul>
-        
-                            <li>
-                                <label for="asdf-save">asdf</label>
-                                <input name="asdf-save" placeholder="+0" type="text"/>
-                                <input name="asdf-save-prof" type="checkbox"/>
-                            </li>
-        
-                        </ul>
-                        <div class="label">
-                            Saving Throws
-                        </div>
-                    </div>
-                    <div class="skills list-section box">
-                        <ul>
-        
-                            <li>
-                                <label for="asdf-skill">asdf skill name<span class="skill">skill attr</span></label>
-                                <input name="skill-name" placeholder="+0" type="text"/>
-                                <input name="skill-name-prof" type="checkbox"/>
-                            </li>
-                        </ul>
-                        <div class="label">
-                            Skills
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <div class="passive-perception box">
-                <div class="label-container">
-                    <label for="passiveperception">Passive Wisdom (Perception)</label>
-                </div>
-                <input name="passiveperception" placeholder="10"/>
             </div>
-            <div class="otherprofs box textblock">
-                <label for="otherprofs">Other Proficiencies and Languages</label>
-                <textarea name="otherprofs">asdf</textarea>
+        </div>
+    </section>
+    <div class="passive-perception box">
+        <div class="label-container">
+            <label for="passiveperception">Passive Wisdom (Perception)</label>
+        </div>
+        <input name="passiveperception" placeholder="10"/>
+    </div>
+    <div class="otherprofs box textblock">
+        <label for="otherprofs">Other Proficiencies and Languages</label>
+        <textarea name="otherprofs">asdf</textarea>
+    </div>
+</section>
+<section>
+    <section class="combat">
+        <div class="armorclass">
+            <div>
+                <label for="ac">Armor Class</label>
+                <input name="ac" value="@Character.ArmorClass" type="text"/>
             </div>
-        </section>
-        <section>
-            <section class="combat">
-                <div class="armorclass">
-                    <div>
-                        <label for="ac">Armor Class</label>
-                        <input name="ac" value="@Character.ArmorClass" type="text"/>
-                    </div>
+        </div>
+        <div class="initiative">
+            <div>
+                <label for="initiative">Initiative</label>
+                <input name="initiative" value="@Character.Abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore" type="text"/>
+            </div>
+        </div>
+        <div class="speed">
+            <div>
+                <label for="speed">Speed</label>
+                <input name="speed" value="@Character.Race.Speed" type="text"/>
+            </div>
+        </div>
+        <div class="hp">
+            <div class="regular">
+                <div class="max">
+                    <label for="maxhp">Hit Point Maximum</label>
+                    <input name="maxhp" value="@Character.MaxHp" type="text"/>
                 </div>
-                <div class="initiative">
-                    <div>
-                        <label for="initiative">Initiative</label>
-                        <input name="initiative" value="@Character.Abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore" type="text"/>
-                    </div>
+                <div class="current">
+                    <label for="currenthp">Current Hit Points</label>
+                    <input name="currenthp" type="text" value="@Character.CurrentHp"/>
                 </div>
-                <div class="speed">
-                    <div>
-                        <label for="speed">Speed</label>
-                        <input name="speed" value="@Character.Speed" type="text"/>
-                    </div>
+            </div>
+            <div class="temporary">
+                <label for="temphp">Temporary Hit Points</label>
+                <input name="temphp" type="text" value="@Character.TemporaryHp"/>
+            </div>
+        </div>
+        <div class="hitdice">
+            <div>
+                <div class="total">
+                    <label for="totalhd">Total</label>
+                    <input name="totalhd" value="d@(Character.Class.HitDie)" type="text"/>
                 </div>
-                <div class="hp">
-                    <div class="regular">
-                        <div class="max">
-                            <label for="maxhp">Hit Point Maximum</label>
-                            <input name="maxhp" value="@Character.MaxHp" type="text"/>
-                        </div>
-                        <div class="current">
-                            <label for="currenthp">Current Hit Points</label>
-                            <input name="currenthp" type="text" value="@Character.CurrentHp"/>
-                        </div>
-                    </div>
-                    <div class="temporary">
-                        <label for="temphp">Temporary Hit Points</label>
-                        <input name="temphp" type="text" value="@Character.TemporaryHp"/>
-                    </div>
+                <div class="remaining">
+                    <label for="remaininghd">Hit Dice</label>
+                    <input name="remaininghd" type="text" value="d@(Character.Class.HitDie)"/>
                 </div>
-                <div class="hitdice">
-                    <div>
-                        <div class="total">
-                            <label for="totalhd">Total</label>
-                            <input name="totalhd" value="d@(Character.HitDice)" type="text"/>
-                        </div>
-                        <div class="remaining">
-                            <label for="remaininghd">Hit Dice</label>
-                            <input name="remaininghd" type="text" value="d@(Character.HitDice)"/>
+            </div>
+        </div>
+        <div class="deathsaves">
+            <div>
+                <div class="label">
+                    <label>Death Saves</label>
+                </div>
+                <div class="marks">
+                    <div class="deathsuccesses">
+                        <label>Successes</label>
+                        <div class="bubbles">
+                            <input name="deathsuccess<%= i %>" type="checkbox"/>
                         </div>
                     </div>
-                </div>
-                <div class="deathsaves">
-                    <div>
-                        <div class="label">
-                            <label>Death Saves</label>
-                        </div>
-                        <div class="marks">
-                            <div class="deathsuccesses">
-                                <label>Successes</label>
-                                <div class="bubbles">
-                                    <input name="deathsuccess<%= i %>" type="checkbox"/>
-                                </div>
-                            </div>
-                            <div class="deathfails">
-                                <label>Failures</label>
-                                <div class="bubbles">
-                                    <input name="deathfail<%= i %>" type="checkbox"/>
-                                </div>
-                            </div>
+                    <div class="deathfails">
+                        <label>Failures</label>
+                        <div class="bubbles">
+                            <input name="deathfail<%= i %>" type="checkbox"/>
                         </div>
                     </div>
                 </div>
-            </section>
-            <section class="attacksandspellcasting">
-                <div>
-                    <label>Attacks & Spellcasting</label>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Atk Bonus</th>
-                            <th>Damage/Type</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>
-                                <input name="atkname<%= i %>" type="text"/>
-                            </td>
-                            <td>
-                                <input name="atkbonus<%= i %>" type="text"/>
-                            </td>
-                            <td>
-                                <input name="atkdamage<%= i %>" type="text"/>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <textarea></textarea>
-                </div>
-            </section>
-            <section class="equipment">
-                <div>
-                    <label>Equipment</label>
-                    <div class="money">
-                        <ul>
-        
-                            <li>
-                                <label for="asdf">asdf</label>
-                                <input name="<%= type %>"/>
-                            </li>
-                        </ul>
-                    </div>
-                    <textarea placeholder="Equipment list here"></textarea>
-                </div>
-            </section>
-        </section>
-        <section>
-            <section class="flavor">
-                <div class="personality">
-                    <label for="personality">Personality</label>
-                    <textarea name="personality">@Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description</textarea>
-                </div>
-                <div class="ideals">
-                    <label for="ideals">Ideals</label>
-                    <textarea name="ideals">@Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description</textarea>
-                </div>
-                <div class="bonds">
-                    <label for="bonds">Bonds</label>
-                    <textarea name="bonds">@Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description</textarea>
-                </div>
-                <div class="flaws">
-                    <label for="flaws">Flaws</label>
-                    <textarea name="flaws">@Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description</textarea>
-                </div>
-            </section>
-            <section class="features">
-                <div>
-                    <label for="features">Features & Traits</label>
-                    <textarea name="features"></textarea>
-                </div>
-            </section>
-        </section>
-        </main>
-    </ChildComponent>
+            </div>
+        </div>
+    </section>
+    <section class="attacksandspellcasting">
+        <div>
+            <label>Attacks & Spellcasting</label>
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Atk Bonus</th>
+                    <th>Damage/Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <input name="atkname<%= i %>" type="text"/>
+                    </td>
+                    <td>
+                        <input name="atkbonus<%= i %>" type="text"/>
+                    </td>
+                    <td>
+                        <input name="atkdamage<%= i %>" type="text"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <textarea></textarea>
+        </div>
+    </section>
+    <section class="equipment">
+        <div>
+            <label>Equipment</label>
+            <div class="money">
+                <ul>
+
+                    <li>
+                        <label for="asdf">asdf</label>
+                        <input name="<%= type %>"/>
+                    </li>
+                </ul>
+            </div>
+            <textarea placeholder="Equipment list here"></textarea>
+        </div>
+    </section>
+</section>
+<section>
+    <section class="flavor">
+        <div class="personality">
+            <label for="personality">Personality</label>
+            <textarea name="personality">@Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description</textarea>
+        </div>
+        <div class="ideals">
+            <label for="ideals">Ideals</label>
+            <textarea name="ideals">@Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description</textarea>
+        </div>
+        <div class="bonds">
+            <label for="bonds">Bonds</label>
+            <textarea name="bonds">@Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description</textarea>
+        </div>
+        <div class="flaws">
+            <label for="flaws">Flaws</label>
+            <textarea name="flaws">@Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description</textarea>
+        </div>
+    </section>
+    <section class="features">
+        <div>
+            <label for="features">Features & Traits</label>
+            <textarea name="features"></textarea>
+        </div>
+    </section>
+</section>
+</main>
+</form>
+</ChildComponent>
 </DataInitializer>
 
 @code {
@@ -267,7 +271,7 @@
 
     protected override async Task OnParametersSetAsync() {
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
-        Console.WriteLine(Character.Abilities.Count);
+        Console.WriteLine(Character.Personalities.Count);
     }
 
 }

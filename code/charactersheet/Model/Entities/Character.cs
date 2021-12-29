@@ -34,7 +34,6 @@ namespace Model.Entities
         public virtual DeathSafe DeathSafe { get; set; } = null!;
         public virtual ICollection<Ability> Abilities { get; set; }
         public virtual ICollection<CharactersHasItem> CharactersHasItems { get; set; }
-
         public virtual ICollection<ELanguage> Names { get; set; }
         public virtual ICollection<Personality> Personalities { get; set; }
         public virtual ICollection<Spell> Spells { get; set; }

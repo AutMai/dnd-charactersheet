@@ -310,7 +310,11 @@
 
     private void RollAbilityScore(string abilityName) {
         var rolledScore = DnDExtensions.RollDice(4, 6, true).Sum();
-        var increase = SelectedRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase);
+        var parentIncrease = 0;
+        if (SelectedRace.ParentRace is not null)
+            parentIncrease = SelectedRace.ParentRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase);
+
+        var increase = SelectedRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase) + parentIncrease;
         abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
     }
 
@@ -318,7 +322,7 @@
         List<Ability> abilityList = new List<Ability>();
 
         foreach (var ability in Abilities) {
-            var proficient = SelectedClass.SavingThrowProficiencies.Count(s => s.Name == ability.Name) > 0;
+            var proficient = SelectedClass.AbilityNames.Count(s => s.Name == ability.Name) > 0;
 
             List<Skill> skillList = new List<Skill>();
 
@@ -357,6 +361,6 @@
             Abilities = abilityList
         });
     }
+
     // ability von parent class nicht erhöht
 }
-
