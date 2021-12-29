@@ -2,12 +2,9 @@
 @typeparam TData
 
 @if (Data is null) {
-    <img src="816008710836715520.png"/>
+    <span></span>
 }
 else {
-    if (Data is Character c) {
-        Console.WriteLine("CHARACTER NAME:   " + c.Name);
-    }
     @ChildComponent(Data)
 }
 
