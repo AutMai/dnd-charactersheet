@@ -10,3 +10,12 @@
 .rz-steps-buttons {
     display: none;
 }
+
+.rz-selectbutton {
+    width: 100%;
+}
+
+.rz-selectbutton .rz-button {
+    width: 33%;
+    text-align: center;
+}
