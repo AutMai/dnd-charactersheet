@@ -10,8 +10,8 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
     public CharacterRepository(CharacterSheetDbContext context) : base(context) {
     }
 
-    public async Task<Character> GetByName(string name) => (await _set.IncludeAll().SingleOrDefaultAsync(c => c.Name == name))!;
+    public async Task<Character> ReadGraphAsync(string name) => (await _set.IncludeAll().FirstOrDefaultAsync(c => c.Name == name))!;
     
-    public async Task<Character> GetGraph(int id) =>
+    public async Task<Character> ReadGraphAsync(int id) =>
         (await _set.IncludeAll().SingleOrDefaultAsync(k => k.CharacterId == id))!;
 }

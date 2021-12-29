@@ -5,15 +5,16 @@
 @using Domain.Extensions
 @inject IRaceRepository _raceRepository;
 @inject IClassRepository _classRepository;
-@inject DialogService DialogService;
 @inject IRepository<Background> _backgroundRepository;
 @inject IRepository<EAbilityName> _abilityRepository;
-
+@inject ICharacterRepository _characterRepository;
+@inject DialogService DialogService;
 <RadzenDialog/>
+
 
 <RadzenSteps @bind-SelectedIndex="@stepIndex">
     <Steps>
-        <RadzenStepsItem Text="@((SelectedRace == null) ? "Race" : "Race: " + SelectedRace.Name)">
+        <RadzenStepsItem Text="@(SelectedRace is null ? "Race" : "Race: " + SelectedRace.Name)">
             <DataInitializer Data="Races">
                 <ChildComponent>
                     <div class="row">
@@ -42,7 +43,7 @@
                         </div>
                         @if (TempRace != null) {
                             <RadzenCard class="col-md-8">
-                                <RaceDetail RaceName="@TempRace.Name"></RaceDetail>
+                                <RaceDetail Race="@TempRace"></RaceDetail>
                             </RadzenCard>
                         }
                     </div>
@@ -50,7 +51,7 @@
             </DataInitializer>
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="@(SelectedClass == null ? "Class" : "Class: " + SelectedClass.Name)" Disabled="@(SelectedRace == null)">
+        <RadzenStepsItem Text="@(SelectedClass is null ? "Class" : "Class: " + SelectedClass.Name)" Disabled="@(SelectedRace is null)">
             <DataInitializer Data="Classes">
                 <ChildComponent>
                     <div class="row">
@@ -70,7 +71,7 @@
                         </div>
                         @if (TempClass != null) {
                             <RadzenCard class="col-md-8">
-                                <ClassDetail ClassName="@TempClass.Name"></ClassDetail>
+                                <ClassDetail Class="@TempClass"></ClassDetail>
                             </RadzenCard>
                         }
                     </div>
@@ -78,7 +79,7 @@
             </DataInitializer>
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="@(SelectedSpells.Count == 0 ? "Spells" : "Spells: " + SelectedSpells.Count)" Disabled="@(SelectedRace == null || SelectedClass == null)">
+        <RadzenStepsItem Text="@(SelectedSpells.Count == 0 ? "Spells" : "Spells: " + SelectedSpells.Count)" Disabled="@(SelectedClass is null || SelectedClass.Spells.Count < 1)">
             <DataInitializer Data="SelectedClass.Spells">
                 <ChildComponent>
                     <div class="row">
@@ -105,6 +106,9 @@
                                     }
                                 </RadzenCard>
                             }
+                            <RadzenCard>
+                                <RadzenButton Text="Finished" Click="@(_ => stepIndex++)" ButtonStyle="ButtonStyle.Success"/>
+                            </RadzenCard>
                         </div>
                         @if (tempSpell != null) {
                             <RadzenCard class="col-md-8">
@@ -116,8 +120,8 @@
             </DataInitializer>
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="Abilities">
-            @foreach (var abilityName in Abilities.Select(a => a.Name)) {
+        <RadzenStepsItem Text="Abilities" Disabled="@(SelectedClass is null)">
+            @foreach (var abilityName in Abilities.Select(a => a.Name).OrderBy(an => Array.IndexOf(DnDExtensions.Abilities, an))) {
                 <div class="row">
                     <RadzenCard class="col-md-2">
                         <h1 class="m-0 text-center">@abilityName</h1>
@@ -133,7 +137,7 @@
             }
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="@(SelectedBackground == null ? "Background" : "Background: " + SelectedBackground.Name)" Disabled="@(SelectedRace == null || SelectedClass == null)">
+        <RadzenStepsItem Text="@(SelectedBackground is null ? "Background" : "Background: " + SelectedBackground.Name)" Disabled="@(abilityRolls.Count < 6)">
             <DataInitializer Data="Backgrounds">
                 <ChildComponent>
                     <div class="row">
@@ -161,7 +165,7 @@
             </DataInitializer>
         </RadzenStepsItem>
 
-        <RadzenStepsItem Text="Summary" Disabled="@(SelectedRace == null || SelectedClass == null)">
+        <RadzenStepsItem Text="Summary" Disabled="@(SelectedBackground == null)">
             <RadzenCard>
                 <h2>Race</h2>
                 <h3>@SelectedRace.Name</h3>
@@ -189,6 +193,14 @@
                 <h3>@SelectedBackground.Name</h3>
             </RadzenCard>
 
+            <RadzenCard>
+                <h2 class="text-center">Give your Character a name:</h2>
+                <RadzenTextBox class="m-auto w-20" Change="@(text => SelectedName = text)"/>
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenButton class="m-auto" Text="Finished - Create My Character" Click="@(_ => InsertCharacter())" ButtonStyle="ButtonStyle.Success" Disabled="@(SelectedName is null)"/>
+            </RadzenCard>
         </RadzenStepsItem>
     </Steps>
 </RadzenSteps>
@@ -204,7 +216,9 @@
     Race? SelectedRace { get; set; }
     Class? SelectedClass { get; set; }
     Background? SelectedBackground { get; set; }
-    List<Spell>? SelectedSpells = new();
+    List<Spell> SelectedSpells = new();
+    string? SelectedName { get; set; }
+
 
     List<Race> Races { get; set; }
     List<Class> Classes { get; set; }
@@ -226,12 +240,19 @@
         else stepIndex += 2;
     }
 
-    private Dictionary<string, int> abilityRolls = new();
+    private Dictionary<string, string> abilityRolls = new();
 
     private void RollAbilityScore(string abilityName) {
-        abilityRolls[abilityName] = DnDExtensions.RollDice(4, 6, true).Sum();
-            
+        var rolledScore = DnDExtensions.RollDice(4, 6, true).Sum();
+        var increase = 0;
+        foreach (var abilityScoreIncrease in SelectedRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName)) {
+            increase += abilityScoreIncrease.Increase;
         }
+        abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
+    }
+
+    private void InsertCharacter() {
+        _characterRepository.CreateAsync(new Character { Name = SelectedName, Race = SelectedRace, Class = SelectedClass, Background = SelectedBackground});
     }
 
 }

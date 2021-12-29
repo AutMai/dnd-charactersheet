@@ -10,6 +10,7 @@ public class RaceRepository : ARepository<Race>, IRaceRepository{
     }
 
     public async Task<Race> ReadGraphAsync(int id) => (await _set
+        .Include(r=>r.RaceHasAbilityScoreIncreases)
         .Include(r => r.ParentRace)
         .Include(r => r.Traits)
         .Include(r => r.LanguageNames)
@@ -18,6 +19,7 @@ public class RaceRepository : ARepository<Race>, IRaceRepository{
         .SingleOrDefaultAsync(r => r.RaceId == id))!;
 
     public async Task<Race> ReadGraphAsync(string name) => (await _set
+        .Include(r=>r.RaceHasAbilityScoreIncreases)
         .Include(r => r.ParentRace)
         .Include(r => r.Traits)
         .Include(r => r.LanguageNames)

@@ -7,21 +7,27 @@
     <ChildComponent>
         <RaceData Race="Race"></RaceData><hr/><br/>
         @if (Race.SubRaces.Count > 0) {
-            <h2>Subraces</h2><hr/>
+            <h2>Subraces</h2>
+            <hr/>
             foreach (var subrace in Race.SubRaces) {
-                <RaceData Race="subrace"></RaceData><br/>
+                <RaceData Race="subrace"></RaceData>
+                <br/>
             }
         }
     </ChildComponent>
 </DataInitializer>
 
 @code {
+
     [Parameter]
     public string RaceName { get; set; }
-    
-    public Race Race { get; set; }
+
+    [Parameter]
+    public Race? Race { get; set; }
 
     protected override async Task OnParametersSetAsync() {
-        Race = await _raceRepository.ReadGraphAsync(RaceName);
+        @if (Race is null) {
+            Race = await _raceRepository.ReadGraphAsync(RaceName);
+        }
     }
 }

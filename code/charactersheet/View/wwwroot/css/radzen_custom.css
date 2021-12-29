@@ -6,3 +6,7 @@
 .rz-navigation-item-wrapper:hover {
     background-color: lightgrey !important;
 }
+
+.rz-steps-buttons {
+    display: none;
+}

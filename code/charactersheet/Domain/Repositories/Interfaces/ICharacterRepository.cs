@@ -3,6 +3,6 @@
 namespace Domain.Repositories.Interfaces; 
 
 public interface ICharacterRepository:IRepository<Character> {
-    public Task<Character> GetByName(string name);
-    public Task<Character> GetGraph(int id);
+    public Task<Character> ReadGraphAsync(string name);
+    public Task<Character> ReadGraphAsync(int id);
 }

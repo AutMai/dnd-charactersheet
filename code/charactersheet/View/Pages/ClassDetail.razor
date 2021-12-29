@@ -62,11 +62,12 @@
     [Parameter]
     public string ClassName { get; set; }
 
-    public Class Class { get; set; }
+    [Parameter]
+    public Class? Class { get; set; }
 
     protected override async Task OnParametersSetAsync(){
-        Class = await _classRepository.ReadGraphAsync(ClassName);
+        if (Class is null) {
+            Class = await _classRepository.ReadGraphAsync(ClassName);
+        }
     }
-
-
 }
