@@ -159,8 +159,6 @@ namespace Model.Configurations
 
                 entity.Property(e => e.CurrentHp).HasColumnName("CURRENT_HP");
 
-                entity.Property(e => e.HitDice).HasColumnName("HIT_DICE");
-
                 entity.Property(e => e.Inspiration).HasColumnName("INSPIRATION");
 
                 entity.Property(e => e.MaxHp).HasColumnName("MAX_HP");
@@ -170,8 +168,6 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
 
                 entity.Property(e => e.RaceId).HasColumnName("RACE_ID");
-
-                entity.Property(e => e.Speed).HasColumnName("SPEED");
 
                 entity.Property(e => e.TemporaryHp).HasColumnName("TEMPORARY_HP");
 
@@ -306,7 +302,7 @@ namespace Model.Configurations
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
 
-                entity.HasMany(d => d.SavingThrowProficiencies)
+                entity.HasMany(d => d.AbilityNames)
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasAbilityProficiency",

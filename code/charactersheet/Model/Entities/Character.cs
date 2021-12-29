@@ -25,9 +25,7 @@ namespace Model.Entities
         public sbyte Inspiration { get; set; }
         public int Xp { get; set; }
         public int BronzeCoins { get; set; }
-        public int Speed { get; set; }
         public string Alignment { get; set; } = null!;
-        public int HitDice { get; set; }
         public int ArmorClass { get; set; }
 
         public virtual Background Background { get; set; } = null!;
