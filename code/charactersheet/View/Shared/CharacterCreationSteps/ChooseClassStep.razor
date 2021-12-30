@@ -1,5 +1,4 @@
 ﻿@using Model.Entities
-@using View.Pages.DnD
 @using Domain.Repositories.Interfaces
 @inject IClassRepository _classRepository;
 
@@ -60,6 +59,9 @@
 
     protected override async Task OnInitializedAsync() {
         Classes = await _classRepository.ReadAsync();
+    }
+
+    protected override void OnParametersSet() {
         SelectedSkillProficiencies = new List<string>();
     }
 

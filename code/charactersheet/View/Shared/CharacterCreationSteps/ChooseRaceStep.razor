@@ -1,5 +1,4 @@
-﻿@using View.Pages.DnD
-@using Model.Entities
+﻿@using Model.Entities
 @using Domain.Repositories.Interfaces
 @inject IRaceRepository _raceRepository;
 
@@ -51,7 +50,7 @@
     private List<Race> Races { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        Races = await _raceRepository.ReadParentRaces();
+        Races = await _raceRepository.ReadAsync();
     }
 
     private async Task ChooseRace() {

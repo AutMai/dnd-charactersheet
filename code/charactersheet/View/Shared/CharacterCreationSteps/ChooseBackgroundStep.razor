@@ -83,7 +83,7 @@
 
     [Parameter]
     public EventCallback<Character> CharacterChanged { get; set; }
-    
+
     public string Alignment1 { get; set; }
     public string Alignment2 { get; set; }
 
@@ -91,15 +91,17 @@
     public Background? TempBackground { get; set; }
     List<Background> Backgrounds { get; set; }
 
-
     protected override async Task OnInitializedAsync() {
+        Backgrounds = await _backgroundRepository.ReadAsync();
+    }
+
+    protected override void OnParametersSet() {
         Character.Personalities = new List<Personality> {
             new() { Name = "Personality Traits" },
             new() { Name = "Ideals" },
             new() { Name = "Bonds" },
             new() { Name = "Flaws" }
         };
-        Backgrounds = await _backgroundRepository.ReadAsync();
     }
 
     private bool CharacterPersonalitiesComplete() {
@@ -109,7 +111,7 @@
         }
         return true;
     }
-    
+
     private async Task ChooseBackground() {
         Character.Alignment = Alignment1 + " " + Alignment2;
         await CharacterChanged.InvokeAsync(Character);
