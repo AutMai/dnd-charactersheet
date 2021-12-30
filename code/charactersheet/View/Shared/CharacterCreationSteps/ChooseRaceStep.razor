@@ -50,7 +50,7 @@
     private List<Race> Races { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        Races = await _raceRepository.ReadAsync();
+        Races = await _raceRepository.ReadParentRaces();
     }
 
     private async Task ChooseRace() {
