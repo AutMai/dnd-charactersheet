@@ -1,0 +1,76 @@
+﻿@using Domain.Extensions
+@using Domain.Repositories.Interfaces
+@using Model.Entities
+@using View.Pages.DnD
+
+@foreach (var abilityName in CreateCharacter.StaticAbilities.Select(a => a.Name)) {
+    <div class="row">
+        <RadzenCard class="col-md-2">
+            <h1 class="m-0 text-center">@abilityName</h1>
+            <RadzenButton Text="Roll" Click=@(() => RollAbilityScore(abilityName)) ButtonStyle="ButtonStyle.Success"/>
+        </RadzenCard>
+
+        @if (_abilityRolls.ContainsKey(abilityName)) {
+            <RadzenCard class="col-md-2">
+                <h1 class="text-center">@_abilityRolls[abilityName]</h1>
+            </RadzenCard>
+        }
+    </div>
+}
+<div class="row">
+    <RadzenCard>
+        <RadzenButton Text="Confirm Abilities" Click=@(ConfirmAbilities) ButtonStyle="ButtonStyle.Success"/>
+    </RadzenCard>
+</div>
+
+@code {
+
+    [Parameter]
+    public Character Character { get; set; }
+
+    [Parameter]
+    public EventCallback<Character> CharacterChanged { get; set; }
+
+    private Dictionary<string, string> _abilityRolls = new Dictionary<string, string>();
+
+    [Parameter]
+    public IEnumerable<string> SelectedSkillProficiencies { get; set; }
+
+    private void RollAbilityScore(string abilityName) {
+        var rolledScore = DnDExtensions.RollDice(4, 6, true).Sum();
+        var parentIncrease = 0;
+        if (Character.Race.ParentRace is not null)
+            parentIncrease = Character.Race.ParentRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase);
+
+        var increase = Character.Race.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase) + parentIncrease;
+        _abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
+        
+        // #################################################################################################################################
+
+        if (Character.Abilities.Count(a => a.Name == abilityName) > 0) { // already exists
+            Character.Abilities.SingleOrDefault(a => a.Name == abilityName)!.AbilityScore = rolledScore + increase;
+        }
+        else {
+            var proficient = Character.Class.AbilityNames.Count(s => s.Name == abilityName) > 0; // if proficiency entry exists
+
+            var ability = CreateCharacter.StaticAbilities.SingleOrDefault(a => a.Name == abilityName);
+            List<Skill> skillList = new List<Skill>();
+
+            foreach (var skill in ability.SkillNames) {
+                var skillProficient = SelectedSkillProficiencies.Contains(skill.Name);
+                skillList.Add(new Skill() {
+                    Name = skill.Name,
+                    Proficient = Convert.ToSByte(skillProficient)
+                });
+            }
+
+            Character.Abilities.Add(new Ability() { Name = abilityName, AbilityScore = rolledScore + increase, Proficient = Convert.ToSByte(proficient), Skills = skillList });
+        }
+    }
+
+    private async Task ConfirmAbilities() {
+        Character.MaxHp = Character.CurrentHp = Character.Abilities.SingleOrDefault(a => a.Name == "CONSTITUTION")!.AbilityScore + Character.Class.HitDie; // set HP
+        await CharacterChanged.InvokeAsync(Character);
+        CreateCharacter.StepIndex++;
+    }
+}

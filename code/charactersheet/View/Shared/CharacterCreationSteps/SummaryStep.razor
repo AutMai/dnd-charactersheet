@@ -1,0 +1,54 @@
+﻿@using Model.Entities
+@using Domain.Extensions
+@using Domain.Repositories.Interfaces
+@inject ICharacterRepository _characterRepository;
+
+
+<RadzenCard>
+    <h2>Race</h2>
+    <h3>@Character.Race.Name</h3>
+</RadzenCard>
+<RadzenCard>
+    <h2>Class</h2>
+    <h3>@Character.Class.Name</h3>
+</RadzenCard>
+@if (Character.Spells.Count > 0) {
+    <RadzenCard>
+        <h2>Spells</h2>
+        @foreach (var spell in Character.Spells) {
+            <p>@spell.Level : @spell.Name</p>
+        }
+    </RadzenCard>
+}
+<RadzenCard>
+    <h2>Abilities</h2>
+    @foreach (var abilityRoll in Character.Abilities) {
+        <p>@abilityRoll.Name.FirstCharToUpper() : @abilityRoll.AbilityScore</p>
+    }
+</RadzenCard>
+<RadzenCard>
+    <h2>Background</h2>
+    <h3>@Character.Background.Name</h3>
+</RadzenCard>
+
+<RadzenCard>
+    <h2 class="text-center">Give your Character a name:</h2>
+    <RadzenTextBox class="m-auto w-20" @bind-Value="Character.Name"/>
+</RadzenCard>
+
+<RadzenCard>
+    <RadzenButton class="m-auto" Text="Finished - Create My Character" Click="@(_ => InsertCharacter())" ButtonStyle="ButtonStyle.Success" Disabled="@(Character.Name is null)"/>
+</RadzenCard>
+
+@code {
+    [Parameter]
+    public Character Character { get; set; }
+
+    [Parameter]
+    public EventCallback<Character> CharacterChanged { get; set; }
+
+    private async Task InsertCharacter() {
+        Character.ArmorClass = 10;
+        await _characterRepository.CreateAsync(Character);
+    }
+}

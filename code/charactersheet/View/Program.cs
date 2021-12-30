@@ -21,6 +21,7 @@ builder.Services.AddDbContext<CharacterSheetDbContext>(
         new MySqlServerVersion(new Version(8, 0, 27))
     )
 );
+builder.Services.AddTransient<CharacterSheetDbContext>();
 
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();

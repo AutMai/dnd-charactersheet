@@ -15,5 +15,5 @@ public static class DnDExtensions {
         return rolls;
     }
 
-    public static string[] Abilities { get; set; } = { "STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA" };
+    public static string[] AbilitiesSorted { get; } = { "STRENGTH", "DEXTERITY", "CONSTITUTION", "INTELLIGENCE", "WISDOM", "CHARISMA" };
 }

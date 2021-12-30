@@ -1,0 +1,58 @@
+﻿@using Model.Entities
+@using View.Pages.DnD
+<DataInitializer Data="Class.Spells">
+    <ChildComponent>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenCard>
+                    <RadzenPanelMenu Click="@(args => TempSpell = (args.Text[^1..] == "✔") ? Class.Spells.FirstOrDefault(s => s.Name == args.Text[..^2]) : Class.Spells.FirstOrDefault(s => s.Name == args.Text))">
+                        @foreach (var spell in Class.Spells) {
+                            if (CharacterSpells.Contains(spell)) {
+                                <RadzenPanelMenuItem Text="@(spell.Name + " ✔")"></RadzenPanelMenuItem>
+                            }
+                            else {
+                                <RadzenPanelMenuItem Text="@spell.Name"></RadzenPanelMenuItem>
+                            }
+                        }
+                    </RadzenPanelMenu>
+                </RadzenCard>
+                @if (TempSpell != null) {
+                    <RadzenCard>
+                        @if (CharacterSpells.Contains(TempSpell)) {
+                            <RadzenButton Text="Remove Spell" Click=@(() => CharacterSpells.Remove(TempSpell)) ButtonStyle="ButtonStyle.Danger"/>
+                        }
+                        else {
+                            <RadzenButton Text="Choose Spell" Click=@(() => CharacterSpells.Add(TempSpell)) ButtonStyle="ButtonStyle.Success"/>
+                        }
+                    </RadzenCard>
+                }
+                <RadzenCard>
+                    <RadzenButton Text="Finished" Click="@(ChooseSpells)" ButtonStyle="ButtonStyle.Success"/>
+                </RadzenCard>
+            </div>
+            @if (TempSpell != null) {
+                <RadzenCard class="col-md-8">
+                    <SpellDetail SpellName="@TempSpell.Name"></SpellDetail>
+                </RadzenCard>
+            }
+        </div>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+    [Parameter]
+    public ICollection<Spell>? CharacterSpells { get; set; }
+
+    [Parameter]
+    public EventCallback<ICollection<Spell>> CharacterSpellsChanged { get; set; }
+
+    [Parameter]
+    public Class Class { get; set; }
+    
+    Spell? TempSpell { get; set; }
+    
+    private async Task ChooseSpells() {
+        await CharacterSpellsChanged.InvokeAsync(CharacterSpells);
+        CreateCharacter.StepIndex++;
+    }
+}

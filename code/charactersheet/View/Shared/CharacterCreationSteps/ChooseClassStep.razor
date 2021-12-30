@@ -1,0 +1,75 @@
+﻿@using Model.Entities
+@using View.Pages.DnD
+@using Domain.Repositories.Interfaces
+@inject IClassRepository _classRepository;
+
+
+<DataInitializer Data="Classes">
+    <ChildComponent>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenCard>
+                    <RadzenPanelMenu Click="async args => TempClass = await _classRepository.ReadGraphAsync(args.Text)">
+                        @foreach (var c in Classes) {
+                            <RadzenPanelMenuItem Text="@c.Name"></RadzenPanelMenuItem>
+                        }
+                    </RadzenPanelMenu>
+                </RadzenCard>
+                @if (TempClass != null) {
+                    <RadzenCard>
+                        <h3>Choose Your Skills for @TempClass.Name Class</h3>
+                        <RadzenSelectBar @bind-Value=@SelectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(SelectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
+                            <Items>
+                                @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
+                                    <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
+                                }
+                            </Items>
+                        </RadzenSelectBar>
+                        <RadzenButton class="mt-2" Text="Reset" Click="@(_ => SelectedSkillProficiencies = new List<string>())" ButtonStyle="ButtonStyle.Info"/>
+                    </RadzenCard>
+                    <RadzenCard>
+                        <RadzenButton Text="Choose Class" Click=@(ChooseClass) ButtonStyle="ButtonStyle.Success" Disabled="@(SelectedSkillProficiencies.Count() < TempClass.ClassHasSkillProficienciesChoices.First().Amount)"/>
+                    </RadzenCard>
+                }
+            </div>
+            @if (TempClass != null) {
+                <RadzenCard class="col-md-8">
+                    <ClassDetail Class="@TempClass"></ClassDetail>
+                </RadzenCard>
+            }
+        </div>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [Parameter]
+    public Class? CharacterClass { get; set; }
+    [Parameter]
+    public EventCallback<Class> CharacterClassChanged { get; set; }
+    
+    [Parameter]
+    public IEnumerable<string> SelectedSkillProficiencies { get; set; }
+    [Parameter]
+    public EventCallback<IEnumerable<string>> SelectedSkillProficienciesChanged { get; set; }
+    
+
+    private Class? TempClass { get; set; }
+
+    private List<Class> Classes { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Classes = await _classRepository.ReadAsync();
+        SelectedSkillProficiencies = new List<string>();
+    }
+
+    private async Task ChooseClass() {
+        CharacterClass = TempClass;
+        if (CharacterClass.Spells.Count > 0) CreateCharacter.StepIndex++;
+        else CreateCharacter.StepIndex += 2;
+
+        await CharacterClassChanged.InvokeAsync(TempClass);
+        await SelectedSkillProficienciesChanged.InvokeAsync(SelectedSkillProficiencies);
+    }
+
+}

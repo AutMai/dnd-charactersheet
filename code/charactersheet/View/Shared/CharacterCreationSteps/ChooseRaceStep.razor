@@ -1,0 +1,61 @@
+﻿@using View.Pages.DnD
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@inject IRaceRepository _raceRepository;
+
+<DataInitializer Data="Races">
+    <ChildComponent>
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenCard>
+                    <RadzenPanelMenu Click="async args => TempRace = await _raceRepository.ReadGraphAsync(args.Text)">
+                        @foreach (var race in Races) {
+                            if (race.SubRaces.Count > 0) {
+                                <RadzenPanelMenuItem Text="@race.Name">
+                                    @foreach (var subrace in race.SubRaces) {
+                                        <RadzenPanelMenuItem Text="@subrace.Name"></RadzenPanelMenuItem>
+                                    }
+                                </RadzenPanelMenuItem>
+                            }
+                            else {
+                                <RadzenPanelMenuItem Text="@race.Name"></RadzenPanelMenuItem>
+                            }
+                        }
+                    </RadzenPanelMenu>
+                </RadzenCard>
+                @if (TempRace != null && (TempRace.SubRaces.Count == 0 || TempRace.ParentRace is not null)) {
+                    <RadzenCard>
+                        <RadzenButton Text="Choose Race" Click=@(ChooseRace) ButtonStyle="ButtonStyle.Success"/>
+                    </RadzenCard>
+                }
+            </div>
+            @if (TempRace != null) {
+                <RadzenCard class="col-md-8">
+                    <RaceDetail Race="@TempRace"></RaceDetail>
+                </RadzenCard>
+            }
+        </div>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [Parameter]
+    public Race? CharacterRace { get; set; }
+
+    [Parameter]
+    public EventCallback<Race> CharacterRaceChanged { get; set; }
+
+    private Race? TempRace { get; set; }
+
+    private List<Race> Races { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Races = await _raceRepository.ReadParentRaces();
+    }
+
+    private async Task ChooseRace() {
+        await CharacterRaceChanged.InvokeAsync(TempRace);
+        CreateCharacter.StepIndex++;
+    }
+}
