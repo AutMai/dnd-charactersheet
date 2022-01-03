@@ -6,7 +6,7 @@ using Model.Entities;
 namespace Domain.Repositories.Implementations;
 
 public class RaceRepository : ARepository<Race>, IRaceRepository{
-    public RaceRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory){
+    public RaceRepository(CharacterSheetDbContext context) : base(context){
     }
 
     public async Task<Race> ReadGraphAsync(int id) => (await _set

@@ -6,7 +6,7 @@ using Model.Entities;
 namespace Domain.Repositories.Implementations;
 
 public class SpellRepository : ARepository<Spell>, ISpellRepository {
-    public SpellRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory) {
+    public SpellRepository(CharacterSheetDbContext context) : base(context) {
     }
 
     public async Task<Spell> ReadGraphAsync(string name) => (await _set

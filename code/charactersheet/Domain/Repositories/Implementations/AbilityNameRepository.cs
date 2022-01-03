@@ -6,7 +6,7 @@ using Model.Entities;
 namespace Domain.Repositories.Implementations; 
 
 public class AbilityNameRepository:ARepository<EAbilityName>, IAbilityNameRepository {
-    public AbilityNameRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory) {
+    public AbilityNameRepository(CharacterSheetDbContext context) : base(context) {
     }
 
     public async Task<List<EAbilityName>> ReadGraphAsync() => await _set
