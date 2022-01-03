@@ -30,4 +30,14 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
        .Include(c => c.CharactersHasItems)
        .ThenInclude(i => i.Item)
        .SingleOrDefaultAsync(c => c.CharacterId == id))!;
+   
+   public new async Task<Character> CreateAsync(Character character) {
+       _context.Attach(character.Background);
+       _context.Attach(character.Race);
+       _context.Attach(character.Class);
+       _set.Add(character);
+       await _context.SaveChangesAsync();
+       return character;
+   }
+
 }

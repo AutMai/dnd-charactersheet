@@ -57,19 +57,19 @@
 
                 <RadzenCard class="col-md-2">
                     <h2>Personality Traits</h2>
-                    <RadzenTextArea @bind-Value="@Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description" Rows="10" Change=@(args => Console.WriteLine(args)) Class="w-100"/>
+                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description = args) Class="w-100"/>
                 </RadzenCard>
                 <RadzenCard class="col-md-2">
                     <h2>Ideals</h2>
-                    <RadzenTextArea @bind-Value="@Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description" Rows="10" Change=@(args => Console.WriteLine(args)) Class="w-100"/>
+                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description = args) Class="w-100"/>
                 </RadzenCard>
                 <RadzenCard class="col-md-2">
                     <h2>Bonds</h2>
-                    <RadzenTextArea @bind-Value="@Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description" Rows="10" Change=@(args => Console.WriteLine(args)) Class="w-100"/>
+                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description = args) Class="w-100"/>
                 </RadzenCard>
                 <RadzenCard class="col-md-2">
                     <h2>Flaws</h2>
-                    <RadzenTextArea @bind-Value="@Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description" Rows="10" Change=@(args => Console.WriteLine(args)) Class="w-100"/>
+                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description = args) Class="w-100"/>
                 </RadzenCard>
             </div>
         }
@@ -93,9 +93,6 @@
 
     protected override async Task OnInitializedAsync() {
         Backgrounds = await _backgroundRepository.ReadAsync();
-    }
-
-    protected override void OnParametersSet() {
         Character.Personalities = new List<Personality> {
             new() { Name = "Personality Traits" },
             new() { Name = "Ideals" },
