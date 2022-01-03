@@ -28,8 +28,6 @@ builder.Services.AddScoped<IClassRepository, ClassRepository>();
 builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
-builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 

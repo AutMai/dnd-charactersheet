@@ -91,17 +91,14 @@
     public Background? TempBackground { get; set; }
     List<Background> Backgrounds { get; set; }
 
-    protected override async Task OnInitializedAsync() {
-        Backgrounds = await _backgroundRepository.ReadAsync();
-    }
-
-    protected override void OnParametersSet() {
+    protected override async Task OnParametersSetAsync() {
         Character.Personalities = new List<Personality> {
             new() { Name = "Personality Traits" },
             new() { Name = "Ideals" },
             new() { Name = "Bonds" },
             new() { Name = "Flaws" }
         };
+        Backgrounds = await _backgroundRepository.ReadAsync();
     }
 
     private bool CharacterPersonalitiesComplete() {

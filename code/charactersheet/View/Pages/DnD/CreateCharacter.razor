@@ -4,8 +4,6 @@
 @using Model.Entities
 @using Domain.Extensions
 @inject IAbilityNameRepository _abilityRepository;
-@inject DialogService DialogService;
-<RadzenDialog/>
 
 
 <RadzenSteps @bind-SelectedIndex="@StepIndex">
@@ -41,16 +39,12 @@
     public static int StepIndex { get; set; }
     public static List<EAbilityName> StaticAbilities { get; set; }
 
-    public Character Character { get; set; }
+    public Character Character { get; set; } = new();
 
-    IEnumerable<string> SelectedSkillProficiencies { get; set; }
-
+    IEnumerable<string> SelectedSkillProficiencies { get; set; } = new List<string>();
+    
     
     protected override async Task OnInitializedAsync() {
-        Character = new Character();
-        SelectedSkillProficiencies = new List<string>();
         StaticAbilities = (await _abilityRepository.ReadGraphAsync()).OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an)).ToList();
     }
-    
-    // ability von parent class nicht erhöht
 }
