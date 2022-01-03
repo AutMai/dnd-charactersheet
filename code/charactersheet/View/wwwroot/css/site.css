@@ -76,9 +76,9 @@ a, .btn-link {
 }
 
 textarea {
-    font-size: 12px;
+    font-size: 12px !important;
     text-align: left;
-    width: calc(100% - 20px - 2px);
+    width: 100%;
     border-radius: 10px;
     padding: 10px;
     resize: none;
@@ -222,7 +222,7 @@ form.charsheet main div.label-container {
 form.charsheet main div.label-container > label {
     position: absolute;
     left: 0;
-    top: 1px;
+    top: -3px;
     transform: translate(0%, 50%);
     width: 100%;
     font-size: 8px;
@@ -400,7 +400,7 @@ form.charsheet main > section div.passive-perception input {
 }
 
 form.charsheet main > section div.otherprofs textarea {
-    height: 26em;
+    height: 17.6em;
 }
 
 form.charsheet main section.combat {
@@ -785,6 +785,6 @@ form.charsheet main section.features div label {
 form.charsheet main section.features div textarea {
     border: 0;
     padding: 5px;
-    height: 43em;
+    height: 36.3em;
 }
 

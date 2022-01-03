@@ -1,6 +1,7 @@
 ﻿@page "/character/{CharacterId:int}"
 @using Model.Entities
 @using Domain.Repositories.Interfaces
+@using Domain.Extensions
 @inject ICharacterRepository _characterRepository
 
 <h3>CharacterSheet</h3>
@@ -17,27 +18,27 @@
         <ul>
             <li>
                 <label for="classlevel">Class & Level</label>
-                <input name="classlevel" placeholder="@Character.Class.Name 2"/>
+                <input name="classlevel" value="@Character.Class.Name 2"/>
             </li>
             <li>
                 <label for="background">Background</label>
-                <input name="background" placeholder="@Character.Background.Name"/>
+                <input name="background" value="@Character.Background.Name"/>
             </li>
             <li>
                 <label for="playername">Player Name</label>
-                <input name="playername" placeholder="Player McPlayerface">
+                <input name="playername" value="Player McPlayerface">
             </li>
             <li>
                 <label for="race">Race</label>
-                <input name="race" placeholder="@Character.Race.Name"/>
+                <input name="race" value="@Character.Race.Name"/>
             </li>
             <li>
                 <label for="alignment">Alignment</label>
-                <input name="alignment" placeholder="@Character.Alignment"/>
+                <input name="alignment" value="@Character.Alignment"/>
             </li>
             <li>
                 <label for="experiencepoints">Experience Points</label>
-                <input name="experiencepoints" placeholder="@Character.Xp"/>
+                <input name="experiencepoints" value="@Character.Xp"/>
             </li>
         </ul>
     </section>
@@ -48,14 +49,14 @@
     <section class="attributes">
         <div class="scores">
             <ul>
-                @foreach (var a in Character.Abilities) {
+                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                     <li>
                         <div class="score">
                             <label for="@a.Name">@a.Name</label>
-                            <input name="@a.Name" value="@a.AbilityScore"/>
+                            <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()"/>
                         </div>
                         <div class="modifier">
-                            <input name="<%= attr %>mod" placeholder="+0"/>
+                            <input value="@a.AbilityScore"/>
                         </div>
                     </li>
                 }
@@ -72,14 +73,14 @@
                 <div class="label-container">
                     <label for="proficiencybonus">Proficiency Bonus</label>
                 </div>
-                <input name="proficiencybonus" placeholder="+2"/>
+                <input name="proficiencybonus" value="+2"/>
             </div>
             <div class="saves list-section box">
                 <ul>
-                    @foreach (var savingThrow in Character.Abilities) {
+                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
-                            <input name="@savingThrow.Name" placeholder="+@savingThrow.AbilityScore" type="text"/>
+                            <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text"/>
                             <input name="@savingThrow.Name-prof" type="checkbox" value="@savingThrow.Proficient"/>
                         </li>
                     }
@@ -90,12 +91,14 @@
             </div>
             <div class="skills list-section box">
                 <ul>
-                    @foreach (var ability in Character.Abilities) {
+                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         foreach (var skill in ability.Skills) {
                             <li>
-                                <label for="@skill.Name">@skill.Name<span class="skill">@ability.Name.Substring(0,3)</span></label>
-                                <input name="@skill.Name" placeholder="+@ability.AbilityScore" type="text"/>
-                                <input name="@skill.Name-prof" type="checkbox"/>
+                                <label for="@skill.Name">
+                                    @skill.Name<span class="skill"> (@ability.Name[..3])</span>
+                                </label>
+                                <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text"/>
+                                <input name="@skill.Name-prof" type="checkbox" value="@skill.Proficient"/>
                             </li>
                         }
                     }
@@ -110,7 +113,7 @@
         <div class="label-container">
             <label for="passiveperception">Passive Wisdom (Perception)</label>
         </div>
-        <input name="passiveperception" placeholder="10"/>
+        <input name="passiveperception" value="@(10 + Character.Abilities.SingleOrDefault(a => a.Name == "WISDOM").Skills.SingleOrDefault(s => s.Name == "PERCEPTION").ModifierWithPossibleProficiencyBonus(2))"/>
     </div>
     <div class="otherprofs box textblock">
         <label for="otherprofs">Other Proficiencies and Languages</label>
@@ -190,7 +193,7 @@
     <section class="attacksandspellcasting">
         <div>
             <label>Attacks & Spellcasting</label>
-            <table>
+            <table class="mb-3">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -199,6 +202,23 @@
                 </tr>
                 </thead>
                 <tbody>
+                @foreach (var item in Character.CharactersHasItems) {
+                    if (item.Item is Weapon weapon) {
+                        
+                    }
+                }
+                    <tr>
+                        <td>
+                            <input name="atkname<%= i %>" type="text"/>
+                        </td>
+                        <td>
+                            <input name="atkbonus<%= i %>" type="text"/>
+                        </td>
+                        <td>
+                            <input name="atkdamage<%= i %>" type="text"/>
+                        </td>
+                    </tr>
+                }
                 <tr>
                     <td>
                         <input name="atkname<%= i %>" type="text"/>

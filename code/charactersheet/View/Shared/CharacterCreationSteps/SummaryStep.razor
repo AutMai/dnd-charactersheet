@@ -2,7 +2,7 @@
 @using Domain.Extensions
 @using Domain.Repositories.Interfaces
 @inject ICharacterRepository _characterRepository;
-
+@inject NavigationManager _navigationManager;
 
 <RadzenCard>
     <h2>Race</h2>
@@ -49,6 +49,7 @@
 
     private async Task InsertCharacter() {
         Character.ArmorClass = 10;
-        await _characterRepository.CreateAsync(Character);
+        var characterId = (await _characterRepository.CreateAsync(Character)).CharacterId;
+        _navigationManager.NavigateTo($"/character/{characterId}");
     }
 }
