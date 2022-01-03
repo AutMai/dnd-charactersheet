@@ -7,7 +7,7 @@ using Model.Entities;
 namespace Domain.Repositories.Implementations;
 
 public class CharacterRepository : ARepository<Character>, ICharacterRepository {
-    public CharacterRepository(CharacterSheetDbContext context) : base(context) {
+    public CharacterRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory) {
     }
 
     public async Task<Character> ReadGraphAsync(string name) => (await _set.IncludeAll().FirstOrDefaultAsync(c => c.Name == name))!;
