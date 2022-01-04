@@ -47,4 +47,12 @@ public static class DnDExtensions {
         
         return "+" + number;
     }
+
+    public static int GetAttackBonus(this Weapon weapon, ICollection<Ability> abilities, int proficiencyBonus) {
+        if (new[] { "DART", "HAND CROSSBOW", "LIGHT CROSSBOW", "SLING", "SHORTBOW", "LONGBOW"}.Contains(weapon.WeaponType)) { // is ranged
+            return abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore.GetAbilityModifier() + proficiencyBonus;
+        }
+
+        return abilities.SingleOrDefault(a => a.Name == "STRENGTH").AbilityScore.GetAbilityModifier() + proficiencyBonus;
+    }
 }

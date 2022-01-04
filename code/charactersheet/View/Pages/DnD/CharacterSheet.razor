@@ -2,6 +2,7 @@
 @using Model.Entities
 @using Domain.Repositories.Interfaces
 @using Domain.Extensions
+@using System.Text
 @inject ICharacterRepository _characterRepository
 
 <h3>CharacterSheet</h3>
@@ -203,21 +204,19 @@
                 </thead>
                 <tbody>
                 @foreach (var item in Character.CharactersHasItems) {
-                    if (item.Item is Weapon weapon) {
-                        
+                    if (item.Item.Weapon is not null) {
+                        <tr>
+                            <td>
+                                <input name="atkname" type="text" value="@item.Item.Name"/>
+                            </td>
+                            <td>
+                                <input name="atkbonus" type="text" value="@item.Item.Weapon.GetAttackBonus(Character.Abilities, 2).AddSign()"/>
+                            </td>
+                            <td>
+                                <input name="atkdamage" type="text" value="@(item.Item.Weapon.DamageDieAmount + "d" + item.Item.Weapon.DamageDieType)"/>
+                            </td>
+                        </tr>
                     }
-                }
-                    <tr>
-                        <td>
-                            <input name="atkname<%= i %>" type="text"/>
-                        </td>
-                        <td>
-                            <input name="atkbonus<%= i %>" type="text"/>
-                        </td>
-                        <td>
-                            <input name="atkdamage<%= i %>" type="text"/>
-                        </td>
-                    </tr>
                 }
                 <tr>
                     <td>
@@ -247,7 +246,15 @@
                     </li>
                 </ul>
             </div>
-            <textarea placeholder="Equipment list here"></textarea>
+            @{
+                string equipment = "";
+            }
+            @foreach (var item in Character.CharactersHasItems) {
+                equipment += (item.Amount + "x " + item.Item.Name + ", ");
+            }
+            @{
+                <textarea placeholder="Equipment list here" @bind="@equipment"></textarea>
+            }
         </div>
     </section>
 </section>

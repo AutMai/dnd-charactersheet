@@ -29,6 +29,10 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
        .Include(c => c.DeathSafe)
        .Include(c => c.CharactersHasItems)
        .ThenInclude(i => i.Item)
+       .ThenInclude(i=>i.Weapon)
+       .Include(c => c.CharactersHasItems)
+       .ThenInclude(i => i.Item)
+       .ThenInclude(i=>i.Armor)
        .SingleOrDefaultAsync(c => c.CharacterId == id))!;
    
    public new async Task<Character> CreateAsync(Character character) {
