@@ -25,7 +25,6 @@ builder.Services.AddDbContext<CharacterSheetDbContext>(
         new MySqlServerVersion(new Version(8, 0, 27))
     )
 );
-builder.Services.AddDefaultIdentity<ApplicationUser>().AddEntityFrameworkStores<CharacterSheetDbContext>();
 builder.Services.AddTransient<CharacterSheetDbContext>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
@@ -35,6 +34,14 @@ builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 4;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredUniqueChars = 2;
+}).AddEntityFrameworkStores<CharacterSheetDbContext>();
 
 var app = builder.Build();
 
