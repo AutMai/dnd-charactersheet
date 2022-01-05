@@ -3,6 +3,8 @@
 @using Domain.Repositories.Interfaces
 @inject ICharacterRepository _characterRepository;
 @inject NavigationManager _navigationManager;
+@inject IApplicationUserRepository userRepository
+@attribute [Authorize]
 
 <RadzenCard>
     <h2>Race</h2>
@@ -44,12 +46,26 @@
 
     [Parameter]
     public Character Character { get; set; }
+    
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+    ApplicationUser _user;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if (firstRender){
+            var authState = await authStateTask;
+            _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
+            
+        }
+    }
 
     [Parameter]
     public EventCallback<Character> CharacterChanged { get; set; }
 
     private async Task InsertCharacter(){
         Character.ArmorClass = 10;
+        Character.UserId = _user.Id;
         var characterId = (await _characterRepository.CreateAsync(Character)).CharacterId;
         _navigationManager.NavigateTo($"/character/{characterId}");
     }

@@ -22,4 +22,9 @@
       <ProjectReference Include="..\Model\Model.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Authentication\Dashboard.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Authentication\Login.razor" />
+    </ItemGroup>
+
 </Project>
