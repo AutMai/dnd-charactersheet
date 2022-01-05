@@ -12,17 +12,17 @@
     <h2>Class</h2>
     <h3>@Character.Class.Name</h3>
 </RadzenCard>
-@if (Character.Spells.Count > 0) {
+@if (Character.Spells.Count > 0){
     <RadzenCard>
         <h2>Spells</h2>
-        @foreach (var spell in Character.Spells) {
+        @foreach (var spell in Character.Spells){
             <p>@spell.Level : @spell.Name</p>
         }
     </RadzenCard>
 }
 <RadzenCard>
     <h2>Abilities</h2>
-    @foreach (var abilityRoll in Character.Abilities) {
+    @foreach (var abilityRoll in Character.Abilities){
         <p>@abilityRoll.Name.FirstCharToUpper() : @abilityRoll.AbilityScore</p>
     }
 </RadzenCard>
@@ -41,15 +41,17 @@
 </RadzenCard>
 
 @code {
+
     [Parameter]
     public Character Character { get; set; }
 
     [Parameter]
     public EventCallback<Character> CharacterChanged { get; set; }
 
-    private async Task InsertCharacter() {
+    private async Task InsertCharacter(){
         Character.ArmorClass = 10;
         var characterId = (await _characterRepository.CreateAsync(Character)).CharacterId;
         _navigationManager.NavigateTo($"/character/{characterId}");
     }
+
 }

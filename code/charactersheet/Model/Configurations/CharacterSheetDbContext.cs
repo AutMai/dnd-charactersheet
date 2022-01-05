@@ -1,64 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Model.Entities;
 
-namespace Model.Configurations
-{
-    public partial class CharacterSheetDbContext : DbContext
-    {
-        public CharacterSheetDbContext()
-        {
+namespace Model.Configurations{
+    public partial class CharacterSheetDbContext : IdentityDbContext<ApplicationUser>{
+        public CharacterSheetDbContext(DbContextOptions<CharacterSheetDbContext> options) : base(options){
         }
 
-        public CharacterSheetDbContext(DbContextOptions<CharacterSheetDbContext> options)
-            : base(options)
-        {
-        }
+        public virtual DbSet<Ability> Abilities{ get; set; } = null!;
+        public virtual DbSet<Armor> Armors{ get; set; } = null!;
+        public virtual DbSet<Background> Backgrounds{ get; set; } = null!;
+        public virtual DbSet<Character> Characters{ get; set; } = null!;
+        public virtual DbSet<CharactersHasItem> CharactersHasItems{ get; set; } = null!;
+        public virtual DbSet<Class> Classes{ get; set; } = null!;
+        public virtual DbSet<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices{ get; set; } = null!;
+        public virtual DbSet<EAbilityName> EAbilityNames{ get; set; } = null!;
+        public virtual DbSet<EArmorType> EArmorTypes{ get; set; } = null!;
+        public virtual DbSet<EDamageType> EDamageTypes{ get; set; } = null!;
+        public virtual DbSet<ELanguage> ELanguages{ get; set; } = null!;
+        public virtual DbSet<ESize> ESizes{ get; set; } = null!;
+        public virtual DbSet<ESkillName> ESkillNames{ get; set; } = null!;
+        public virtual DbSet<EWeaponType> EWeaponTypes{ get; set; } = null!;
+        public virtual DbSet<ExperienceProficencyBonu> ExperienceProficencyBonus{ get; set; } = null!;
+        public virtual DbSet<Feature> Features{ get; set; } = null!;
+        public virtual DbSet<Item> Items{ get; set; } = null!;
+        public virtual DbSet<Personality> Personalities{ get; set; } = null!;
+        public virtual DbSet<Race> Races{ get; set; } = null!;
+        public virtual DbSet<RaceHasAbilityScoreIncrease> RaceHasAbilityScoreIncreases{ get; set; } = null!;
+        public virtual DbSet<Skill> Skills{ get; set; } = null!;
+        public virtual DbSet<Spell> Spells{ get; set; } = null!;
+        public virtual DbSet<Trait> Traits{ get; set; } = null!;
+        public virtual DbSet<ApplicationUser> Users{ get; set; } = null!;
+        public virtual DbSet<Weapon> Weapons{ get; set; } = null!;
 
-        public virtual DbSet<Ability> Abilities { get; set; } = null!;
-        public virtual DbSet<Armor> Armors { get; set; } = null!;
-        public virtual DbSet<Background> Backgrounds { get; set; } = null!;
-        public virtual DbSet<Character> Characters { get; set; } = null!;
-        public virtual DbSet<CharactersHasItem> CharactersHasItems { get; set; } = null!;
-        public virtual DbSet<Class> Classes { get; set; } = null!;
-        public virtual DbSet<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; } = null!;
-        public virtual DbSet<EAbilityName> EAbilityNames { get; set; } = null!;
-        public virtual DbSet<EArmorType> EArmorTypes { get; set; } = null!;
-        public virtual DbSet<EDamageType> EDamageTypes { get; set; } = null!;
-        public virtual DbSet<ELanguage> ELanguages { get; set; } = null!;
-        public virtual DbSet<ESize> ESizes { get; set; } = null!;
-        public virtual DbSet<ESkillName> ESkillNames { get; set; } = null!;
-        public virtual DbSet<EWeaponType> EWeaponTypes { get; set; } = null!;
-        public virtual DbSet<ExperienceProficencyBonu> ExperienceProficencyBonus { get; set; } = null!;
-        public virtual DbSet<Feature> Features { get; set; } = null!;
-        public virtual DbSet<Item> Items { get; set; } = null!;
-        public virtual DbSet<Personality> Personalities { get; set; } = null!;
-        public virtual DbSet<Race> Races { get; set; } = null!;
-        public virtual DbSet<RaceHasAbilityScoreIncrease> RaceHasAbilityScoreIncreases { get; set; } = null!;
-        public virtual DbSet<Skill> Skills { get; set; } = null!;
-        public virtual DbSet<Spell> Spells { get; set; } = null!;
-        public virtual DbSet<Trait> Traits { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<Weapon> Weapons { get; set; } = null!;
+        protected override void OnModelCreating(ModelBuilder modelBuilder){
+            base.OnModelCreating(modelBuilder);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=localhost;user=root;password=root;database=dnd", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.27-mysql"));
-            }
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
             modelBuilder.UseCollation("utf8_general_ci")
                 .HasCharSet("utf8");
 
-            modelBuilder.Entity<Ability>(entity =>
-            {
+            modelBuilder.Entity<Ability>(entity => {
                 entity.ToTable("abilities");
 
                 entity.HasIndex(e => e.CharacterId, "fk_ABILITIES_CHARACTERS1_idx");
@@ -90,8 +74,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_E_ABILITIES_E_ABILITY_NAMES1");
             });
 
-            modelBuilder.Entity<Armor>(entity =>
-            {
+            modelBuilder.Entity<Armor>(entity => {
                 entity.ToTable("armors");
 
                 entity.HasIndex(e => e.ArmorType, "fk_ARMORS_E_ARMOR_TYPE1_idx");
@@ -119,8 +102,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_ARMORS_E_ARMOR_TYPE1");
             });
 
-            modelBuilder.Entity<Background>(entity =>
-            {
+            modelBuilder.Entity<Background>(entity => {
                 entity.ToTable("backgrounds");
 
                 entity.Property(e => e.BackgroundId).HasColumnName("BACKGROUND_ID");
@@ -134,8 +116,7 @@ namespace Model.Configurations
                     .HasColumnName("SKILL_PROFICIENCIES");
             });
 
-            modelBuilder.Entity<Character>(entity =>
-            {
+            modelBuilder.Entity<Character>(entity => {
                 entity.ToTable("characters");
 
                 entity.HasIndex(e => e.BackgroundId, "fk_CHARACTERS_BACKGROUNDS1_idx");
@@ -153,6 +134,8 @@ namespace Model.Configurations
                 entity.Property(e => e.Alignment)
                     .HasMaxLength(45)
                     .HasColumnName("ALIGNMENT");
+
+                entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
                 entity.Property(e => e.ArmorClass).HasColumnName("ARMOR_CLASS");
 
@@ -206,7 +189,7 @@ namespace Model.Configurations
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CHARACTERS_RACES1");
 
-                entity.HasOne(d => d.User)
+                entity.HasOne(d => d.ApplicationUser)
                     .WithMany(p => p.Characters)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -216,17 +199,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharacterHasLanguage",
-                        l => l.HasOne<ELanguage>().WithMany().HasForeignKey("Name").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1"),
-                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1"),
-                        j =>
-                        {
-                            j.HasKey("CharacterId", "Name").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<ELanguage>().WithMany().HasForeignKey("Name")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1"),
+                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1"),
+                        j => {
+                            j.HasKey("CharacterId", "Name").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("character_has_languages");
 
-                            j.HasIndex(new[] { "CharacterId" }, "fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1_idx");
+                            j.HasIndex(new[]{ "CharacterId" }, "fk_CHARACTERS_has_E_LANGUAGES_CHARACTERS1_idx");
 
-                            j.HasIndex(new[] { "Name" }, "fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1_idx");
+                            j.HasIndex(new[]{ "Name" }, "fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1_idx");
 
                             j.IndexerProperty<int>("CharacterId").HasColumnName("CHARACTER_ID");
 
@@ -237,17 +224,22 @@ namespace Model.Configurations
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharactersHasPersonality",
-                        l => l.HasOne<Personality>().WithMany().HasForeignKey("PersonalitiesId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1"),
-                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1"),
-                        j =>
-                        {
-                            j.HasKey("CharacterId", "PersonalitiesId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<Personality>().WithMany().HasForeignKey("PersonalitiesId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1"),
+                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1"),
+                        j => {
+                            j.HasKey("CharacterId", "PersonalitiesId").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("characters_has_personalities");
 
-                            j.HasIndex(new[] { "CharacterId" }, "fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1_idx");
+                            j.HasIndex(new[]{ "CharacterId" }, "fk_CHARACTERS_has_PERSONALITIES_CHARACTERS1_idx");
 
-                            j.HasIndex(new[] { "PersonalitiesId" }, "fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1_idx");
+                            j.HasIndex(new[]{ "PersonalitiesId" },
+                                "fk_CHARACTERS_has_PERSONALITIES_PERSONALITIES1_idx");
 
                             j.IndexerProperty<int>("CharacterId").HasColumnName("CHARACTER_ID");
 
@@ -258,17 +250,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharacterHasSpell",
-                        l => l.HasOne<Spell>().WithMany().HasForeignKey("SpellId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_SPELLS_SPELLS1"),
-                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CHARACTERS_has_SPELLS_CHARACTERS1"),
-                        j =>
-                        {
-                            j.HasKey("CharacterId", "SpellId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<Spell>().WithMany().HasForeignKey("SpellId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_SPELLS_SPELLS1"),
+                        r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CHARACTERS_has_SPELLS_CHARACTERS1"),
+                        j => {
+                            j.HasKey("CharacterId", "SpellId").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("character_has_spells");
 
-                            j.HasIndex(new[] { "CharacterId" }, "fk_CHARACTERS_has_SPELLS_CHARACTERS1_idx");
+                            j.HasIndex(new[]{ "CharacterId" }, "fk_CHARACTERS_has_SPELLS_CHARACTERS1_idx");
 
-                            j.HasIndex(new[] { "SpellId" }, "fk_CHARACTERS_has_SPELLS_SPELLS1_idx");
+                            j.HasIndex(new[]{ "SpellId" }, "fk_CHARACTERS_has_SPELLS_SPELLS1_idx");
 
                             j.IndexerProperty<int>("CharacterId").HasColumnName("CHARACTER_ID");
 
@@ -276,11 +272,10 @@ namespace Model.Configurations
                         });
             });
 
-            modelBuilder.Entity<CharactersHasItem>(entity =>
-            {
-                entity.HasKey(e => new { e.CharacterId, e.ItemId })
+            modelBuilder.Entity<CharactersHasItem>(entity => {
+                entity.HasKey(e => new{ e.CharacterId, e.ItemId })
                     .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                 entity.ToTable("characters_has_items");
 
@@ -307,8 +302,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_CHARACTERS_has_ITEMS_ITEMS1");
             });
 
-            modelBuilder.Entity<Class>(entity =>
-            {
+            modelBuilder.Entity<Class>(entity => {
                 entity.ToTable("classes");
 
                 entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
@@ -327,17 +321,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasAbilityProficiency",
-                        l => l.HasOne<EAbilityName>().WithMany().HasForeignKey("AbilityName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1"),
-                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1"),
-                        j =>
-                        {
-                            j.HasKey("ClassId", "AbilityName").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<EAbilityName>().WithMany().HasForeignKey("AbilityName")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1"),
+                        j => {
+                            j.HasKey("ClassId", "AbilityName").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("class_has_ability_proficiencies");
 
-                            j.HasIndex(new[] { "ClassId" }, "fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1_idx");
+                            j.HasIndex(new[]{ "ClassId" }, "fk_CLASSES_has_E_ABILITY_NAMES_CLASSES1_idx");
 
-                            j.HasIndex(new[] { "AbilityName" }, "fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1_idx");
+                            j.HasIndex(new[]{ "AbilityName" }, "fk_CLASSES_has_E_ABILITY_NAMES_E_ABILITY_NAMES1_idx");
 
                             j.IndexerProperty<int>("ClassId").HasColumnName("CLASS_ID");
 
@@ -348,17 +346,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasArmorProficiency",
-                        l => l.HasOne<EArmorType>().WithMany().HasForeignKey("ArmorType").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ARMOR_TYPE_E_ARMOR_TYPE1"),
-                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_ARMOR_TYPE_CLASSES1"),
-                        j =>
-                        {
-                            j.HasKey("ClassId", "ArmorType").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<EArmorType>().WithMany().HasForeignKey("ArmorType")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_ARMOR_TYPE_E_ARMOR_TYPE1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_ARMOR_TYPE_CLASSES1"),
+                        j => {
+                            j.HasKey("ClassId", "ArmorType").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("class_has_armor_proficiencies");
 
-                            j.HasIndex(new[] { "ClassId" }, "fk_CLASSES_has_E_ARMOR_TYPE_CLASSES1_idx");
+                            j.HasIndex(new[]{ "ClassId" }, "fk_CLASSES_has_E_ARMOR_TYPE_CLASSES1_idx");
 
-                            j.HasIndex(new[] { "ArmorType" }, "fk_CLASSES_has_E_ARMOR_TYPE_E_ARMOR_TYPE1_idx");
+                            j.HasIndex(new[]{ "ArmorType" }, "fk_CLASSES_has_E_ARMOR_TYPE_E_ARMOR_TYPE1_idx");
 
                             j.IndexerProperty<int>("ClassId").HasColumnName("CLASS_ID");
 
@@ -369,17 +371,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasFeature",
-                        l => l.HasOne<Feature>().WithMany().HasForeignKey("FeatureId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_FEATURES_has_CLASSES_FEATURES1"),
-                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_FEATURES_has_CLASSES_CLASSES1"),
-                        j =>
-                        {
-                            j.HasKey("ClassId", "FeatureId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<Feature>().WithMany().HasForeignKey("FeatureId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_FEATURES_has_CLASSES_FEATURES1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_FEATURES_has_CLASSES_CLASSES1"),
+                        j => {
+                            j.HasKey("ClassId", "FeatureId").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("class_has_features");
 
-                            j.HasIndex(new[] { "ClassId" }, "fk_FEATURES_has_CLASSES_CLASSES1_idx");
+                            j.HasIndex(new[]{ "ClassId" }, "fk_FEATURES_has_CLASSES_CLASSES1_idx");
 
-                            j.HasIndex(new[] { "FeatureId" }, "fk_FEATURES_has_CLASSES_FEATURES1_idx");
+                            j.HasIndex(new[]{ "FeatureId" }, "fk_FEATURES_has_CLASSES_FEATURES1_idx");
 
                             j.IndexerProperty<int>("ClassId").HasColumnName("CLASS_ID");
 
@@ -390,17 +396,19 @@ namespace Model.Configurations
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasSpell",
-                        l => l.HasOne<Spell>().WithMany().HasForeignKey("SpellId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_SPELLS_SPELLS1"),
-                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_SPELLS_CLASSES1"),
-                        j =>
-                        {
-                            j.HasKey("ClassId", "SpellId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<Spell>().WithMany().HasForeignKey("SpellId")
+                            .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_SPELLS_SPELLS1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId")
+                            .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_SPELLS_CLASSES1"),
+                        j => {
+                            j.HasKey("ClassId", "SpellId").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("class_has_spells");
 
-                            j.HasIndex(new[] { "ClassId" }, "fk_CLASSES_has_SPELLS_CLASSES1_idx");
+                            j.HasIndex(new[]{ "ClassId" }, "fk_CLASSES_has_SPELLS_CLASSES1_idx");
 
-                            j.HasIndex(new[] { "SpellId" }, "fk_CLASSES_has_SPELLS_SPELLS1_idx");
+                            j.HasIndex(new[]{ "SpellId" }, "fk_CLASSES_has_SPELLS_SPELLS1_idx");
 
                             j.IndexerProperty<int>("ClassId").HasColumnName("CLASS_ID");
 
@@ -411,17 +419,21 @@ namespace Model.Configurations
                     .WithMany(p => p.Classes)
                     .UsingEntity<Dictionary<string, object>>(
                         "ClassHasWeaponProficiency",
-                        l => l.HasOne<EWeaponType>().WithMany().HasForeignKey("WeaponType").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_WEAPON_TYPES_E_WEAPON_TYPES1"),
-                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_CLASSES_has_E_WEAPON_TYPES_CLASSES1"),
-                        j =>
-                        {
-                            j.HasKey("ClassId", "WeaponType").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<EWeaponType>().WithMany().HasForeignKey("WeaponType")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_WEAPON_TYPES_E_WEAPON_TYPES1"),
+                        r => r.HasOne<Class>().WithMany().HasForeignKey("ClassId")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_CLASSES_has_E_WEAPON_TYPES_CLASSES1"),
+                        j => {
+                            j.HasKey("ClassId", "WeaponType").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("class_has_weapon_proficiencies");
 
-                            j.HasIndex(new[] { "ClassId" }, "fk_CLASSES_has_E_WEAPON_TYPES_CLASSES1_idx");
+                            j.HasIndex(new[]{ "ClassId" }, "fk_CLASSES_has_E_WEAPON_TYPES_CLASSES1_idx");
 
-                            j.HasIndex(new[] { "WeaponType" }, "fk_CLASSES_has_E_WEAPON_TYPES_E_WEAPON_TYPES1_idx");
+                            j.HasIndex(new[]{ "WeaponType" }, "fk_CLASSES_has_E_WEAPON_TYPES_E_WEAPON_TYPES1_idx");
 
                             j.IndexerProperty<int>("ClassId").HasColumnName("CLASS_ID");
 
@@ -429,11 +441,10 @@ namespace Model.Configurations
                         });
             });
 
-            modelBuilder.Entity<ClassHasSkillProficienciesChoice>(entity =>
-            {
-                entity.HasKey(e => new { e.ClassId, e.SkillName })
+            modelBuilder.Entity<ClassHasSkillProficienciesChoice>(entity => {
+                entity.HasKey(e => new{ e.ClassId, e.SkillName })
                     .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                    .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                 entity.ToTable("class_has_skill_proficiencies_choices");
 
@@ -462,8 +473,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_E_SKILL_NAMES1");
             });
 
-            modelBuilder.Entity<EAbilityName>(entity =>
-            {
+            modelBuilder.Entity<EAbilityName>(entity => {
                 entity.HasKey(e => e.Name)
                     .HasName("PRIMARY");
 
@@ -477,17 +487,22 @@ namespace Model.Configurations
                     .WithMany(p => p.AbilityNames)
                     .UsingEntity<Dictionary<string, object>>(
                         "AbilityHasSkill",
-                        l => l.HasOne<ESkillName>().WithMany().HasForeignKey("SkillName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1"),
-                        r => r.HasOne<EAbilityName>().WithMany().HasForeignKey("AbilityName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1"),
-                        j =>
-                        {
-                            j.HasKey("AbilityName", "SkillName").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<ESkillName>().WithMany().HasForeignKey("SkillName")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1"),
+                        r => r.HasOne<EAbilityName>().WithMany().HasForeignKey("AbilityName")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1"),
+                        j => {
+                            j.HasKey("AbilityName", "SkillName").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("ability_has_skills");
 
-                            j.HasIndex(new[] { "AbilityName" }, "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1_idx");
+                            j.HasIndex(new[]{ "AbilityName" },
+                                "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_ABILITY_NAMES1_idx");
 
-                            j.HasIndex(new[] { "SkillName" }, "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1_idx");
+                            j.HasIndex(new[]{ "SkillName" }, "fk_E_ABILITY_NAMES_has_E_SKILL_NAMES_E_SKILL_NAMES1_idx");
 
                             j.IndexerProperty<string>("AbilityName").HasMaxLength(45).HasColumnName("ABILITY_NAME");
 
@@ -495,8 +510,7 @@ namespace Model.Configurations
                         });
             });
 
-            modelBuilder.Entity<EArmorType>(entity =>
-            {
+            modelBuilder.Entity<EArmorType>(entity => {
                 entity.HasKey(e => e.Label)
                     .HasName("PRIMARY");
 
@@ -507,8 +521,7 @@ namespace Model.Configurations
                     .HasColumnName("LABEL");
             });
 
-            modelBuilder.Entity<EDamageType>(entity =>
-            {
+            modelBuilder.Entity<EDamageType>(entity => {
                 entity.HasKey(e => e.Name)
                     .HasName("PRIMARY");
 
@@ -519,8 +532,7 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<ELanguage>(entity =>
-            {
+            modelBuilder.Entity<ELanguage>(entity => {
                 entity.HasKey(e => e.Name)
                     .HasName("PRIMARY");
 
@@ -531,8 +543,7 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<ESize>(entity =>
-            {
+            modelBuilder.Entity<ESize>(entity => {
                 entity.HasKey(e => e.Label)
                     .HasName("PRIMARY");
 
@@ -543,8 +554,7 @@ namespace Model.Configurations
                     .HasColumnName("LABEL");
             });
 
-            modelBuilder.Entity<ESkillName>(entity =>
-            {
+            modelBuilder.Entity<ESkillName>(entity => {
                 entity.HasKey(e => e.Name)
                     .HasName("PRIMARY");
 
@@ -555,8 +565,7 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<EWeaponType>(entity =>
-            {
+            modelBuilder.Entity<EWeaponType>(entity => {
                 entity.HasKey(e => e.Name)
                     .HasName("PRIMARY");
 
@@ -567,8 +576,7 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<ExperienceProficencyBonu>(entity =>
-            {
+            modelBuilder.Entity<ExperienceProficencyBonu>(entity => {
                 entity.HasKey(e => e.Level)
                     .HasName("PRIMARY");
 
@@ -581,8 +589,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Xp).HasColumnName("XP");
             });
 
-            modelBuilder.Entity<Feature>(entity =>
-            {
+            modelBuilder.Entity<Feature>(entity => {
                 entity.ToTable("features");
 
                 entity.Property(e => e.FeatureId).HasColumnName("FEATURE_ID");
@@ -598,8 +605,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Level).HasColumnName("LEVEL");
             });
 
-            modelBuilder.Entity<Item>(entity =>
-            {
+            modelBuilder.Entity<Item>(entity => {
                 entity.ToTable("items");
 
                 entity.Property(e => e.ItemId).HasColumnName("ITEM_ID");
@@ -617,8 +623,7 @@ namespace Model.Configurations
                 entity.Property(e => e.Weight).HasColumnName("WEIGHT");
             });
 
-            modelBuilder.Entity<Personality>(entity =>
-            {
+            modelBuilder.Entity<Personality>(entity => {
                 entity.HasKey(e => e.PersonalitiesId)
                     .HasName("PRIMARY");
 
@@ -635,8 +640,7 @@ namespace Model.Configurations
                     .HasColumnName("NAME");
             });
 
-            modelBuilder.Entity<Race>(entity =>
-            {
+            modelBuilder.Entity<Race>(entity => {
                 entity.ToTable("races");
 
                 entity.HasIndex(e => e.Size, "fk_RACES_E_SIZE_idx");
@@ -676,17 +680,20 @@ namespace Model.Configurations
                     .WithMany(p => p.Races)
                     .UsingEntity<Dictionary<string, object>>(
                         "RacesHasELanguage",
-                        l => l.HasOne<ELanguage>().WithMany().HasForeignKey("LanguageName").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_RACES_has_E_LANGUAGES_E_LANGUAGES1"),
-                        r => r.HasOne<Race>().WithMany().HasForeignKey("RaceId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_RACES_has_E_LANGUAGES_RACES1"),
-                        j =>
-                        {
-                            j.HasKey("RaceId", "LanguageName").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<ELanguage>().WithMany().HasForeignKey("LanguageName")
+                            .OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_RACES_has_E_LANGUAGES_E_LANGUAGES1"),
+                        r => r.HasOne<Race>().WithMany().HasForeignKey("RaceId").OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_RACES_has_E_LANGUAGES_RACES1"),
+                        j => {
+                            j.HasKey("RaceId", "LanguageName").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("races_has_e_languages");
 
-                            j.HasIndex(new[] { "LanguageName" }, "fk_RACES_has_E_LANGUAGES_E_LANGUAGES1_idx");
+                            j.HasIndex(new[]{ "LanguageName" }, "fk_RACES_has_E_LANGUAGES_E_LANGUAGES1_idx");
 
-                            j.HasIndex(new[] { "RaceId" }, "fk_RACES_has_E_LANGUAGES_RACES1_idx");
+                            j.HasIndex(new[]{ "RaceId" }, "fk_RACES_has_E_LANGUAGES_RACES1_idx");
 
                             j.IndexerProperty<int>("RaceId").HasColumnName("RACE_ID");
 
@@ -694,11 +701,10 @@ namespace Model.Configurations
                         });
             });
 
-            modelBuilder.Entity<RaceHasAbilityScoreIncrease>(entity =>
-            {
-                entity.HasKey(e => new { e.RaceId, e.AbilityName, e.Increase })
+            modelBuilder.Entity<RaceHasAbilityScoreIncrease>(entity => {
+                entity.HasKey(e => new{ e.RaceId, e.AbilityName, e.Increase })
                     .HasName("PRIMARY")
-                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0, 0 });
+                    .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0, 0 });
 
                 entity.ToTable("race_has_ability_score_increases");
 
@@ -727,8 +733,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_RACES_has_E_ABILITY_NAMES_RACES1");
             });
 
-            modelBuilder.Entity<Skill>(entity =>
-            {
+            modelBuilder.Entity<Skill>(entity => {
                 entity.ToTable("skills");
 
                 entity.HasIndex(e => e.AbilityId, "fk_SKILLS_ABILITIES1_idx");
@@ -758,8 +763,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_SKILLS_E_SKILL_NAMES1");
             });
 
-            modelBuilder.Entity<Spell>(entity =>
-            {
+            modelBuilder.Entity<Spell>(entity => {
                 entity.ToTable("spells");
 
                 entity.HasIndex(e => e.DamageType, "fk_SPELLS_E_DAMAGE_TYPES1_idx");
@@ -803,8 +807,7 @@ namespace Model.Configurations
                     .HasConstraintName("fk_SPELLS_E_DAMAGE_TYPES1");
             });
 
-            modelBuilder.Entity<Trait>(entity =>
-            {
+            modelBuilder.Entity<Trait>(entity => {
                 entity.ToTable("traits");
 
                 entity.Property(e => e.TraitId).HasColumnName("TRAIT_ID");
@@ -821,17 +824,19 @@ namespace Model.Configurations
                     .WithMany(p => p.Traits)
                     .UsingEntity<Dictionary<string, object>>(
                         "RaceHasTrait",
-                        l => l.HasOne<Race>().WithMany().HasForeignKey("RaceId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_TRAITS_has_RACES_RACES1"),
-                        r => r.HasOne<Trait>().WithMany().HasForeignKey("TraitId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_TRAITS_has_RACES_TRAITS1"),
-                        j =>
-                        {
-                            j.HasKey("TraitId", "RaceId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+                        l => l.HasOne<Race>().WithMany().HasForeignKey("RaceId").OnDelete(DeleteBehavior.ClientSetNull)
+                            .HasConstraintName("fk_TRAITS_has_RACES_RACES1"),
+                        r => r.HasOne<Trait>().WithMany().HasForeignKey("TraitId")
+                            .OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("fk_TRAITS_has_RACES_TRAITS1"),
+                        j => {
+                            j.HasKey("TraitId", "RaceId").HasName("PRIMARY")
+                                .HasAnnotation("MySql:IndexPrefixLength", new[]{ 0, 0 });
 
                             j.ToTable("race_has_traits");
 
-                            j.HasIndex(new[] { "RaceId" }, "fk_TRAITS_has_RACES_RACES1_idx");
+                            j.HasIndex(new[]{ "RaceId" }, "fk_TRAITS_has_RACES_RACES1_idx");
 
-                            j.HasIndex(new[] { "TraitId" }, "fk_TRAITS_has_RACES_TRAITS1_idx");
+                            j.HasIndex(new[]{ "TraitId" }, "fk_TRAITS_has_RACES_TRAITS1_idx");
 
                             j.IndexerProperty<int>("TraitId").HasColumnName("TRAIT_ID");
 
@@ -839,23 +844,7 @@ namespace Model.Configurations
                         });
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.ToTable("users");
-
-                entity.Property(e => e.UserId).HasColumnName("USER_ID");
-
-                entity.Property(e => e.Password)
-                    .HasMaxLength(100)
-                    .HasColumnName("PASSWORD");
-
-                entity.Property(e => e.Username)
-                    .HasMaxLength(50)
-                    .HasColumnName("USERNAME");
-            });
-
-            modelBuilder.Entity<Weapon>(entity =>
-            {
+            modelBuilder.Entity<Weapon>(entity => {
                 entity.ToTable("weapons");
 
                 entity.HasIndex(e => e.DamageType, "fk_WEAPONS_E_DAMAGE_TYPES1_idx");

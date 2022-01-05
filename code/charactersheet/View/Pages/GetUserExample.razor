@@ -1,0 +1,32 @@
+@page "/getUserExample"
+@using Model.Entities
+@using Microsoft.AspNetCore.Identity
+@using Domain.Repositories.Interfaces
+@using Domain.Repositories.Implementations
+@inject IApplicationUserRepository userRepository
+@attribute [Authorize]
+
+
+<DataInitializer Data="_user" Context="u">
+    <ChildComponent>
+        <h1>
+            @u.UserName;
+        </h1>
+    </ChildComponent>
+</DataInitializer>
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+    ApplicationUser _user;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender){
+        if (firstRender){
+            var authState = await authStateTask;
+            _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
+        }
+    }
+
+}
