@@ -441,6 +441,8 @@ namespace Model.Configurations{
                         });
             });
 
+            modelBuilder.Entity<Character>().Property(k => k.CharacterId).ValueGeneratedOnAdd();
+
             modelBuilder.Entity<ClassHasSkillProficienciesChoice>(entity => {
                 entity.HasKey(e => new{ e.ClassId, e.SkillName })
                     .HasName("PRIMARY")
