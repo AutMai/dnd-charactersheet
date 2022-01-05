@@ -55,4 +55,12 @@ public static class DnDExtensions {
 
         return abilities.SingleOrDefault(a => a.Name == "STRENGTH").AbilityScore.GetAbilityModifier() + proficiencyBonus;
     }
+
+    public static Personality PersonalityTraits(this Character character) => character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits");
+    public static Personality Ideals(this Character character) => character.Personalities.SingleOrDefault(p => p.Name == "Ideals");
+    public static Personality Bonds(this Character character) => character.Personalities.SingleOrDefault(p => p.Name == "Bonds");
+    public static Personality Flaws(this Character character) => character.Personalities.SingleOrDefault(p => p.Name == "Flaws");
+
+
+    
 }

@@ -94,6 +94,10 @@ div.box {
     margin-top: 10px;
 }
 
+form.charsheet input:disabled, form.charsheet textarea:disabled {
+    background-color: white;
+}
+
 form.charsheet {
     width: 800px;
     right: 0;

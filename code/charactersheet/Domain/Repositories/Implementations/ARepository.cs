@@ -34,7 +34,7 @@ public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class{
     }
 
     public async Task UpdateAsync(TEntity entity){
-        _context.ChangeTracker.Clear();
+        //_context.ChangeTracker.Clear();
         _set.Update(entity);
         await _context.SaveChangesAsync();
     }

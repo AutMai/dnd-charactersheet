@@ -43,5 +43,4 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
        await _context.SaveChangesAsync();
        return character;
    }
-
 }
