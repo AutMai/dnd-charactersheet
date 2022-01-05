@@ -24,7 +24,6 @@ namespace Model.Configurations
         public virtual DbSet<CharactersHasItem> CharactersHasItems { get; set; } = null!;
         public virtual DbSet<Class> Classes { get; set; } = null!;
         public virtual DbSet<ClassHasSkillProficienciesChoice> ClassHasSkillProficienciesChoices { get; set; } = null!;
-        public virtual DbSet<DeathSafe> DeathSaves { get; set; } = null!;
         public virtual DbSet<EAbilityName> EAbilityNames { get; set; } = null!;
         public virtual DbSet<EArmorType> EArmorTypes { get; set; } = null!;
         public virtual DbSet<EDamageType> EDamageTypes { get; set; } = null!;
@@ -32,6 +31,7 @@ namespace Model.Configurations
         public virtual DbSet<ESize> ESizes { get; set; } = null!;
         public virtual DbSet<ESkillName> ESkillNames { get; set; } = null!;
         public virtual DbSet<EWeaponType> EWeaponTypes { get; set; } = null!;
+        public virtual DbSet<ExperienceProficencyBonu> ExperienceProficencyBonus { get; set; } = null!;
         public virtual DbSet<Feature> Features { get; set; } = null!;
         public virtual DbSet<Item> Items { get; set; } = null!;
         public virtual DbSet<Personality> Personalities { get; set; } = null!;
@@ -40,6 +40,7 @@ namespace Model.Configurations
         public virtual DbSet<Skill> Skills { get; set; } = null!;
         public virtual DbSet<Spell> Spells { get; set; } = null!;
         public virtual DbSet<Trait> Traits { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Weapon> Weapons { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -143,7 +144,11 @@ namespace Model.Configurations
 
                 entity.HasIndex(e => e.RaceId, "fk_CHARACTERS_RACES1_idx");
 
-                entity.Property(e => e.CharacterId).HasColumnName("CHARACTER_ID");
+                entity.HasIndex(e => e.UserId, "fk_CHARACTERS_USERS1_idx");
+
+                entity.Property(e => e.CharacterId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CHARACTER_ID");
 
                 entity.Property(e => e.Alignment)
                     .HasMaxLength(45)
@@ -153,11 +158,17 @@ namespace Model.Configurations
 
                 entity.Property(e => e.BackgroundId).HasColumnName("BACKGROUND_ID");
 
-                entity.Property(e => e.BronzeCoins).HasColumnName("BRONZE_COINS");
-
                 entity.Property(e => e.ClassId).HasColumnName("CLASS_ID");
 
+                entity.Property(e => e.CopperCoins).HasColumnName("COPPER_COINS");
+
                 entity.Property(e => e.CurrentHp).HasColumnName("CURRENT_HP");
+
+                entity.Property(e => e.DeathSaveFailureCount).HasColumnName("DEATH_SAVE_FAILURE_COUNT");
+
+                entity.Property(e => e.DeathSaveSuccessCount).HasColumnName("DEATH_SAVE_SUCCESS_COUNT");
+
+                entity.Property(e => e.HitDiceAmount).HasColumnName("HIT_DICE_AMOUNT");
 
                 entity.Property(e => e.Inspiration).HasColumnName("INSPIRATION");
 
@@ -169,7 +180,11 @@ namespace Model.Configurations
 
                 entity.Property(e => e.RaceId).HasColumnName("RACE_ID");
 
+                entity.Property(e => e.Speed).HasColumnName("SPEED");
+
                 entity.Property(e => e.TemporaryHp).HasColumnName("TEMPORARY_HP");
+
+                entity.Property(e => e.UserId).HasColumnName("USER_ID");
 
                 entity.Property(e => e.Xp).HasColumnName("XP");
 
@@ -190,6 +205,12 @@ namespace Model.Configurations
                     .HasForeignKey(d => d.RaceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CHARACTERS_RACES1");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Characters)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_CHARACTERS_USERS1");
 
                 entity.HasMany(d => d.Names)
                     .WithMany(p => p.Characters)
@@ -441,28 +462,6 @@ namespace Model.Configurations
                     .HasConstraintName("fk_CLASSES_has_E_SKILL_NAMES_E_SKILL_NAMES1");
             });
 
-            modelBuilder.Entity<DeathSafe>(entity =>
-            {
-                entity.HasKey(e => e.CharacterId)
-                    .HasName("PRIMARY");
-
-                entity.ToTable("death_saves");
-
-                entity.Property(e => e.CharacterId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("CHARACTER_ID");
-
-                entity.Property(e => e.Count).HasColumnName("COUNT");
-
-                entity.Property(e => e.Success).HasColumnName("SUCCESS");
-
-                entity.HasOne(d => d.Character)
-                    .WithOne(p => p.DeathSafe)
-                    .HasForeignKey<DeathSafe>(d => d.CharacterId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_DEATH_SAVES_CHARACTERS1");
-            });
-
             modelBuilder.Entity<EAbilityName>(entity =>
             {
                 entity.HasKey(e => e.Name)
@@ -566,6 +565,20 @@ namespace Model.Configurations
                 entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
+            });
+
+            modelBuilder.Entity<ExperienceProficencyBonu>(entity =>
+            {
+                entity.HasKey(e => e.Level)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("experience_proficency_bonus");
+
+                entity.Property(e => e.Level).HasColumnName("LEVEL");
+
+                entity.Property(e => e.ProficiencyBonus).HasColumnName("PROFICIENCY_BONUS");
+
+                entity.Property(e => e.Xp).HasColumnName("XP");
             });
 
             modelBuilder.Entity<Feature>(entity =>
@@ -824,6 +837,21 @@ namespace Model.Configurations
 
                             j.IndexerProperty<int>("RaceId").HasColumnName("RACE_ID");
                         });
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+
+                entity.Property(e => e.UserId).HasColumnName("USER_ID");
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(100)
+                    .HasColumnName("PASSWORD");
+
+                entity.Property(e => e.Username)
+                    .HasMaxLength(50)
+                    .HasColumnName("USERNAME");
             });
 
             modelBuilder.Entity<Weapon>(entity =>
