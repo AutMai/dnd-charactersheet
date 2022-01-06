@@ -6,9 +6,10 @@
 @inject NavigationManager _navigationManager;
 @attribute [Authorize]
 
+<h2>My Characters</h2>
+
 <DataInitializer Data="@_user">
     <ChildComponent>
-        <h2>Races</h2>
         <div class="row">
             @foreach (var character in _user.Characters){
                 <RadzenCard class="col-md-3" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/character/{character.CharacterId}"))">
