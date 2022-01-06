@@ -26,4 +26,7 @@ public class ClassRepository : ARepository<Class>, IClassRepository{
         .Include(c => c.Spells)
         .Include(c => c.WeaponTypes)
         .SingleOrDefaultAsync(c => c.Name == name))!;
+
+    public async Task<List<Class>> ReadGraphAsync() => (await _set
+        .Include(c => c.AbilityNames).ToListAsync());
 }

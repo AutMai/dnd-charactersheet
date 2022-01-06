@@ -1,28 +1,34 @@
-﻿@page "/Classes"
+﻿@page "/classes"
 @using Model.Entities
 @using Domain.Repositories.Interfaces
+@using Domain.Extensions
 @inject IClassRepository _classRepo
+@inject NavigationManager _navigationManager;
 <h3>Classes</h3>
 
 <DataInitializer Data="ClassesList">
     <ChildComponent Context="classes">
-        <table>
-            @foreach (var c in classes){
-                <tr>
-                    <td>
-                        <a href="class/@c.Name">@c.Name</a>
-                    </td>
-                </tr>
+        <div class="row w-50 m-auto">
+            @foreach (var c in classes) {
+                <RadzenCard class="col-md-4 m-2" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/classes/{c.Name}"))">
+                    <h3 class="m-0">@c.Name</h3><hr/>
+                    <div>
+                        <b>HitDie: </b> @(c.HitDie)
+                    </div>
+                    <div>
+                        <b>Saves: </b> @String.Join(" & ", c.AbilityNames.Select(a => a.Name.FirstCharToUpper()))
+                    </div>
+                </RadzenCard>
             }
-        </table>
+        </div>
     </ChildComponent>
 </DataInitializer>
 
 @code {
     private List<Class>? ClassesList { get; set; }
 
-    protected override async Task OnInitializedAsync(){
-        ClassesList = await _classRepo.ReadAsync();
+    protected override async Task OnInitializedAsync() {
+        ClassesList = await _classRepo.ReadGraphAsync();
     }
 
 }

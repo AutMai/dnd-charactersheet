@@ -27,6 +27,8 @@ public class RaceRepository : ARepository<Race>, IRaceRepository{
         .ThenInclude(sr => sr.Traits)
         .SingleOrDefaultAsync(r => r.Name == name))!;
 
+    public async Task<List<Race>> ReadGraphAsync() => await _set.Include(r => r.RaceHasAbilityScoreIncreases).ToListAsync();
+
     public async Task<List<Race>> ReadParentRaces() =>
         (await ReadAsync()).Where(k => k.ParentRace is null).ToList();
 }

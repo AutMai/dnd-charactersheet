@@ -1,32 +1,36 @@
 ﻿@page "/races"
 @using Model.Entities
 @using Domain.Repositories.Interfaces
+@using Domain.Extensions
 @inject IRaceRepository _raceRepository;
+@inject NavigationManager _navigationManager;
 
 <h3>Races</h3>
 
-<div>
-    <DataInitializer Data="@RaceList">
-        <ChildComponent>
-            <table>
-                @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
-                    <tr>
-                        <td>
-                            <a href="race/@race.Name">@race.Name</a>
-                        </td>
-                    </tr>
-                }
-            </table>
-        </ChildComponent>
-    </DataInitializer>
-</div>
+<DataInitializer Data="@RaceList">
+    <ChildComponent>
+        <div class="row w-50 m-auto">
+            @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
+                <RadzenCard class="col-md-4 m-2" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/races/{race.Name}"))">
+                    <h3 class="m-0">@race.Name</h3><hr/>
+                    <div>
+                        <b>Ability Score Increases: </b><br/> @String.Join(", ", race.RaceHasAbilityScoreIncreases.Select(rha => ($"+{rha.Increase} {rha.AbilityName.FirstCharToUpper()}")))
+                    </div>
+                    <div>
+                        <b>Speed: </b> @(race.Speed)
+                    </div>
+                </RadzenCard>
+            }
+        </div>
+    </ChildComponent>
+</DataInitializer>
 
 
 @code {
     public List<Race> RaceList { get; set; }
 
     protected override async Task OnParametersSetAsync() {
-        RaceList = await _raceRepository.ReadAsync();
+        RaceList = await _raceRepository.ReadGraphAsync();
     }
 
 }
