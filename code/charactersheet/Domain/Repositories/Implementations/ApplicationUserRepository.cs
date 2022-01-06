@@ -13,4 +13,8 @@ public class ApplicationUserRepository : ARepository<ApplicationUser>, IApplicat
     public async Task<ApplicationUser?> ReadGraphAsync(string name){
         return await _set.IncludeAll().SingleOrDefaultAsync(k => k.UserName == name);
     }
+
+    public Task<ApplicationUser?> ReadAsync(string name){
+        return _set.Include(a => a.Characters).SingleOrDefaultAsync(k => k.UserName == name);
+    }
 }

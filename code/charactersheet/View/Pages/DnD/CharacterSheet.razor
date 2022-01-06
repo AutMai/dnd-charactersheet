@@ -4,9 +4,20 @@
 @using Domain.Extensions
 @using System.Text
 @using System.Linq
+@attribute [Authorize]
 @inject ICharacterRepository _characterRepository
+@inject NavigationManager _navigationManager
 
-<h3>CharacterSheet</h3>
+@if (Character is null){
+    <div class="center">
+        <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+}
 
 <DataInitializer Data="Character">
 <ChildComponent>
@@ -14,7 +25,7 @@
 <header>
     <section class="charname">
         <label for="charname">Character Name</label>
-        <input name="charname" value="@Character.Name" @onchange="args => {Character.Name = args.Value.ToString(); UpdateCharacter();}"/>
+        <input name="charname" value="@Character.Name" @onchange="args =>{Character.Name = args.Value.ToString(); UpdateCharacter();}"/>
     </section>
     <section class="misc">
         <ul>
@@ -36,11 +47,11 @@
             </li>
             <li>
                 <label for="alignment">Alignment</label>
-                <input name="alignment" value="@Character.Alignment" @onchange="args => {Character.Alignment = args.Value.ToString(); UpdateCharacter();}"/>
+                <input name="alignment" value="@Character.Alignment" @onchange="args =>{Character.Alignment = args.Value.ToString(); UpdateCharacter();}"/>
             </li>
             <li>
                 <label for="experiencepoints">Experience Points</label>
-                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="args => {Character.Xp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="args =>{Character.Xp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
             </li>
         </ul>
     </section>
@@ -51,14 +62,14 @@
     <section class="attributes">
         <div class="scores">
             <ul>
-                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
+                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
                     <li>
                         <div class="score">
                             <label for="@a.Name">@a.Name</label>
                             <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
                         </div>
                         <div class="modifier">
-                            <input value="@a.AbilityScore" maxlength="2" @onchange="args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                            <input value="@a.AbilityScore" maxlength="2" @onchange="args =>{Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                         </div>
                     </li>
                 }
@@ -79,7 +90,7 @@
             </div>
             <div class="saves list-section box">
                 <ul>
-                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
+                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
                             <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text" disabled/>
@@ -93,8 +104,8 @@
             </div>
             <div class="skills list-section box">
                 <ul>
-                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
-                        foreach (var skill in ability.Skills) {
+                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+                        foreach (var skill in ability.Skills){
                             <li>
                                 <label for="@skill.Name">
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
@@ -127,7 +138,7 @@
         <div class="armorclass">
             <div>
                 <label for="ac">Armor Class</label>
-                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="args => {Character.ArmorClass = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="args =>{Character.ArmorClass = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
             </div>
         </div>
         <div class="initiative">
@@ -146,11 +157,11 @@
             <div class="regular">
                 <div class="max">
                     <label for="maxhp">Hit Point Maximum</label>
-                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="args => {Character.MaxHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="args =>{Character.MaxHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                 </div>
                 <div class="current">
                     <label for="currenthp">Current Hit Points</label>
-                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="args => {Character.CurrentHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="args =>{Character.CurrentHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                 </div>
             </div>
             <div class="temporary">
@@ -208,8 +219,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var chi in Character.CharactersHasItems) {
-                    if (chi.Item.Weapon is not null) {
+                @foreach (var chi in Character.CharactersHasItems){
+                    if (chi.Item.Weapon is not null){
                         <tr>
                             <td>
                                 <input name="atkname" type="text" value="@chi.Item.Name"/>
@@ -254,7 +265,7 @@
             @{
                 string equipment = "";
             }
-            @foreach (var item in Character.CharactersHasItems) {
+            @foreach (var item in Character.CharactersHasItems){
                 equipment += (item.Amount + "x " + item.Item.Name + ", ");
             }
             @{
@@ -267,25 +278,25 @@
     <section class="flavor">
         <div class="personality">
             <label for="personality">Personality Traits</label>
-            <textarea name="personality" @onchange="@(args => {Character.PersonalityTraits().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="personality" @onchange="@(args =>{Character.PersonalityTraits().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.PersonalityTraits().Description
             </textarea>
         </div>
         <div class="ideals">
             <label for="ideals">Ideals</label>
-            <textarea name="ideals" @onchange="@(args => {Character.Ideals().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="ideals" @onchange="@(args =>{Character.Ideals().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Ideals().Description
             </textarea>
         </div>
         <div class="bonds">
             <label for="bonds">Bonds</label>
-            <textarea name="bonds" @onchange="@(args => {Character.Bonds().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="bonds" @onchange="@(args =>{Character.Bonds().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Bonds().Description
             </textarea>
         </div>
         <div class="flaws">
             <label for="flaws">Flaws</label>
-            <textarea name="flaws" @onchange="@(args => {Character.Flaws().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="flaws" @onchange="@(args =>{Character.Flaws().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Flaws().Description
             </textarea>
         </div>
@@ -296,11 +307,11 @@
             @{
                 string features = "";
             }
-            @foreach (var trait in Character.Race.Traits) {
+            @foreach (var trait in Character.Race.Traits){
                 features += $"{trait.Label}\n";
                 features += $"{trait.Description}\n\n";
             }
-            @foreach (var feature in Character.Class.Features) {
+            @foreach (var feature in Character.Class.Features){
                 features += $"{feature.Label}\n";
                 features += $"{feature.Description}\n\n";
             }
@@ -325,16 +336,29 @@
     Dictionary<string, bool> SavingThrowProficiencies = new();
     Dictionary<string, bool> SkillProficiencies = new();
 
-    protected override async Task OnParametersSetAsync() {
+    protected override async Task OnParametersSetAsync(){
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
 
-        foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
+        if (Character is null){
+            return;
+        }
+
+        var authState = await authStateTask;
+        if (Character.ApplicationUser.UserName != authState.User.Identity.Name){
+            _navigationManager.NavigateTo("/");
+        }
+
+        foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
             SavingThrowProficiencies[savingThrow.Name] = (savingThrow.Proficient == 1);
-            foreach (var skill in savingThrow.Skills) {
+            foreach (var skill in savingThrow.Skills){
                 SkillProficiencies[skill.Name] = (skill.Proficient == 1);
             }
         }
     }
-    
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+
     private void UpdateCharacter() => _characterRepository.UpdateAsync(Character);
 }

@@ -2,11 +2,12 @@
 @using Domain.Repositories.Interfaces
 @using Model.Entities
 @inject ICharacterRepository _characterRepository; 
+@attribute [Authorize]
 <h3>Characters</h3>
 
 <DataInitializer Data="CharacterList">
     <ChildComponent>
-        @foreach (var character in CharacterList) {
+        @foreach (var character in CharacterList){
             <a href="character/@character.CharacterId">@character.Name</a>
         }
     </ChildComponent>
@@ -16,7 +17,8 @@
 @code {
     List<Character> CharacterList { get; set; }
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync(){
         CharacterList = await _characterRepository.ReadAsync();
     }
+
 }
