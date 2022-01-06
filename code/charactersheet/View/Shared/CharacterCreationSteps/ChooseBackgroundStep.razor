@@ -31,7 +31,7 @@
         @if (Character.Background is not null) {
             <div class="row">
                 <div class="col-md-3">
-                    <RadzenCard>
+                    <RadzenCard class="d-flex flex-row">
                         <RadzenSelectBar @bind-Value=@Alignment1 TValue="string">
                             <Items>
                                 <RadzenSelectBarItem Text="Lawful" Value="@("Lawful")"/>
@@ -110,6 +110,7 @@
     }
 
     private async Task ChooseBackground() {
+        CreateCharacter.StepIndex++;
         Character.Alignment = Alignment1 + " " + Alignment2;
         await CharacterChanged.InvokeAsync(Character);
     }

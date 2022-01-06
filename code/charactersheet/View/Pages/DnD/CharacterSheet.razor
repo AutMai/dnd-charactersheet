@@ -82,7 +82,7 @@
                     @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
-                            <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text"/>
+                            <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text" disabled/>
                             <input name="@savingThrow.Name-prof" type="checkbox" @bind="SavingThrowProficiencies[savingThrow.Name]"/>
                         </li>
                     }

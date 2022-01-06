@@ -45,7 +45,8 @@
     IEnumerable<string> SelectedSkillProficiencies { get; set; } = new List<string>();
 
 
-    protected override async Task OnInitializedAsync(){
+    protected override async Task OnInitializedAsync() {
+        StepIndex = 0;
         StaticAbilities = (await _abilityRepository.ReadGraphAsync()).OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an)).ToList();
     }
 

@@ -16,11 +16,15 @@
 }
 
 .rz-selectbutton .rz-button {
-    width: 33%;
+    width: 100%;
     text-align: center;
 }
 
 .skillSelect .rz-button{
     padding: 0px;
     width: 50%;
+}
+
+.rz-selectbutton .rz-button {
+    display: block !important;
 }
