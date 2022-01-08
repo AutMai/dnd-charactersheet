@@ -633,6 +633,7 @@ form.charsheet main section.combat > div.deathsaves > div div.bubbles input[type
     height: 10px;
     border: 1px solid black;
     border-radius: 10px;
+    margin-right: 3px;
 }
 
 form.charsheet main section.combat > div.deathsaves > div div.bubbles input[type="checkbox"]:checked {

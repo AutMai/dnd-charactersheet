@@ -33,7 +33,7 @@
             <li>
                 <label for="classlevel">Class & Level</label>
                 @if (ExperienceProficencyBonusList is not null) {
-                    <input name="classlevel" value="@Character.Class.Name @GetLevelAndProfBonus().Level" disabled/>
+                    <input name="classlevel" value="@Character.Class.Name @Level" disabled/>
                 }
             </li>
             <li>
@@ -90,7 +90,7 @@
                     <label for="proficiencybonus">Proficiency Bonus</label>
                 </div>
                 @if (ExperienceProficencyBonusList is not null) {
-                    <input name="proficiencybonus" value="+ @GetLevelAndProfBonus().ProficiencyBonus" disabled/>
+                    <input name="proficiencybonus" value="+ @ProficiencyBonus" disabled/>
                 }
             </div>
             <div class="saves list-section box">
@@ -98,8 +98,8 @@
                     @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
-                            <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text" disabled/>
-                            <input name="@savingThrow.Name-prof" type="checkbox" @bind="SavingThrowProficiencies[savingThrow.Name]"/>
+                            <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
+                            <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(args => { savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); UpdateCharacter(); })"/>
                         </li>
                     }
                 </ul>
@@ -115,8 +115,8 @@
                                 <label for="@skill.Name">
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
                                 </label>
-                                <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text" disabled/>
-                                <input name="@skill.Name-prof" type="checkbox" @bind="SkillProficiencies[skill.Name]"/>
+                                <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
+                                <input name="@skill.Name-prof" type="checkbox" checked="@(skill.Proficient == 1)" @onchange="@(args => { skill.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); UpdateCharacter(); })"/>
                             </li>
                         }
                     }
@@ -131,7 +131,7 @@
         <div class="label-container">
             <label for="passiveperception">Passive Wisdom (Perception)</label>
         </div>
-        <input name="passiveperception" value="@(10 + Character.Abilities.SingleOrDefault(a => a.Name == "WISDOM").Skills.SingleOrDefault(s => s.Name == "PERCEPTION").ModifierWithPossibleProficiencyBonus(2))" disabled/>
+        <input name="passiveperception" value="@(10 + Character.Abilities.SingleOrDefault(a => a.Name == "WISDOM").Skills.SingleOrDefault(s => s.Name == "PERCEPTION").ModifierWithPossibleProficiencyBonus(ProficiencyBonus))" disabled/>
     </div>
     <div class="otherprofs box textblock">
         <label for="otherprofs">Other Proficiencies and Languages</label>
@@ -178,7 +178,7 @@
             <div>
                 <div class="total">
                     <label for="totalhd">Total</label>
-                    <input name="totalhd" value="@($"{GetLevelAndProfBonus().Level}d{(Character.Class.HitDie)}")" type="text"/>
+                    <input name="totalhd" value="@($"{Level}d{(Character.Class.HitDie)}")" type="text"/>
                 </div>
                 <div class="remaining">
                     <label for="remaininghd">Hit Dice</label>
@@ -195,17 +195,19 @@
                     <div class="deathsuccesses">
                         <label>Successes</label>
                         <div class="bubbles">
-                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
-                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
-                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            @for (int i = 1; i <= 3; i++) {
+                                int x = i;
+                                <input name="deathsuccess" type="checkbox" @onchange="@(args => { Character.DeathSaveSuccessCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; UpdateCharacter(); })"/>
+                            }
                         </div>
                     </div>
                     <div class="deathfails">
                         <label>Failures</label>
                         <div class="bubbles">
-                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
-                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
-                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            @for (int i = 1; i <= 3; i++) {
+                                int x = i;
+                                <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; UpdateCharacter(); })" checked="@(Character.DeathSaveFailureCount >= x)"/>
+                            }
                         </div>
                     </div>
                 </div>
@@ -339,15 +341,9 @@
 
     private Character? Character { get; set; }
 
-    Dictionary<string, bool> SavingThrowProficiencies = new();
-    Dictionary<string, bool> SkillProficiencies = new();
-
     public List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
 
     public Dictionary<string, int> Coins { get; set; }
-
-    bool[] DeathSuccesses = new bool[3];
-    bool[] DeathFailures = new bool[3];
 
     protected override async Task OnInitializedAsync() {
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
@@ -357,36 +353,22 @@
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
 
         if (Character is null) return;
-
-
+        
         var authState = await authStateTask;
         if (Character.ApplicationUser.UserName != authState.User.Identity.Name) {
             _navigationManager.NavigateTo("/");
         }
 
         Coins = Character.CopperCoins.SplitCopperCoins();
-
-        foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
-            SavingThrowProficiencies[savingThrow.Name] = (savingThrow.Proficient == 1);
-            foreach (var skill in savingThrow.Skills) {
-                SkillProficiencies[skill.Name] = (skill.Proficient == 1);
-            }
-        }
-
-        for (int i = 0; i < Character.DeathSaveFailureCount; i++) {
-            DeathFailures[i] = true;
-        }
-        for (int i = 0; i < Character.DeathSaveSuccessCount; i++) {
-            DeathSuccesses[i] = true;
-        }
     }
 
     private void UpdateCharacterRemainingHitDice(int newValue) {
-        Character.HitDiceAmount = newValue > GetLevelAndProfBonus().Level ? GetLevelAndProfBonus().Level : newValue;
+        Character.HitDiceAmount = newValue > Level ? ProficiencyBonus : newValue;
         UpdateCharacter();
     }
 
-    private ExperienceProficencyBonu GetLevelAndProfBonus() => ExperienceProficencyBonusList.Last(e => Character.Xp >= e.Xp);
+    private int Level => ExperienceProficencyBonusList.Last(e => Character.Xp >= e.Xp).Level;
+    private int ProficiencyBonus => ExperienceProficencyBonusList.Last(e => Character.Xp >= e.Xp).Level;
 
     [CascadingParameter]
     private Task<AuthenticationState> authStateTask { get; set; }

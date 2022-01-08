@@ -28,7 +28,7 @@ public static class DnDExtensions {
     public static int ModifierWithPossibleProficiencyBonus(this Ability ability, int proficiencyBonus) {
         var abilityModifier = ability.AbilityScore.GetAbilityModifier();
         if (ability.Proficient == 1)
-            return abilityModifier + 2; // + proficiency bonus
+            return abilityModifier + proficiencyBonus; // + proficiency bonus
 
         return abilityModifier;
     }
@@ -36,7 +36,7 @@ public static class DnDExtensions {
     public static int ModifierWithPossibleProficiencyBonus(this Skill skill, int proficiencyBonus) {
         var abilityModifier = skill.Ability.AbilityScore.GetAbilityModifier();
         if (skill.Proficient == 1)
-            return abilityModifier + 2; // + proficiency bonus
+            return abilityModifier + proficiencyBonus; // + proficiency bonus
 
         return abilityModifier;
     }
