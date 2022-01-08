@@ -19,6 +19,11 @@
                     <div>
                         <b>Speed: </b> @(race.Speed)
                     </div>
+                    @if (race.SubRaces.Count > 0) {
+                        <div>
+                            <b>Subraces: </b> @string.Join(", ", race.SubRaces.Select(sr =>sr.Name))
+                        </div>
+                    }
                 </RadzenCard>
             }
         </div>
