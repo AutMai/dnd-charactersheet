@@ -43,9 +43,9 @@
 @code {
 
     [Parameter]
-    public Class? CharacterClass { get; set; }
+    public Character? Character { get; set; }
     [Parameter]
-    public EventCallback<Class> CharacterClassChanged { get; set; }
+    public EventCallback<Character> CharacterChanged { get; set; }
     
     [Parameter]
     public IEnumerable<string> SelectedSkillProficiencies { get; set; }
@@ -66,11 +66,12 @@
     }
 
     private async Task ChooseClass() {
-        CharacterClass = TempClass;
-        if (CharacterClass.Spells.Count > 0) CreateCharacter.StepIndex++;
+        Character.Spells.Clear();
+        Character.Class = TempClass;
+        if (Character.Class.Spells.Count > 0) CreateCharacter.StepIndex++;
         else CreateCharacter.StepIndex += 2;
 
-        await CharacterClassChanged.InvokeAsync(TempClass);
+        await CharacterChanged.InvokeAsync(Character);
         await SelectedSkillProficienciesChanged.InvokeAsync(SelectedSkillProficiencies);
     }
 

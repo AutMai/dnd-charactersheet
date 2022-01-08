@@ -14,7 +14,7 @@
         </RadzenStepsItem>
 
         <RadzenStepsItem Text="@(Character.Class is null ? "Class" : "Class: " + Character.Class.Name)" Disabled="@(Character.Race is null)">
-            <ChooseClassStep @bind-CharacterClass="Character.Class" @bind-SelectedSkillProficiencies="SelectedSkillProficiencies"></ChooseClassStep>
+            <ChooseClassStep @bind-Character="Character" @bind-SelectedSkillProficiencies="SelectedSkillProficiencies"></ChooseClassStep>
         </RadzenStepsItem>
 
         <RadzenStepsItem Text="@(Character.Spells.Count == 0 ? "Spells" : "Spells: " + Character.Spells.Count)" Disabled="@(Character.Class is null || Character.Class.Spells.Count < 1)">
