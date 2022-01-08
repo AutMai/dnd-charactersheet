@@ -1,16 +1,11 @@
 using Domain.Repositories.Implementations;
 using Domain.Repositories.Interfaces;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
-using Radzen;
 using View.Data;
-using View.Pages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +15,13 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 builder.Services.AddDbContext<CharacterSheetDbContext>(
-    options => options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 27))
-    )
+    options => {
+        options.UseMySql(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            new MySqlServerVersion(new Version(8, 0, 27))
+        );
+        options.EnableSensitiveDataLogging();
+    }
 );
 builder.Services.AddTransient<CharacterSheetDbContext>();
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
@@ -33,6 +31,7 @@ builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
 builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
+builder.Services.AddScoped<IRepository<ExperienceProficencyBonu>, ExperienceProficiencyBonusRepository>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => {

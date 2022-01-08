@@ -65,6 +65,7 @@
 
     private async Task InsertCharacter(){
         Character.ArmorClass = 10;
+        Character.HitDiceAmount = 1;
         Character.UserId = _user.Id;
         var characterId = (await _characterRepository.CreateAsync(Character)).CharacterId;
         _navigationManager.NavigateTo($"/character/{characterId}");

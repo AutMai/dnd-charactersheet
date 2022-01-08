@@ -6,9 +6,10 @@
 @using System.Linq
 @attribute [Authorize]
 @inject ICharacterRepository _characterRepository
+@inject IRepository<ExperienceProficencyBonu> _experienceProfBonusRepository;
 @inject NavigationManager _navigationManager
 
-@if (Character is null){
+@if (Character is null) {
     <div class="center">
         <div class="lds-ring">
             <div></div>
@@ -25,13 +26,15 @@
 <header>
     <section class="charname">
         <label for="charname">Character Name</label>
-        <input name="charname" value="@Character.Name" @onchange="args =>{Character.Name = args.Value.ToString(); UpdateCharacter();}"/>
+        <input name="charname" value="@Character.Name" @onchange="args => {Character.Name = args.Value.ToString(); UpdateCharacter();}"/>
     </section>
     <section class="misc">
         <ul>
             <li>
                 <label for="classlevel">Class & Level</label>
-                <input name="classlevel" value="@Character.Class.Name 2" disabled/>
+                @if (ExperienceProficencyBonusList is not null) {
+                    <input name="classlevel" value="@Character.Class.Name @GetLevelAndProfBonus().Level" disabled/>
+                }
             </li>
             <li>
                 <label for="background">Background</label>
@@ -47,11 +50,11 @@
             </li>
             <li>
                 <label for="alignment">Alignment</label>
-                <input name="alignment" value="@Character.Alignment" @onchange="args =>{Character.Alignment = args.Value.ToString(); UpdateCharacter();}"/>
+                <input name="alignment" value="@Character.Alignment" @onchange="args => {Character.Alignment = args.Value.ToString(); UpdateCharacter();}"/>
             </li>
             <li>
                 <label for="experiencepoints">Experience Points</label>
-                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="args =>{Character.Xp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="args => {Character.Xp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
             </li>
         </ul>
     </section>
@@ -62,14 +65,14 @@
     <section class="attributes">
         <div class="scores">
             <ul>
-                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                     <li>
                         <div class="score">
                             <label for="@a.Name">@a.Name</label>
                             <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
                         </div>
                         <div class="modifier">
-                            <input value="@a.AbilityScore" maxlength="2" @onchange="args =>{Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                            <input value="@a.AbilityScore" maxlength="2" @onchange="args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                         </div>
                     </li>
                 }
@@ -86,11 +89,13 @@
                 <div class="label-container">
                     <label for="proficiencybonus">Proficiency Bonus</label>
                 </div>
-                <input name="proficiencybonus" value="+2" disabled/>
+                @if (ExperienceProficencyBonusList is not null) {
+                    <input name="proficiencybonus" value="+ @GetLevelAndProfBonus().ProficiencyBonus" disabled/>
+                }
             </div>
             <div class="saves list-section box">
                 <ul>
-                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
                             <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(2).AddSign()" type="text" disabled/>
@@ -104,8 +109,8 @@
             </div>
             <div class="skills list-section box">
                 <ul>
-                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
-                        foreach (var skill in ability.Skills){
+                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
+                        foreach (var skill in ability.Skills) {
                             <li>
                                 <label for="@skill.Name">
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
@@ -138,7 +143,7 @@
         <div class="armorclass">
             <div>
                 <label for="ac">Armor Class</label>
-                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="args =>{Character.ArmorClass = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="args => {Character.ArmorClass = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
             </div>
         </div>
         <div class="initiative">
@@ -157,27 +162,27 @@
             <div class="regular">
                 <div class="max">
                     <label for="maxhp">Hit Point Maximum</label>
-                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="args =>{Character.MaxHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="args => {Character.MaxHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                 </div>
                 <div class="current">
                     <label for="currenthp">Current Hit Points</label>
-                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="args =>{Character.CurrentHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="args => {Character.CurrentHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
                 </div>
             </div>
             <div class="temporary">
                 <label for="temphp">Temporary Hit Points</label>
-                <input name="temphp" type="text" value="@Character.TemporaryHp"/>
+                <input name="temphp" type="text" value="@Character.TemporaryHp" maxlength="9" @onchange="args => {Character.TemporaryHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
             </div>
         </div>
         <div class="hitdice">
             <div>
                 <div class="total">
                     <label for="totalhd">Total</label>
-                    <input name="totalhd" value="d@(Character.Class.HitDie)" type="text"/>
+                    <input name="totalhd" value="@($"{GetLevelAndProfBonus().Level}d{(Character.Class.HitDie)}")" type="text"/>
                 </div>
                 <div class="remaining">
                     <label for="remaininghd">Hit Dice</label>
-                    <input name="remaininghd" type="text" value="d@(Character.Class.HitDie)"/>
+                    <input name="remaininghd" type="text" value="@(Character.HitDiceAmount)" @onchange="args => UpdateCharacterRemainingHitDice(Convert.ToInt32(args.Value))"/>
                 </div>
             </div>
         </div>
@@ -190,17 +195,17 @@
                     <div class="deathsuccesses">
                         <label>Successes</label>
                         <div class="bubbles">
-                            <input name="deathsuccess<%= i %>" type="checkbox"/>
-                            <input name="deathsuccess<%= i %>" type="checkbox"/>
-                            <input name="deathsuccess<%= i %>" type="checkbox"/>
+                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            <input name="deathsuccess" type="checkbox"  @onchange="@(args => { Character.DeathSaveSuccessCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
                         </div>
                     </div>
                     <div class="deathfails">
                         <label>Failures</label>
                         <div class="bubbles">
-                            <input name="deathfail<%= i %>" type="checkbox"/>
-                            <input name="deathfail<%= i %>" type="checkbox"/>
-                            <input name="deathfail<%= i %>" type="checkbox"/>
+                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
+                            <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount += (Convert.ToBoolean(args.Value)) ? 1 : -1; UpdateCharacter(); })"/>
                         </div>
                     </div>
                 </div>
@@ -219,8 +224,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var chi in Character.CharactersHasItems){
-                    if (chi.Item.Weapon is not null){
+                @foreach (var chi in Character.CharactersHasItems) {
+                    if (chi.Item.Weapon is not null) {
                         <tr>
                             <td>
                                 <input name="atkname" type="text" value="@chi.Item.Name"/>
@@ -255,17 +260,18 @@
             <label>Equipment</label>
             <div class="money">
                 <ul>
-
-                    <li>
-                        <label for="asdf">asdf</label>
-                        <input name="<%= type %>"/>
-                    </li>
+                    @foreach (var coin in Coins) {
+                        <li>
+                            <label for="coin">@coin.Key</label>
+                            <input name="<%= type %>" value="@coin.Value" @onchange="args => {Coins[coin.Key] = Convert.ToInt32(args.Value); Character.CopperCoins = Coins.MergeToCopperCoins(); UpdateCharacter();}"/>
+                        </li>
+                    }
                 </ul>
             </div>
             @{
                 string equipment = "";
             }
-            @foreach (var item in Character.CharactersHasItems){
+            @foreach (var item in Character.CharactersHasItems) {
                 equipment += (item.Amount + "x " + item.Item.Name + ", ");
             }
             @{
@@ -278,25 +284,25 @@
     <section class="flavor">
         <div class="personality">
             <label for="personality">Personality Traits</label>
-            <textarea name="personality" @onchange="@(args =>{Character.PersonalityTraits().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="personality" @onchange="@(args => {Character.PersonalityTraits().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.PersonalityTraits().Description
             </textarea>
         </div>
         <div class="ideals">
             <label for="ideals">Ideals</label>
-            <textarea name="ideals" @onchange="@(args =>{Character.Ideals().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="ideals" @onchange="@(args => {Character.Ideals().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Ideals().Description
             </textarea>
         </div>
         <div class="bonds">
             <label for="bonds">Bonds</label>
-            <textarea name="bonds" @onchange="@(args =>{Character.Bonds().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="bonds" @onchange="@(args => {Character.Bonds().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Bonds().Description
             </textarea>
         </div>
         <div class="flaws">
             <label for="flaws">Flaws</label>
-            <textarea name="flaws" @onchange="@(args =>{Character.Flaws().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="flaws" @onchange="@(args => {Character.Flaws().Description = args.Value.ToString(); UpdateCharacter();})">
                 @Character.Flaws().Description
             </textarea>
         </div>
@@ -307,11 +313,11 @@
             @{
                 string features = "";
             }
-            @foreach (var trait in Character.Race.Traits){
+            @foreach (var trait in Character.Race.Traits) {
                 features += $"{trait.Label}\n";
                 features += $"{trait.Description}\n\n";
             }
-            @foreach (var feature in Character.Class.Features){
+            @foreach (var feature in Character.Class.Features) {
                 features += $"{feature.Label}\n";
                 features += $"{feature.Description}\n\n";
             }
@@ -336,25 +342,51 @@
     Dictionary<string, bool> SavingThrowProficiencies = new();
     Dictionary<string, bool> SkillProficiencies = new();
 
-    protected override async Task OnParametersSetAsync(){
+    public List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
+
+    public Dictionary<string, int> Coins { get; set; }
+
+    bool[] DeathSuccesses = new bool[3];
+    bool[] DeathFailures = new bool[3];
+
+    protected override async Task OnInitializedAsync() {
+        ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync() {
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
 
-        if (Character is null){
-            return;
-        }
+        if (Character is null) return;
+
 
         var authState = await authStateTask;
-        if (Character.ApplicationUser.UserName != authState.User.Identity.Name){
+        if (Character.ApplicationUser.UserName != authState.User.Identity.Name) {
             _navigationManager.NavigateTo("/");
         }
 
-        foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+        Coins = Character.CopperCoins.SplitCopperCoins();
+
+        foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
             SavingThrowProficiencies[savingThrow.Name] = (savingThrow.Proficient == 1);
-            foreach (var skill in savingThrow.Skills){
+            foreach (var skill in savingThrow.Skills) {
                 SkillProficiencies[skill.Name] = (skill.Proficient == 1);
             }
         }
+
+        for (int i = 0; i < Character.DeathSaveFailureCount; i++) {
+            DeathFailures[i] = true;
+        }
+        for (int i = 0; i < Character.DeathSaveSuccessCount; i++) {
+            DeathSuccesses[i] = true;
+        }
     }
+
+    private void UpdateCharacterRemainingHitDice(int newValue) {
+        Character.HitDiceAmount = newValue > GetLevelAndProfBonus().Level ? GetLevelAndProfBonus().Level : newValue;
+        UpdateCharacter();
+    }
+
+    private ExperienceProficencyBonu GetLevelAndProfBonus() => ExperienceProficencyBonusList.Last(e => Character.Xp >= e.Xp);
 
     [CascadingParameter]
     private Task<AuthenticationState> authStateTask { get; set; }

@@ -36,6 +36,7 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
        .SingleOrDefaultAsync(c => c.CharacterId == id))!;
    
    public new async Task<Character> CreateAsync(Character character) {
+       _context.ChangeTracker.Clear();
        _context.Attach(character.Background);
        _context.Attach(character.Race);
        _context.Attach(character.Class);
