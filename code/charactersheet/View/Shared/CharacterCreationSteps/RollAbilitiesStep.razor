@@ -1,21 +1,28 @@
 ﻿@using Domain.Extensions
 @using Domain.Repositories.Interfaces
 @using Model.Entities
-
-@foreach (var abilityName in CreateCharacter.StaticAbilities.Select(a => a.Name)) {
-    <div class="row">
+<div class="row">
+    @foreach (var abilityName in DnDExtensions.AbilitiesSorted) {
         <RadzenCard class="col-md-2">
-            <h1 class="m-0 text-center">@abilityName</h1>
+            <h1 class="m-0 text-center">@abilityName.FirstCharToUpper()</h1>
             <RadzenButton Text="Roll" Click=@(() => RollAbilityScore(abilityName)) ButtonStyle="ButtonStyle.Success"/>
         </RadzenCard>
-
-        @if (_abilityRolls.ContainsKey(abilityName)) {
+    }
+</div>
+<div class="row">
+    @foreach (var abilityName in DnDExtensions.AbilitiesSorted) {
+        if (_abilityRolls.ContainsKey(abilityName)) {
             <RadzenCard class="col-md-2">
                 <h1 class="text-center">@_abilityRolls[abilityName]</h1>
             </RadzenCard>
         }
-    </div>
-}
+        else {
+            <RadzenCard class="col-md-2">
+                <h1 class="text-center">--</h1>
+            </RadzenCard>
+        }
+    }
+</div>
 <div class="row">
     <RadzenCard>
         <RadzenButton Text="Confirm Abilities" Click=@(ConfirmAbilities) ButtonStyle="ButtonStyle.Success"/>
@@ -43,10 +50,11 @@
 
         var increase = Character.Race.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase) + parentIncrease;
         _abilityRolls[abilityName] = $"{rolledScore + increase} (+{increase})";
-        
-        // #################################################################################################################################
 
-        if (Character.Abilities.Count(a => a.Name == abilityName) > 0) { // already exists
+    // #################################################################################################################################
+
+        if (Character.Abilities.Count(a => a.Name == abilityName) > 0) {
+    // already exists
             Character.Abilities.SingleOrDefault(a => a.Name == abilityName)!.AbilityScore = rolledScore + increase;
         }
         else {
@@ -72,4 +80,5 @@
         await CharacterChanged.InvokeAsync(Character);
         CreateCharacter.StepIndex++;
     }
+
 }
