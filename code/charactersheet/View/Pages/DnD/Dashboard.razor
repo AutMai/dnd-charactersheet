@@ -1,0 +1,51 @@
+﻿@page "/dashboard"
+@using Model.Entities
+@using Domain.Repositories.Interfaces
+@inject IApplicationUserRepository userRepository
+@inject ICharacterRepository _characterRepository
+@inject IRepository<ExperienceProficencyBonu> _experienceProfBonusRepository
+@inject NavigationManager _navigationManager
+@attribute [Authorize]
+
+<h2>My Characters</h2>
+
+
+<DataInitializer Data="@_user">
+    <ChildComponent>
+        <div class="row w-50 m-auto">
+            @foreach (var character in _user.Characters) {
+                <RadzenCard class="col-md-4" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/character/{character.CharacterId}"))">
+                    <h3 class="m-0">@character.Name</h3><hr/>
+                    <div>
+                        <b>Race: </b> @(character.Race.Name)
+                    </div>
+                    <div>
+                        <b>Class:</b> @(character.Class.Name)
+                    </div>
+                    <div>
+                        <b>Level:</b> @(Level(character.Xp))
+                    </div>
+                </RadzenCard>
+            }
+        </div>
+    </ChildComponent>
+</DataInitializer>
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; }
+
+    ApplicationUser _user;
+
+    private List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
+
+    
+    protected override async Task OnInitializedAsync() {
+        var authState = await authStateTask;
+        _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
+        ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
+    }
+
+    private int Level (int xp) => ExperienceProficencyBonusList.Last(e => xp >= e.Xp).Level;
+}
