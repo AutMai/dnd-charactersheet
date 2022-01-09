@@ -46,8 +46,7 @@
 
 
     protected override async Task OnInitializedAsync() {
+        StaticAbilities = await _abilityRepository.ReadGraphAsync();
         StepIndex = 0;
-        StaticAbilities = (await _abilityRepository.ReadGraphAsync()).OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an)).ToList();
     }
-
 }
