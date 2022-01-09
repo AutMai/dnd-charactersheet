@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Mvc
+@inject NavigationManager _navigationManager;
+
+<div>
+    <AuthorizeView>
+        <Authorized>
+            <RadzenMenu>
+                <RadzenMenuItem Text="Game Rules" Icon="home" Style="z-index: 999999;">
+                    <RadzenMenuItem Text="Classes" Path="classes" Icon="account_circle"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Races" Path="races" Icon="line_weight"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Backgrounds" Path="backgrounds" Icon="attach_file"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Spells" Path="spells" Icon="perm_media"></RadzenMenuItem>
+                </RadzenMenuItem>
+                <RadzenMenuItem Text="My Characters" Path="dashboard" Icon="account_box"></RadzenMenuItem>
+                <RadzenMenuItem Text="Create Character" Path="createcharacter" Icon="save"></RadzenMenuItem>
+                <RadzenProfileMenu Style="padding: 0; border: 0; margin-left: auto;">
+                    <Template>
+                        <RadzenGravatar Email="shuber0802@gmail.com">
+                        </RadzenGravatar>
+                    </Template>
+                    <ChildContent>
+                        <RadzenProfileMenuItem Text="My Account" Path="/Identity/Account/Manage" Icon="account_circle"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Logout" Path="Identity/Account/LogOut" Icon="line_weight"></RadzenProfileMenuItem>
+                    </ChildContent>
+                </RadzenProfileMenu>
+            </RadzenMenu>
+        </Authorized>
+        <NotAuthorized>
+            <RadzenMenu>
+                <RadzenMenuItem Text="Game Rules" Icon="home">
+                    <RadzenMenuItem Text="Classes" Path="classes" Icon="account_circle"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Races" Path="races" Icon="line_weight"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Backgrounds" Path="backgrounds" Icon="attach_file"></RadzenMenuItem>
+                    <RadzenMenuItem Text="Spells" Path="spells" Icon="perm_media"></RadzenMenuItem>
+                </RadzenMenuItem>
+                <RadzenMenuItem Text="Create Character" Path="Identity/Account/Login" Icon="save"></RadzenMenuItem>
+            </RadzenMenu>
+            <RadzenButton Text="Login" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Login")) ButtonStyle="ButtonStyle.Info"/>
+            <RadzenButton Text="Sign Up" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Register")) ButtonStyle="ButtonStyle.Warning"/>
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu() {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+}

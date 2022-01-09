@@ -3,6 +3,10 @@
     color: black !important;
 }
 
+.rz-navigation-item-wrapper, .rz-navigation-item-link {
+    height: 100%;
+}
+
 .rz-navigation-item-wrapper:hover {
     background-color: lightgrey !important;
 }
