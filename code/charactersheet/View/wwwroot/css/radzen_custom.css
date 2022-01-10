@@ -1,4 +1,31 @@
-﻿.rz-navigation-item,.rz-navigation-item-wrapper, .rz-panel-menu {
+﻿.rz-menu:not(.rz-profile-menu) {
+    align-items: center !important;
+}
+
+.rz-menu:not(.rz-profile-menu), .rz-menu:not(.rz-profile-menu) .rz-navigation-item-wrapper {
+    background-color: #26282a !important;
+}
+
+.rz-menu:not(.rz-profile-menu) .rz-navigation-item-link {
+    color: #a5afba;
+}
+.rz-menu:not(.rz-profile-menu) .rz-navigation-item-link:hover {
+    color: white !important;
+}
+
+.rz-menu:not(.rz-profile-menu) .rz-navigation-item-wrapper-active .rz-navigation-item-link {
+    color: white;
+}
+
+.rz-menu:not(.rz-profile-menu) .rz-navigation-menu .rz-navigation-item-link {
+    color: #aaa;
+}
+.rz-menu:not(.rz-profile-menu) .rz-navigation-menu .rz-navigation-item-link:hover {
+    color: white;
+}
+
+
+.rz-navigation-item,.rz-navigation-item-wrapper, .rz-panel-menu {
     background-color: white !important;
     color: black !important;
 }

@@ -1,24 +1,14 @@
 ﻿@page "/character/{CharacterId:int}"
 @using Model.Entities
 @using Domain.Repositories.Interfaces
-@using Domain.Extensions
-@using System.Text
 @using System.Linq
 @attribute [Authorize]
 @inject ICharacterRepository _characterRepository
 @inject IRepository<ExperienceProficencyBonu> _experienceProfBonusRepository;
 @inject NavigationManager _navigationManager
+@inject DialogService DialogService
 
-@if (Character is null) {
-    <div class="center">
-        <div class="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
-    </div>
-}
+<RadzenDialog/>
 
 <DataInitializer Data="Character">
 <ChildComponent>
@@ -241,20 +231,9 @@
                         </tr>
                     }
                 }
-                <tr>
-                    <td>
-                        <input name="atkname<%= i %>" type="text"/>
-                    </td>
-                    <td>
-                        <input name="atkbonus<%= i %>" type="text"/>
-                    </td>
-                    <td>
-                        <input name="atkdamage<%= i %>" type="text"/>
-                    </td>
-                </tr>
                 </tbody>
             </table>
-            <textarea></textarea>
+            <RadzenButton Text="Add weapon" ButtonStyle="ButtonStyle.Secondary" Click="OpenWeaponForm"/>
         </div>
     </section>
     <section class="equipment">
@@ -353,7 +332,7 @@
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
 
         if (Character is null) return;
-        
+
         var authState = await authStateTask;
         if (Character.ApplicationUser.UserName != authState.User.Identity.Name) {
             _navigationManager.NavigateTo("/");
@@ -375,4 +354,12 @@
 
 
     private void UpdateCharacter() => _characterRepository.UpdateAsync(Character);
+
+    public async Task OpenWeaponForm() {
+        await DialogService.OpenAsync<WeaponForm>($"WeaponForm",
+            new Dictionary<string, object>() { { "Character", Character } },
+            new DialogOptions() { Width = "30vw", Height = "70vh", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
+        UpdateCharacter();
+    }
+
 }
