@@ -1,5 +1,10 @@
 ﻿@using Microsoft.AspNetCore.Mvc
 @inject NavigationManager _navigationManager;
+@using Microsoft.AspNetCore.Identity
+@using Model.Entities
+@attribute [IgnoreAntiforgeryToken]
+@inject SignInManager<ApplicationUser> signInManager
+
 
 <div>
     <AuthorizeView>
@@ -34,9 +39,9 @@
                     <RadzenMenuItem Text="Spells" Path="spells" Icon="perm_media"></RadzenMenuItem>
                 </RadzenMenuItem>
                 <RadzenMenuItem Text="Create Character" Path="Identity/Account/Login" Icon="save"></RadzenMenuItem>
+                <RadzenButton Text="Login" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Login")) ButtonStyle="ButtonStyle.Warning" Style="margin-left: auto; margin-right: 1vw;"/>
+                <RadzenButton Text="Sign Up" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Register")) ButtonStyle="ButtonStyle.Danger" Style="margin-right: 1vw;"/>
             </RadzenMenu>
-            <RadzenButton Text="Login" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Login")) ButtonStyle="ButtonStyle.Info"/>
-            <RadzenButton Text="Sign Up" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Register")) ButtonStyle="ButtonStyle.Warning"/>
         </NotAuthorized>
     </AuthorizeView>
 </div>
