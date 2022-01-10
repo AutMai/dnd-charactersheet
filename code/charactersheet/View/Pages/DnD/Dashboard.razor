@@ -7,25 +7,30 @@
 @inject NavigationManager _navigationManager
 @attribute [Authorize]
 
-<h2>My Characters</h2>
+<div class="row w-50 m-auto">
+    <h1>My Characters</h1>
+    <hr style="height: 3px;"/>
+</div>
 
 
 <DataInitializer Data="@_user">
     <ChildComponent>
         <div class="row w-50 m-auto">
             @foreach (var character in _user.Characters) {
-                <RadzenCard class="col-md-4" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/character/{character.CharacterId}"))">
-                    <h3 class="m-0">@character.Name</h3><hr/>
-                    <div>
-                        <b>Race: </b> @(character.Race.Name)
-                    </div>
-                    <div>
-                        <b>Class:</b> @(character.Class.Name)
-                    </div>
-                    <div>
-                        <b>Level:</b> @(Level(character.Xp))
-                    </div>
-                </RadzenCard>
+                <div class="col-md-4 p-1">
+                    <RadzenCard Style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/character/{character.CharacterId}"))">
+                        <h2 class="m-0">@character.Name</h2><hr/>
+                        <div>
+                            <b>Race: </b> @(character.Race.Name)
+                        </div>
+                        <div>
+                            <b>Class:</b> @(character.Class.Name)
+                        </div>
+                        <div>
+                            <b>Level:</b> @(Level(character.Xp))
+                        </div>
+                    </RadzenCard>
+                </div>
             }
         </div>
     </ChildComponent>
@@ -33,6 +38,7 @@
 
 
 @code {
+
     [CascadingParameter]
     private Task<AuthenticationState> authStateTask { get; set; }
 
@@ -40,12 +46,12 @@
 
     private List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
 
-    
+
     protected override async Task OnInitializedAsync() {
         var authState = await authStateTask;
         _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
     }
 
-    private int Level (int xp) => ExperienceProficencyBonusList.Last(e => xp >= e.Xp).Level;
+    private int Level(int xp) => ExperienceProficencyBonusList.Last(e => xp >= e.Xp).Level;
 }

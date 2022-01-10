@@ -4,18 +4,23 @@
 @inject IRepository<Background> _backgroundRepository;
 @inject NavigationManager _navigationManager;
 
-<h3>Backgrounds</h3>
+<div class="row w-50 m-auto">
+    <h1>Backgrounds</h1>
+    <hr style="height: 3px;"/>
+</div>
 
 <DataInitializer Data="BackgroundList">
     <ChildComponent Context="backgrounds">
         <div class="row w-50 m-auto">
             @foreach (var b in backgrounds) {
-                <RadzenCard class="col-md-4 m-2" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/backgrounds/{b.Name}"))">
-                    <h3 class="m-0">@b.Name</h3><hr/>
-                    <div>
-                        <b>Skill Proficiencies:</b><br/>@b.SkillProficiencies
-                    </div>
-                </RadzenCard>
+                <div class="col-md-4 p-1">
+                    <RadzenCard style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/backgrounds/{b.Name}"))">
+                        <h2 class="m-0">@b.Name</h2><hr/>
+                        <div>
+                            <b>Skill Proficiencies:</b><br/>@b.SkillProficiencies
+                        </div>
+                    </RadzenCard>
+                </div>
             }
         </div>
     </ChildComponent>

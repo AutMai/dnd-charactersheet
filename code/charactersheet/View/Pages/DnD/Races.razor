@@ -5,26 +5,35 @@
 @inject IRaceRepository _raceRepository;
 @inject NavigationManager _navigationManager;
 
-<h3>Races</h3>
+<div class="row w-50 m-auto">
+    <h1>Races</h1>
+    <hr style="height: 3px;"/>
+</div>
 
 <DataInitializer Data="@RaceList">
     <ChildComponent>
         <div class="row w-50 m-auto">
             @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
-                <RadzenCard class="col-md-4 m-2" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/races/{race.Name}"))">
-                    <h3 class="m-0">@race.Name</h3><hr/>
-                    <div>
-                        <b>Ability Score Increases: </b><br/> @String.Join(", ", race.RaceHasAbilityScoreIncreases.Select(rha => ($"+{rha.Increase} {rha.AbilityName.FirstCharToUpper()}")))
-                    </div>
-                    <div>
-                        <b>Speed: </b> @(race.Speed)
-                    </div>
-                    @if (race.SubRaces.Count > 0) {
+                <div class="col-md-4 p-1">
+                    <RadzenCard style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/races/{race.Name}"))">
+                        <h2 class="m-0">@race.Name</h2><hr/>
                         <div>
-                            <b>Subraces: </b> @string.Join(", ", race.SubRaces.Select(sr =>sr.Name))
+                            <b>Ability Score Increases: </b><br/> @String.Join(", ", race.RaceHasAbilityScoreIncreases.Select(rha => ($"+{rha.Increase} {rha.AbilityName.FirstCharToUpper()}")))
                         </div>
-                    }
-                </RadzenCard>
+                        <div>
+                            <b>Speed: </b> @(race.Speed)
+                        </div>
+                        <div>
+                            <b>Subraces: </b>
+                            @if (race.SubRaces.Count > 0) {
+                                @string.Join(", ", race.SubRaces.Select(sr => sr.Name))
+                            }
+                            else {
+                                <span>None</span>
+                            }
+                        </div>
+                    </RadzenCard>
+                </div>
             }
         </div>
     </ChildComponent>

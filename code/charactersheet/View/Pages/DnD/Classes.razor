@@ -4,21 +4,28 @@
 @using Domain.Extensions
 @inject IClassRepository _classRepo
 @inject NavigationManager _navigationManager;
-<h3>Classes</h3>
+
+<div class="row w-50 m-auto">
+    <h1>Classes</h1>
+    <hr style="height: 3px;"/>
+</div>
+
 
 <DataInitializer Data="ClassesList">
     <ChildComponent Context="classes">
         <div class="row w-50 m-auto">
             @foreach (var c in classes) {
-                <RadzenCard class="col-md-4 m-2" style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/classes/{c.Name}"))">
-                    <h3 class="m-0">@c.Name</h3><hr/>
-                    <div>
-                        <b>HitDie: </b> @(c.HitDie)
-                    </div>
-                    <div>
-                        <b>Saves: </b> @String.Join(" & ", c.AbilityNames.Select(a => a.Name.FirstCharToUpper()))
-                    </div>
-                </RadzenCard>
+                <div class="col-md-4 p-1">
+                    <RadzenCard Style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/classes/{c.Name}"))">
+                        <h2 class="m-0">@c.Name</h2><hr/>
+                        <div>
+                            <b>HitDie: </b> @(c.HitDie)
+                        </div>
+                        <div>
+                            <b>Saves: </b> @String.Join(" & ", c.AbilityNames.Select(a => a.Name.FirstCharToUpper()))
+                        </div>
+                    </RadzenCard>
+                </div>
             }
         </div>
     </ChildComponent>
