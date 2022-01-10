@@ -25,7 +25,9 @@
                     </Template>
                     <ChildContent>
                         <RadzenProfileMenuItem Text="My Account" Path="/Identity/Account/Manage" Icon="account_circle"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="Logout" Path="Identity/Account/LogOut" Icon="line_weight"></RadzenProfileMenuItem>
+                        <form method="post" action="/Identity/Account/LogOut" style="background-color: #ff6d41">
+                            <RadzenButton Text="Logout" type="submit" Style="width: 100%" Icon=""></RadzenButton>
+                        </form>
                     </ChildContent>
                 </RadzenProfileMenu>
             </RadzenMenu>
@@ -39,8 +41,8 @@
                     <RadzenMenuItem Text="Spells" Path="spells" Icon="perm_media"></RadzenMenuItem>
                 </RadzenMenuItem>
                 <RadzenMenuItem Text="Create Character" Path="Identity/Account/Login" Icon="save"></RadzenMenuItem>
-                <RadzenButton Text="Login" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Login")) ButtonStyle="ButtonStyle.Warning" Style="margin-left: auto; margin-right: 1vw;"/>
-                <RadzenButton Text="Sign Up" Click=@(_ => _navigationManager.NavigateTo("/Identity/Account/Register")) ButtonStyle="ButtonStyle.Danger" Style="margin-right: 1vw;"/>
+                <RadzenButton Text="Login" Click="@(() => _navigationManager.NavigateTo("/Identity/Account/Login", true))" ButtonStyle="ButtonStyle.Warning" Style="margin-left: auto; margin-right: 1vw;"/>
+                <RadzenButton Text="Sign Up" Click="@(() => _navigationManager.NavigateTo("/Identity/Account/Register", true))" ButtonStyle="ButtonStyle.Danger" Style="margin-right: 1vw;"/>
             </RadzenMenu>
         </NotAuthorized>
     </AuthorizeView>
@@ -51,7 +53,7 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu() {
+    private void ToggleNavMenu(){
         collapseNavMenu = !collapseNavMenu;
     }
 
