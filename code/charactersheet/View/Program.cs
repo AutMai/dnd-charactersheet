@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
+using Radzen;
 using View.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +33,13 @@ builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
 builder.Services.AddScoped<IRepository<ExperienceProficencyBonu>, ExperienceProficiencyBonusRepository>();
+builder.Services.AddScoped<IRepository<EWeaponType>, WeaponTypeRepository>();
+builder.Services.AddScoped<IRepository<EDamageType>, DamageTypeRepository>();
+builder.Services.AddScoped<IRepository<Item>, ItemRepository>();
+builder.Services.AddScoped<IRepository<CharactersHasItem>, CharacterHasItemsRepository>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
     options.Password.RequireDigit = false;
