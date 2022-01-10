@@ -2,16 +2,27 @@
 @typeparam TData
 
 @if (Data is null) {
-    <span></span>
+    <div class="center">
+        <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 }
 else {
     @ChildComponent(Data)
 }
 
+<style></style>
+
 @code {
+
     [Parameter]
     public RenderFragment<TData> ChildComponent { get; set; }
 
     [Parameter]
     public TData Data { get; set; }
+
 }
