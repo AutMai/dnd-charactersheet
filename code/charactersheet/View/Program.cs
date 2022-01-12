@@ -15,7 +15,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
-builder.Services.AddDbContext<CharacterSheetDbContext>(
+builder.Services.AddDbContextFactory<CharacterSheetDbContext>(
     options => {
         options.UseMySql(
             builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -24,11 +24,11 @@ builder.Services.AddDbContext<CharacterSheetDbContext>(
         options.EnableSensitiveDataLogging();
     }
 );
-builder.Services.AddTransient<CharacterSheetDbContext>();
+
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
-builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
+builder.Services.AddScoped<IRepository<Background>, ARepository<Background>>();
 builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();

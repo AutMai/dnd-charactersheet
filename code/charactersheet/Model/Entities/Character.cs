@@ -42,5 +42,9 @@ namespace Model.Entities{
         public virtual ICollection<ELanguage> Names{ get; set; }
         public virtual ICollection<Personality> Personalities{ get; set; }
         public virtual ICollection<Spell> Spells{ get; set; }
+        
+        public object Clone() {
+            return this.MemberwiseClone();
+        }
     }
 }
