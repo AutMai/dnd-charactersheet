@@ -29,7 +29,7 @@ builder.Services.AddDbContextFactory<CharacterSheetDbContext>(
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<IRaceRepository, RaceRepository>();
 builder.Services.AddScoped<IClassRepository, ClassRepository>();
-builder.Services.AddScoped<IRepository<Background>, BackgroundRepository>();
+builder.Services.AddScoped<IRepository<Background>, ARepository<Background>>();
 builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
 builder.Services.AddScoped<IAbilityNameRepository, AbilityNameRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();

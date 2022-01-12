@@ -1,10 +1,11 @@
 ﻿using Domain.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
 
-namespace Domain.Repositories.Implementations;
+namespace Domain.Repositories.Implementations; 
 
-public class ExperienceProficiencyBonusRepository : ARepository<ExperienceProficencyBonu> {
-    public ExperienceProficiencyBonusRepository(CharacterSheetDbContext context) : base(context) {
+public class ExperienceProficiencyBonusRepository:ARepository<ExperienceProficencyBonu> {
+    public ExperienceProficiencyBonusRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory) {
     }
 }
