@@ -207,7 +207,7 @@
     <section class="attacksandspellcasting">
         <div>
             <label>Attacks & Spellcasting</label>
-            <table class="mb-3">
+            <table class="mb-1">
                 <thead>
                 <tr>
                     <th>Name</th>
@@ -233,7 +233,7 @@
                 }
                 </tbody>
             </table>
-            <RadzenButton Text="Add weapon" ButtonStyle="ButtonStyle.Secondary" Click="OpenWeaponForm"/>
+            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="args => OpenWeaponForm()">ADD</RadzenButton>
         </div>
     </section>
     <section class="equipment">
@@ -250,10 +250,7 @@
                 </ul>
             </div>
             @{
-                string equipment = "";
-            }
-            @foreach (var item in Character.CharactersHasItems) {
-                equipment += (item.Amount + "x " + item.Item.Name + ", ");
+                string equipment = string.Join(", ", Character.CharactersHasItems.Select(item => item.Amount + "x " + item.Item.Name));
             }
             @{
                 <textarea placeholder="Equipment list here">@equipment</textarea>
@@ -355,11 +352,9 @@
 
     private void UpdateCharacter() => _characterRepository.UpdateAsync(Character);
 
-    public async Task OpenWeaponForm() {
+    private async Task OpenWeaponForm() {
         await DialogService.OpenAsync<WeaponForm>($"WeaponForm",
             new Dictionary<string, object>() { { "Character", Character } },
-            new DialogOptions() { Width = "30vw", Height = "70vh", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
-        UpdateCharacter();
+            new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
-
 }
