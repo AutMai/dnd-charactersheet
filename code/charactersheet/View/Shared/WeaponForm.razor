@@ -117,6 +117,7 @@
     private async Task Submit() {
         var weapon = await _itemRepository.CreateAsync(_weapon);
         await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = weapon.ItemId });
+        Console.WriteLine("close");
         dialogService.Close(true);
     }
 
