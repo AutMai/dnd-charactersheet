@@ -3,10 +3,7 @@ export MYSQL_PWD=root;"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u
 cd Model
 rm -rf Migrations
 
-echo 'Enter migration name:'
-read migrationName
-
-dotnet ef -s ../View migrations add "$migrationName"
+dotnet ef -s ../View migrations add "Init"
 
 dotnet ef -s ../View database update
 
