@@ -195,7 +195,7 @@ namespace Model.Configurations{
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CHARACTERS_USERS1");
 
-                entity.HasMany(d => d.Names)
+                entity.HasMany(d => d.Languages)
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharacterHasLanguage",

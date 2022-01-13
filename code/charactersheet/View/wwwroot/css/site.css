@@ -4,6 +4,18 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.textarea-to-div {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    background-color: white;
+    flex-direction: column !important;
+    overflow-y: scroll;
+    height: 37em;
+    font-size: 10px;
+}
+
 h1:focus {
     outline: none;
 }
@@ -316,6 +328,10 @@ form.charsheet main > section section.attributes div.attr-applications div.inspi
     border: 1px solid black;
     padding: 15px;
     border-radius: 10px;
+}
+
+form.charsheet main > section section.attributes div.attr-applications div.inspiration input:checked {
+    background: #000;
 }
 
 form.charsheet main > section section.attributes div.attr-applications div.proficiencybonus {
@@ -787,6 +803,26 @@ form.charsheet main section.features div label {
     text-align: center;
 }
 
+article {
+    position: relative;
+}
+
+.pop-up-wrapper {
+
+    height: 100%;
+    width: 100%;
+}
+
+.pop-up {
+    height: 70%;
+    width: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(50%, 50%);
+    background-color: white;
+    border-radius: 10px;
+}
+
 form.charsheet main section.features div textarea {
     border: 0;
     padding: 5px;
@@ -800,6 +836,7 @@ form.charsheet main section.features div textarea {
     width: 80px;
     height: 80px;
 }
+
 .lds-ring div {
     box-sizing: border-box;
     display: block;
@@ -812,15 +849,19 @@ form.charsheet main section.features div textarea {
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: black transparent transparent transparent;
 }
+
 .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;
 }
+
 .lds-ring div:nth-child(2) {
     animation-delay: -0.3s;
 }
+
 .lds-ring div:nth-child(3) {
     animation-delay: -0.15s;
 }
+
 @keyframes lds-ring {
     0% {
         transform: rotate(0deg);
@@ -835,6 +876,6 @@ form.charsheet main section.features div textarea {
     position: absolute;
     left: 50vw;
     top: 40vh;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
 
