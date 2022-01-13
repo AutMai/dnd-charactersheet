@@ -8,7 +8,12 @@
 @attribute [Authorize]
 
 <div class="row w-50 m-auto">
-    <h1>My Characters</h1>
+    <div class="col">
+        <h1>My Characters</h1>
+    </div>
+    <div class="col d-flex justify-content-end align-items-center">
+        <RadzenButton Click=@(() => { _navigationManager.NavigateTo("/createcharacter");}) Text="Create Character" Icon="add_circle_outline" ButtonStyle="ButtonStyle.Primary" />
+    </div>
     <hr style="height: 3px;"/>
 </div>
 
@@ -16,7 +21,7 @@
 <DataInitializer Data="@_user">
     <ChildComponent>
         <div class="row w-50 m-auto">
-            @foreach (var character in _user.Characters) {
+            @foreach (var character in _user.Characters){
                 <div class="col-md-4 p-1">
                     <RadzenCard Style="cursor: pointer;" @onclick="@(_ => _navigationManager.NavigateTo($"/character/{character.CharacterId}"))">
                         <h2 class="m-0">@character.Name</h2><hr/>
@@ -47,7 +52,7 @@
     private List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
 
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync(){
         var authState = await authStateTask;
         _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
