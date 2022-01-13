@@ -56,7 +56,6 @@
         if (firstRender){
             var authState = await authStateTask;
             _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
-            
         }
     }
 
@@ -69,6 +68,6 @@
         Character.UserId = _user.Id;
         var characterId = (await _characterRepository.CreateAsync(Character)).CharacterId;
         _navigationManager.NavigateTo($"/character/{characterId}");
+        CreateCharacter.StepIndex = 0;
     }
-
 }
