@@ -12,7 +12,7 @@
 
 <DataInitializer Data="@SpellList">
     <div class="row w-50 m-auto">
-        @foreach (var spell in SpellList) {
+        @foreach (var spell in SpellList.OrderBy(s => s.Level)) {
             <div class="col-md-4 p-1">
                 <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/spells/{spell.Name}"))">
                     <h2 class="m-0">@spell.Name</h2><hr/>
@@ -24,6 +24,9 @@
                     </div>
                     <div>
                         <b>Duration: </b>@(spell.Duration)
+                    </div>
+                    <div>
+                        <b>Damage/Effect: </b>@(spell.DamageType.FirstCharToUpper())
                     </div>
                 </RadzenCard>
             </div>
