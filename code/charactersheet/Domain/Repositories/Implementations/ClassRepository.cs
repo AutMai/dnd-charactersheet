@@ -5,8 +5,8 @@ using Model.Entities;
 
 namespace Domain.Repositories.Implementations;
 
-public class ClassRepository : ARepository<Class>, IClassRepository{
-    public ClassRepository(CharacterSheetDbContext context) : base(context){
+public class ClassRepository : ARepository<Class>, IClassRepository {
+    public ClassRepository(CharacterSheetDbContext context) : base(context) {
     }
 
     public async Task<Class> ReadGraphAsync(int id) => (await _set

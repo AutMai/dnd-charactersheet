@@ -5,22 +5,22 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Domain.Extensions;
 
-public static class EfExtensions{
+public static class EfExtensions {
     public static IQueryable<TEntity> IncludeAll<TEntity>(
         this DbSet<TEntity> dbSet,
-        int maxDepth = int.MaxValue) where TEntity : class{
+        int maxDepth = int.MaxValue) where TEntity : class {
         IQueryable<TEntity> result = dbSet;
         var context = dbSet.GetService<ICurrentDbContext>().Context;
         var includePaths = GetIncludePaths<TEntity>(context, maxDepth);
 
-        foreach (var includePath in includePaths){
+        foreach (var includePath in includePaths) {
             result = result.Include(includePath);
         }
 
         return result;
     }
 
-    private static IEnumerable<string> GetIncludePaths<T>(DbContext context, int maxDepth = int.MaxValue){
+    private static IEnumerable<string> GetIncludePaths<T>(DbContext context, int maxDepth = int.MaxValue) {
         if (maxDepth < 0)
             throw new ArgumentOutOfRangeException(nameof(maxDepth));
 
@@ -28,22 +28,22 @@ public static class EfExtensions{
         var includedNavigations = new HashSet<INavigation>();
         var stack = new Stack<IEnumerator<INavigation>>();
 
-        while (true){
+        while (true) {
             var entityNavigations = new List<INavigation>();
 
-            if (stack.Count <= maxDepth){
-                foreach (var navigation in entityType.GetNavigations()){
+            if (stack.Count <= maxDepth) {
+                foreach (var navigation in entityType.GetNavigations()) {
                     if (includedNavigations.Add(navigation))
                         entityNavigations.Add(navigation);
                 }
             }
 
-            if (entityNavigations.Count == 0){
+            if (entityNavigations.Count == 0) {
                 if (stack.Count > 0)
                     yield return string.Join(".", stack.Reverse().Select(e => e.Current!.Name));
             }
-            else{
-                foreach (var navigation in entityNavigations){
+            else {
+                foreach (var navigation in entityNavigations) {
                     var inverseNavigation = navigation.FindInverse();
                     if (inverseNavigation != null)
                         includedNavigations.Add(inverseNavigation);

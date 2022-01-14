@@ -8,11 +8,9 @@
 
 
 <DataInitializer Data="_user" Context="u">
-    <ChildComponent>
-        <h1>
-            @u.UserName;
-        </h1>
-    </ChildComponent>
+    <h1>
+        @u.UserName;
+    </h1>
 </DataInitializer>
 
 @code {
@@ -22,11 +20,11 @@
 
     ApplicationUser _user;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender){
-        if (firstRender){
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
             var authState = await authStateTask;
             _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
-            
         }
     }
+
 }

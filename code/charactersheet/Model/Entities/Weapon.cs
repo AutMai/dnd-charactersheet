@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Weapon
-    {
+namespace Model.Entities {
+    public partial class Weapon {
         public int WeaponId { get; set; }
         public int DamageDieAmount { get; set; }
         public int DamageDieType { get; set; }

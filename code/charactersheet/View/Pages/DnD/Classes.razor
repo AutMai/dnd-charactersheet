@@ -12,23 +12,21 @@
 
 
 <DataInitializer Data="ClassesList">
-    <ChildComponent Context="classes">
-        <div class="row w-50 m-auto">
-            @foreach (var c in classes) {
-                <div class="col-md-4 p-1">
-                    <RadzenCard Style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/classes/{c.Name}"))">
-                        <h2 class="m-0">@c.Name</h2><hr/>
-                        <div>
-                            <b>HitDie: </b> @(c.HitDie)
-                        </div>
-                        <div>
-                            <b>Saves: </b> @String.Join(" & ", c.AbilityNames.Select(a => a.Name.FirstCharToUpper()))
-                        </div>
-                    </RadzenCard>
-                </div>
-            }
-        </div>
-    </ChildComponent>
+    <div class="row w-50 m-auto">
+        @foreach (var c in ClassesList) {
+            <div class="col-md-4 p-1">
+                <RadzenCard Style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/classes/{c.Name}"))">
+                    <h2 class="m-0">@c.Name</h2><hr/>
+                    <div>
+                        <b>HitDie: </b> @(c.HitDie)
+                    </div>
+                    <div>
+                        <b>Saves: </b> @String.Join(" & ", c.AbilityNames.Select(a => a.Name.FirstCharToUpper()))
+                    </div>
+                </RadzenCard>
+            </div>
+        }
+    </div>
 </DataInitializer>
 
 @code {

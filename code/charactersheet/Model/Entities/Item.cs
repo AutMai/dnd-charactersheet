@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Item
-    {
-        public Item()
-        {
+namespace Model.Entities {
+    public partial class Item {
+        public Item() {
             CharactersHasItems = new HashSet<CharactersHasItem>();
         }
 

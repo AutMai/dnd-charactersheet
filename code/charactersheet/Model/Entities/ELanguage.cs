@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class ELanguage
-    {
-        public ELanguage()
-        {
+namespace Model.Entities {
+    public partial class ELanguage {
+        public ELanguage() {
             Characters = new HashSet<Character>();
             Races = new HashSet<Race>();
         }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class ClassHasSkillProficienciesChoice
-    {
+namespace Model.Entities {
+    public partial class ClassHasSkillProficienciesChoice {
         public int ClassId { get; set; }
         public string SkillName { get; set; } = null!;
         public int Amount { get; set; }

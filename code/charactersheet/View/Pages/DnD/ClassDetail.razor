@@ -5,56 +5,54 @@
 @inject IClassRepository _classRepository;
 
 <DataInitializer Data="Class">
-    <ChildComponent>
-        <h2>@Class.Name</h2><hr/>
-        <p>@Class.Description</p>
-        <p>
-            <b>Armor: </b>
-            @if (Class.ArmorTypes.Count > 0){
-                @String.Join(", ", Class.ArmorTypes.Select(at => at.Label.FirstCharToUpper()))
-            }
-            else{
-                <span>None</span>
-            }
-        </p>
-        <p>
-            <b>Weapons: </b>
-            @if (Class.WeaponTypes.Count > 0){
-                @String.Join(", ", Class.WeaponTypes.Select(wt => wt.Name.FirstCharToUpper()))
-            }
-            else{
-                <span>None</span>
-            }
-        </p>
-        <p>
-            <b>Saving Throws: </b>
-            @if (Class.ClassHasSkillProficienciesChoices.Count > 0){
-                @String.Join(", ", Class.AbilityNames.Select(an => an.Name.FirstCharToUpper()))
-            }
-            else{
-                <span>None</span>
-            }
-        </p>
-        <p>
-            <b>Skills: </b>
-            @if (Class.ClassHasSkillProficienciesChoices.Count > 0){
-                <span>Choose @Class.ClassHasSkillProficienciesChoices.FirstOrDefault().Amount from </span>
-                @String.Join(", ", Class.ClassHasSkillProficienciesChoices.Select(an => an.SkillName.FirstCharToUpper()))
-            }
-            else{
-                <span>None</span>
-            }
-        </p>
-        <hr/>
-        <h3>Features</h3>
-        @foreach (var feature in Class.Features.OrderBy(x => x.Level)){
-            <h4 class="mb-1 mt-3">
-                <b>@feature.Label</b>
-            </h4>
-            <p>@feature.Description</p>
+    <h2>@Class.Name</h2><hr/>
+    <p>@Class.Description</p>
+    <p>
+        <b>Armor: </b>
+        @if (Class.ArmorTypes.Count > 0) {
+            @String.Join(", ", Class.ArmorTypes.Select(at => at.Label.FirstCharToUpper()))
         }
-        <hr/>
-    </ChildComponent>
+        else {
+            <span>None</span>
+        }
+    </p>
+    <p>
+        <b>Weapons: </b>
+        @if (Class.WeaponTypes.Count > 0) {
+            @String.Join(", ", Class.WeaponTypes.Select(wt => wt.Name.FirstCharToUpper()))
+        }
+        else {
+            <span>None</span>
+        }
+    </p>
+    <p>
+        <b>Saving Throws: </b>
+        @if (Class.ClassHasSkillProficienciesChoices.Count > 0) {
+            @String.Join(", ", Class.AbilityNames.Select(an => an.Name.FirstCharToUpper()))
+        }
+        else {
+            <span>None</span>
+        }
+    </p>
+    <p>
+        <b>Skills: </b>
+        @if (Class.ClassHasSkillProficienciesChoices.Count > 0) {
+            <span>Choose @Class.ClassHasSkillProficienciesChoices.FirstOrDefault().Amount from </span>
+            @String.Join(", ", Class.ClassHasSkillProficienciesChoices.Select(an => an.SkillName.FirstCharToUpper()))
+        }
+        else {
+            <span>None</span>
+        }
+    </p>
+    <hr/>
+    <h3>Features</h3>
+    @foreach (var feature in Class.Features.OrderBy(x => x.Level)) {
+        <h4 class="mb-1 mt-3">
+            <b>@feature.Label</b>
+        </h4>
+        <p>@feature.Description</p>
+    }
+    <hr/>
 </DataInitializer>
 
 @code {
@@ -65,8 +63,8 @@
     [Parameter]
     public Class? Class { get; set; }
 
-    protected override async Task OnParametersSetAsync(){
-        if (Class is null){
+    protected override async Task OnParametersSetAsync() {
+        if (Class is null) {
             Class = await _classRepository.ReadGraphAsync(ClassName);
         }
     }

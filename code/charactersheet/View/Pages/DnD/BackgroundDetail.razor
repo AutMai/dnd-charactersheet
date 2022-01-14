@@ -4,16 +4,14 @@
 @inject IRepository<Background> _backgroundRepository;
 
 <DataInitializer Data="Background">
-    <ChildComponent Context="background">
-        <table>
-            <tr>
-                <td>
-                    <h3>@background.Name</h3>
-                    <b>Skill Proficiencies: </b>@background.SkillProficiencies
-                </td>
-            </tr>
-        </table>
-    </ChildComponent>
+    <table>
+        <tr>
+            <td>
+                <h3>@Background.Name</h3>
+                <b>Skill Proficiencies: </b>@Background.SkillProficiencies
+            </td>
+        </tr>
+    </table>
 </DataInitializer>
 
 @code {
@@ -23,7 +21,7 @@
 
     public Background? Background { get; set; }
 
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync() {
         Background = (await _backgroundRepository.ReadAsync(b => b.Name == BackgroundName)).SingleOrDefault();
     }
 

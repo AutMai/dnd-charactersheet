@@ -11,34 +11,34 @@
 </div>
 
 <DataInitializer Data="@SpellList">
-    <ChildComponent>
-        <div class="row w-50 m-auto">
-            @foreach (var spell in SpellList)
-            {
-                <div class="col-md-4 p-1">
-                    <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/spells/{spell.Name}"))">
-                        <h2 class="m-0">@spell.Name</h2><hr/>
-                        <div>
-                            <b>Level: </b>@(spell.Level)
-                        </div>
-                        <div>
-                            <b>Range: </b>@(spell.Range)
-                        </div>
-                        <div>
-                            <b>Duration: </b>@(spell.Duration)
-                        </div>
-                    </RadzenCard>
-                </div>
-            }
-        </div>
-    </ChildComponent>
+    <div class="row w-50 m-auto">
+        @foreach (var spell in SpellList.OrderBy(s => s.Level)) {
+            <div class="col-md-4 p-1">
+                <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/spells/{spell.Name}"))">
+                    <h2 class="m-0">@spell.Name</h2><hr/>
+                    <div>
+                        <b>Level: </b>@(spell.Level)
+                    </div>
+                    <div>
+                        <b>Range: </b>@(spell.Range)
+                    </div>
+                    <div>
+                        <b>Duration: </b>@(spell.Duration)
+                    </div>
+                    <div>
+                        <b>Damage/Effect: </b>@(spell.DamageType.FirstCharToUpper())
+                    </div>
+                </RadzenCard>
+            </div>
+        }
+    </div>
 </DataInitializer>
 
 
 @code {
     public List<Spell> SpellList { get; set; }
 
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync() {
         SpellList = await _spellRepository.ReadAsync();
     }
 

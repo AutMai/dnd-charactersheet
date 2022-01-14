@@ -4,17 +4,16 @@
 @inject IRaceRepository _raceRepository;
 
 <DataInitializer Data="Race">
-    <ChildComponent>
-        <RaceData Race="Race"></RaceData><br/>
-        @if (Race.SubRaces.Count > 0) {
-            <h2>Subraces</h2>
-            <hr/>
-            foreach (var subrace in Race.SubRaces) {
-                <RaceData Race="subrace"></RaceData>
-                <br/>
-            }
+
+    <RaceData Race="Race"></RaceData><br/>
+    @if (Race.SubRaces.Count > 0) {
+        <h2>Subraces</h2>
+        <hr/>
+        foreach (var subrace in Race.SubRaces) {
+            <RaceData Race="subrace"></RaceData>
+            <br/>
         }
-    </ChildComponent>
+    }
 </DataInitializer>
 
 @code {
@@ -26,8 +25,9 @@
     public Race? Race { get; set; }
 
     protected override async Task OnParametersSetAsync() {
-        @if (Race is null) {
-            Race = await _raceRepository.ReadGraphAsync(RaceName);
-        }
+    @if (Race is null) {
+        Race = await _raceRepository.ReadGraphAsync(RaceName);
     }
+    }
+
 }

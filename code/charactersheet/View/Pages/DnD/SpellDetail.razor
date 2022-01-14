@@ -4,34 +4,32 @@
 @inject ISpellRepository _spellRepository;
 
 <DataInitializer Data="Spell">
-    <ChildComponent>
-        <h3>@Spell.Name</h3><hr/>
-        <p>
-            <b>Level: </b> @Spell.Level
-        </p>
-        <p>
-            <b>Range: </b> @Spell.Range
-        </p>
-        <p>
-            <b>Components: </b> @Spell.Components
-        </p>
-        <p>
-            <b>Duration: </b> @Spell.Duration
-        </p>
-        <p>@Spell.Description</p>
-        <p>
-            <b>Classes: </b>
-            @if (Spell.Classes.Count > 0){
-                foreach (var c in Spell.Classes){
-                    @c.Name
-                }
+    <h3>@Spell.Name</h3><hr/>
+    <p>
+        <b>Level: </b> @Spell.Level
+    </p>
+    <p>
+        <b>Range: </b> @Spell.Range
+    </p>
+    <p>
+        <b>Components: </b> @Spell.Components
+    </p>
+    <p>
+        <b>Duration: </b> @Spell.Duration
+    </p>
+    <p>@Spell.Description</p>
+    <p>
+        <b>Classes: </b>
+        @if (Spell.Classes.Count > 0) {
+            foreach (var c in Spell.Classes) {
+                @c.Name
             }
-            else{
-                <span>None</span>
-            }
-        </p>
-        <hr/>
-    </ChildComponent>
+        }
+        else {
+            <span>None</span>
+        }
+    </p>
+    <hr/>
 </DataInitializer>
 
 @code {
@@ -41,7 +39,7 @@
 
     private Spell? Spell { get; set; }
 
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync() {
         Spell = await _spellRepository.ReadGraphAsync(SpellName);
     }
 

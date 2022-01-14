@@ -6,74 +6,72 @@
 @inject IRepository<Background> _backgroundRepository;
 
 <DataInitializer Data="Backgrounds">
-    <ChildComponent>
-        <div class="row">
-            <div class="col-md-3">
-                <RadzenCard>
-                    <RadzenPanelMenu Click="async args => TempBackground = (await _backgroundRepository.ReadAsync(b => b.Name == args.Text)).FirstOrDefault()">
-                        @foreach (var b in Backgrounds) {
-                            <RadzenPanelMenuItem Text="@b.Name"></RadzenPanelMenuItem>
-                        }
-                    </RadzenPanelMenu>
-                </RadzenCard>
-                @if (TempBackground != null) {
-                    <RadzenCard>
-                        <RadzenButton Text="Choose Background" Click=@(_ => Character.Background = TempBackground) ButtonStyle="ButtonStyle.Success"/>
-                    </RadzenCard>
-                }
-            </div>
+    <div class="row">
+        <div class="col-md-3">
+            <RadzenCard>
+                <RadzenPanelMenu Click="async args => TempBackground = (await _backgroundRepository.ReadAsync(b => b.Name == args.Text)).FirstOrDefault()">
+                    @foreach (var b in Backgrounds) {
+                        <RadzenPanelMenuItem Text="@b.Name"></RadzenPanelMenuItem>
+                    }
+                </RadzenPanelMenu>
+            </RadzenCard>
             @if (TempBackground != null) {
-                <RadzenCard class="col-md-8">
-                    <BackgroundDetail BackgroundName="@TempBackground.Name"></BackgroundDetail>
+                <RadzenCard>
+                    <RadzenButton Text="Choose Background" Click=@(_ => Character.Background = TempBackground) ButtonStyle="ButtonStyle.Success"/>
                 </RadzenCard>
             }
         </div>
-        @if (Character.Background is not null) {
-            <div class="row">
-                <div class="col-md-3">
-                    <RadzenCard class="d-flex flex-row">
-                        <RadzenSelectBar @bind-Value=@Alignment1 TValue="string">
-                            <Items>
-                                <RadzenSelectBarItem Text="Lawful" Value="@("Lawful")"/>
-                                <RadzenSelectBarItem Text="Neutral" Value="@("Neutral")"/>
-                                <RadzenSelectBarItem Text="Chaotic" Value="@("Chaotic")"/>
-                            </Items>
-                        </RadzenSelectBar>
-                        <RadzenSelectBar @bind-Value=@Alignment2 TValue="string">
-                            <Items>
-                                <RadzenSelectBarItem Text="Good" Value="@("Good")"/>
-                                <RadzenSelectBarItem Text="Neutral" Value="@("Neutral")"/>
-                                <RadzenSelectBarItem Text="Evil" Value="@("Evil")"/>
-                            </Items>
-                        </RadzenSelectBar>
-                    </RadzenCard>
-
-                    <RadzenCard>
-                        <RadzenButton Text="Finish - To Summary" Click=@(ChooseBackground) ButtonStyle="ButtonStyle.Success"
-                                      Disabled="@(Alignment1 is null || Alignment2 is null || !CharacterPersonalitiesComplete())"/>
-                    </RadzenCard>
-
-                </div>
-
-                <RadzenCard class="col-md-2">
-                    <h2>Personality Traits</h2>
-                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description = args) Class="w-100"/>
-                </RadzenCard>
-                <RadzenCard class="col-md-2">
-                    <h2>Ideals</h2>
-                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description = args) Class="w-100"/>
-                </RadzenCard>
-                <RadzenCard class="col-md-2">
-                    <h2>Bonds</h2>
-                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description = args) Class="w-100"/>
-                </RadzenCard>
-                <RadzenCard class="col-md-2">
-                    <h2>Flaws</h2>
-                    <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description = args) Class="w-100"/>
-                </RadzenCard>
-            </div>
+        @if (TempBackground != null) {
+            <RadzenCard class="col-md-8">
+                <BackgroundDetail BackgroundName="@TempBackground.Name"></BackgroundDetail>
+            </RadzenCard>
         }
-    </ChildComponent>
+    </div>
+    @if (Character.Background is not null) {
+        <div class="row">
+            <div class="col-md-3">
+                <RadzenCard class="d-flex flex-row">
+                    <RadzenSelectBar @bind-Value=@Alignment1 TValue="string">
+                        <Items>
+                            <RadzenSelectBarItem Text="Lawful" Value="@("Lawful")"/>
+                            <RadzenSelectBarItem Text="Neutral" Value="@("Neutral")"/>
+                            <RadzenSelectBarItem Text="Chaotic" Value="@("Chaotic")"/>
+                        </Items>
+                    </RadzenSelectBar>
+                    <RadzenSelectBar @bind-Value=@Alignment2 TValue="string">
+                        <Items>
+                            <RadzenSelectBarItem Text="Good" Value="@("Good")"/>
+                            <RadzenSelectBarItem Text="Neutral" Value="@("Neutral")"/>
+                            <RadzenSelectBarItem Text="Evil" Value="@("Evil")"/>
+                        </Items>
+                    </RadzenSelectBar>
+                </RadzenCard>
+
+                <RadzenCard>
+                    <RadzenButton Text="Finish - To Summary" Click=@(ChooseBackground) ButtonStyle="ButtonStyle.Success"
+                                  Disabled="@(Alignment1 is null || Alignment2 is null || !CharacterPersonalitiesComplete())"/>
+                </RadzenCard>
+
+            </div>
+
+            <RadzenCard class="col-md-2">
+                <h2>Personality Traits</h2>
+                <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Personality Traits").Description = args) Class="w-100"/>
+            </RadzenCard>
+            <RadzenCard class="col-md-2">
+                <h2>Ideals</h2>
+                <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Ideals").Description = args) Class="w-100"/>
+            </RadzenCard>
+            <RadzenCard class="col-md-2">
+                <h2>Bonds</h2>
+                <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Bonds").Description = args) Class="w-100"/>
+            </RadzenCard>
+            <RadzenCard class="col-md-2">
+                <h2>Flaws</h2>
+                <RadzenTextArea Rows="10" Change=@(args => Character.Personalities.SingleOrDefault(p => p.Name == "Flaws").Description = args) Class="w-100"/>
+            </RadzenCard>
+        </div>
+    }
 </DataInitializer>
 
 @code {

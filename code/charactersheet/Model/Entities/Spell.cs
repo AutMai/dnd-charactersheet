@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Spell
-    {
-        public Spell()
-        {
+namespace Model.Entities {
+    public partial class Spell {
+        public Spell() {
             Characters = new HashSet<Character>();
             Classes = new HashSet<Class>();
         }

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Class
-    {
-        public Class()
-        {
+namespace Model.Entities {
+    public partial class Class {
+        public Class() {
             Characters = new HashSet<Character>();
             ClassHasSkillProficienciesChoices = new HashSet<ClassHasSkillProficienciesChoice>();
             AbilityNames = new HashSet<EAbilityName>();

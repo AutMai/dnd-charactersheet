@@ -11,32 +11,30 @@
 </div>
 
 <DataInitializer Data="@RaceList">
-    <ChildComponent>
-        <div class="row w-50 m-auto">
-            @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
-                <div class="col-md-4 p-1">
-                    <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/races/{race.Name}"))">
-                        <h2 class="m-0">@race.Name</h2><hr/>
-                        <div>
-                            <b>Ability Score Increases: </b><br/> @String.Join(", ", race.RaceHasAbilityScoreIncreases.Select(rha => ($"+{rha.Increase} {rha.AbilityName.FirstCharToUpper()}")))
-                        </div>
-                        <div>
-                            <b>Speed: </b> @(race.Speed)
-                        </div>
-                        <div>
-                            <b>Subraces: </b>
-                            @if (race.SubRaces.Count > 0) {
-                                @string.Join(", ", race.SubRaces.Select(sr => sr.Name))
-                            }
-                            else {
-                                <span>None</span>
-                            }
-                        </div>
-                    </RadzenCard>
-                </div>
-            }
-        </div>
-    </ChildComponent>
+    <div class="row w-50 m-auto">
+        @foreach (var race in RaceList.Where(race => race.ParentRace == null)) {
+            <div class="col-md-4 p-1">
+                <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/races/{race.Name}"))">
+                    <h2 class="m-0">@race.Name</h2><hr/>
+                    <div>
+                        <b>Ability Score Increases: </b><br/> @String.Join(", ", race.RaceHasAbilityScoreIncreases.Select(rha => ($"+{rha.Increase} {rha.AbilityName.FirstCharToUpper()}")))
+                    </div>
+                    <div>
+                        <b>Speed: </b> @(race.Speed)
+                    </div>
+                    <div>
+                        <b>Subraces: </b>
+                        @if (race.SubRaces.Count > 0) {
+                            @string.Join(", ", race.SubRaces.Select(sr => sr.Name))
+                        }
+                        else {
+                            <span>None</span>
+                        }
+                    </div>
+                </RadzenCard>
+            </div>
+        }
+    </div>
 </DataInitializer>
 
 

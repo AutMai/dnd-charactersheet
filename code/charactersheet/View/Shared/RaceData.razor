@@ -11,11 +11,11 @@
     </p>
     <hr/>
     <h3>Traits</h3>
-    @foreach (var trait in Race.Traits.OrderBy(t=>t.Label)) {
+    @foreach (var trait in Race.Traits.OrderBy(t => t.Label)) {
         <h4 class="mb-1 mt-3">
             <b>@trait.Label</b>
         </h4>
-        <p>@((MarkupString) trait.Description)</p>
+        <p>@((MarkupString)trait.Description)</p>
     }
     <hr/>
 </div>

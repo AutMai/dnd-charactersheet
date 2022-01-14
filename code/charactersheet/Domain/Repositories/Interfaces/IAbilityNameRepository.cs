@@ -1,7 +1,7 @@
 ﻿using Model.Entities;
 
-namespace Domain.Repositories.Interfaces; 
+namespace Domain.Repositories.Interfaces;
 
-public interface IAbilityNameRepository:IRepository<EAbilityName>  {
+public interface IAbilityNameRepository : IRepository<EAbilityName> {
     Task<List<EAbilityName>> ReadGraphAsync();
 }

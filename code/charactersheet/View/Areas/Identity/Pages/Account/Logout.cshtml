@@ -5,10 +5,12 @@
 @inject SignInManager<ApplicationUser> signInManager
 
 @functions{
-    public async Task<IActionResult> OnPost(){
-        if (signInManager.IsSignedIn(User)){
+
+    public async Task<IActionResult> OnPost() {
+        if (signInManager.IsSignedIn(User)) {
             await signInManager.SignOutAsync();
         }
         return Redirect("~/");
     }
+
 }

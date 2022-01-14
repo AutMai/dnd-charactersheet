@@ -10,77 +10,75 @@
 @inject DialogService dialogService
 
 <DataInitializer Data="WeaponTypes">
-    <ChildComponent Context="wt">
-        <RadzenTemplateForm Data="_weapon">
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Name"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenTextBox style="width: 100%;" Name="WeaponName" @bind-Value="_weapon.Name"/>
-                </div>
+    <RadzenTemplateForm Data="_weapon" Context="weapon">
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Name"/>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Description"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenTextArea style="width: 100%;" Rows="5" Name="WeaponDescription" @bind-Value="_weapon.Description"/>
-                </div>
+            <div class="col-md-8">
+                <RadzenTextBox style="width: 100%;" Name="WeaponName" @bind-Value="_weapon.Name"/>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Price"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenTextBox type="number" style="width: 10%;" ValueChanged="s => _weapon.Price = s.ToInt()"/>
-                    <span>cp</span>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Description"/>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Weight"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weight = s.ToInt()"/>
-                    <span>lb.</span>
-                </div>
+            <div class="col-md-8">
+                <RadzenTextArea style="width: 100%;" Rows="5" Name="WeaponDescription" @bind-Value="_weapon.Description"/>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Type"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenDropDown @bind-Value="_weapon.Weapon.WeaponType" Data="@WeaponTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
-                    </RadzenDropDown>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Price"/>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Damage"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weapon.DamageDieAmount = s.ToInt()"/>
-                    <span>d</span>
-                    <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weapon.DamageDieType = s.ToInt()"/>
-                </div>
+            <div class="col-md-8">
+                <RadzenTextBox type="number" style="width: 10%;" ValueChanged="s => _weapon.Price = s.ToInt()"/>
+                <span>cp</span>
             </div>
-            <div class="row">
-                <div class="col-md-4 align-items-center d-flex">
-                    <RadzenLabel Text="Damage Type"/>
-                </div>
-                <div class="col-md-8">
-                    <RadzenDropDown @bind-Value="_weapon.Weapon.DamageType" Data="@DamageTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
-                    </RadzenDropDown>
-                </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Weight"/>
             </div>
-            <div class="row justify-content-center">
-                <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-                    <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Add" Click="@Submit"/>
-                </div>
+            <div class="col-md-8">
+                <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weight = s.ToInt()"/>
+                <span>lb.</span>
             </div>
-        </RadzenTemplateForm>
-    </ChildComponent>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Type"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown @bind-Value="_weapon.Weapon.WeaponType" Data="@WeaponTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
+                </RadzenDropDown>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Damage"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weapon.DamageDieAmount = s.ToInt()"/>
+                <span>d</span>
+                <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => _weapon.Weapon.DamageDieType = s.ToInt()"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Damage Type"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown @bind-Value="_weapon.Weapon.DamageType" Data="@DamageTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
+                </RadzenDropDown>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Add" Click="@Submit"/>
+            </div>
+        </div>
+    </RadzenTemplateForm>
 </DataInitializer>
 
 <style>
@@ -97,6 +95,7 @@
 </style>
 
 @code {
+
     [Parameter]
     public Character Character { get; set; }
 
@@ -120,4 +119,5 @@
         await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = weapon.ItemId });
         dialogService.Close(true);
     }
+
 }

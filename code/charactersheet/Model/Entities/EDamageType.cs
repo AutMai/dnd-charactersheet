@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class EDamageType
-    {
-        public EDamageType()
-        {
+namespace Model.Entities {
+    public partial class EDamageType {
+        public EDamageType() {
             Spells = new HashSet<Spell>();
             Weapons = new HashSet<Weapon>();
         }
