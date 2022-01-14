@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
 
-namespace Domain.Repositories.Implementations; 
+namespace Domain.Repositories.Implementations;
 
-public class AbilityNameRepository:ARepository<EAbilityName>, IAbilityNameRepository {
+public class AbilityNameRepository : ARepository<EAbilityName>, IAbilityNameRepository {
     public AbilityNameRepository(CharacterSheetDbContext context) : base(context) {
     }
 

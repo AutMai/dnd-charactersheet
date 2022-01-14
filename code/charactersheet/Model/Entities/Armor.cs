@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Armor
-    {
+namespace Model.Entities {
+    public partial class Armor {
         public int ArmorId { get; set; }
         public string ArmorType { get; set; } = null!;
         public int ArmorClass { get; set; }

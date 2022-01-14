@@ -8,11 +8,11 @@ using Model.Configurations;
 
 namespace Domain.Repositories.Implementations;
 
-public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class{
+public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class {
     protected CharacterSheetDbContext _context;
     protected DbSet<TEntity> _set;
 
-    public ARepository(CharacterSheetDbContext context){
+    public ARepository(CharacterSheetDbContext context) {
         _context = context;
         _set = _context.Set<TEntity>();
     }
@@ -27,24 +27,24 @@ public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class{
     public async Task<List<TEntity>> ReadAsync(int start, int count) =>
         await _set.Skip(start).Take(count).ToListAsync();
 
-    public async Task<TEntity> CreateAsync(TEntity entity){
+    public async Task<TEntity> CreateAsync(TEntity entity) {
         _set.Add(entity);
         await _context.SaveChangesAsync();
         return entity;
     }
 
-    public async Task UpdateAsync(TEntity entity){
+    public async Task UpdateAsync(TEntity entity) {
         //_context.ChangeTracker.Clear();
         _set.Update(entity);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(TEntity entity){
+    public async Task DeleteAsync(TEntity entity) {
         _set.Remove(entity);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<TEntity?> ReadWithAllIncludes(int id){
+    public async Task<TEntity?> ReadWithAllIncludes(int id) {
         var e = await _set.FindAsync(id);
         return await _set.IncludeAll().SingleOrDefaultAsync(k => Equals(k, e));
     }

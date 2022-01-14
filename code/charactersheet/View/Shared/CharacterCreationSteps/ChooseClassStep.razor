@@ -4,54 +4,54 @@
 
 
 <DataInitializer Data="Classes">
-    <ChildComponent>
-        <div class="row">
-            <div class="col-md-3">
-                <RadzenCard>
-                    <RadzenPanelMenu Click="async args => { TempClass = await _classRepository.ReadGraphAsync(args.Text); SelectedSkillProficiencies = new List<string>();}">
-                        @foreach (var c in Classes) {
-                            <RadzenPanelMenuItem Text="@c.Name"></RadzenPanelMenuItem>
-                        }
-                    </RadzenPanelMenu>
-                </RadzenCard>
-                @if (TempClass != null) {
-                    <RadzenCard>
-                        <h3>Choose Your Skills for @TempClass.Name Class</h3>
-                        <RadzenSelectBar @bind-Value=@SelectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(SelectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
-                            <Items>
-                                @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
-                                    <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
-                                }
-                            </Items>
-                        </RadzenSelectBar>
-                        <RadzenButton class="mt-2" Text="Reset" Click="@(_ => SelectedSkillProficiencies = new List<string>())" ButtonStyle="ButtonStyle.Info"/>
-                    </RadzenCard>
-                    <RadzenCard>
-                        <RadzenButton Text="Choose Class" Click=@(ChooseClass) ButtonStyle="ButtonStyle.Success" Disabled="@(SelectedSkillProficiencies.Count() < TempClass.ClassHasSkillProficienciesChoices.First().Amount)"/>
-                    </RadzenCard>
-                }
-            </div>
+    <div class="row">
+        <div class="col-md-3">
+            <RadzenCard>
+                <RadzenPanelMenu Click="async args => { TempClass = await _classRepository.ReadGraphAsync(args.Text); SelectedSkillProficiencies = new List<string>();}">
+                    @foreach (var c in Classes) {
+                        <RadzenPanelMenuItem Text="@c.Name"></RadzenPanelMenuItem>
+                    }
+                </RadzenPanelMenu>
+            </RadzenCard>
             @if (TempClass != null) {
-                <RadzenCard class="col-md-8">
-                    <ClassDetail Class="@TempClass"></ClassDetail>
+                <RadzenCard>
+                    <h3>Choose Your Skills for @TempClass.Name Class</h3>
+                    <RadzenSelectBar @bind-Value=@SelectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(SelectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
+                        <Items>
+                            @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
+                                <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
+                            }
+                        </Items>
+                    </RadzenSelectBar>
+                    <RadzenButton class="mt-2" Text="Reset" Click="@(_ => SelectedSkillProficiencies = new List<string>())" ButtonStyle="ButtonStyle.Info"/>
+                </RadzenCard>
+                <RadzenCard>
+                    <RadzenButton Text="Choose Class" Click=@(ChooseClass) ButtonStyle="ButtonStyle.Success" Disabled="@(SelectedSkillProficiencies.Count() < TempClass.ClassHasSkillProficienciesChoices.First().Amount)"/>
                 </RadzenCard>
             }
         </div>
-    </ChildComponent>
+        @if (TempClass != null) {
+            <RadzenCard class="col-md-8">
+                <ClassDetail Class="@TempClass"></ClassDetail>
+            </RadzenCard>
+        }
+    </div>
 </DataInitializer>
 
 @code {
 
     [Parameter]
     public Character? Character { get; set; }
+
     [Parameter]
     public EventCallback<Character> CharacterChanged { get; set; }
-    
+
     [Parameter]
     public IEnumerable<string> SelectedSkillProficiencies { get; set; }
+
     [Parameter]
     public EventCallback<IEnumerable<string>> SelectedSkillProficienciesChanged { get; set; }
-    
+
 
     private Class? TempClass { get; set; }
 

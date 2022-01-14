@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class EArmorType
-    {
-        public EArmorType()
-        {
+namespace Model.Entities {
+    public partial class EArmorType {
+        public EArmorType() {
             Armors = new HashSet<Armor>();
             Classes = new HashSet<Class>();
         }

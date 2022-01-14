@@ -9,6 +9,7 @@
 .rz-menu:not(.rz-profile-menu) .rz-navigation-item-link {
     color: #a5afba;
 }
+
 .rz-menu:not(.rz-profile-menu) .rz-navigation-item-link:hover {
     color: white !important;
 }
@@ -20,12 +21,13 @@
 .rz-menu:not(.rz-profile-menu) .rz-navigation-menu .rz-navigation-item-link {
     color: #aaa;
 }
+
 .rz-menu:not(.rz-profile-menu) .rz-navigation-menu .rz-navigation-item-link:hover {
     color: white;
 }
 
 
-.rz-navigation-item,.rz-navigation-item-wrapper, .rz-panel-menu {
+.rz-navigation-item, .rz-navigation-item-wrapper, .rz-panel-menu {
     background-color: white !important;
     color: black !important;
 }
@@ -51,7 +53,7 @@
     text-align: center;
 }
 
-.skillSelect .rz-button{
+.skillSelect .rz-button {
     padding: 0px;
     width: 50%;
 }

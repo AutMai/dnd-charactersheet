@@ -10,20 +10,18 @@
 </div>
 
 <DataInitializer Data="BackgroundList">
-    <ChildComponent Context="backgrounds">
-        <div class="row w-50 m-auto">
-            @foreach (var b in backgrounds) {
-                <div class="col-md-4 p-1">
-                    <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/backgrounds/{b.Name}"))">
-                        <h2 class="m-0">@b.Name</h2><hr/>
-                        <div>
-                            <b>Skill Proficiencies:</b><br/>@b.SkillProficiencies
-                        </div>
-                    </RadzenCard>
-                </div>
-            }
-        </div>
-    </ChildComponent>
+    <div class="row w-50 m-auto">
+        @foreach (var b in BackgroundList) {
+            <div class="col-md-4 p-1">
+                <RadzenCard style="cursor: pointer;" class="h-100" @onclick="@(_ => _navigationManager.NavigateTo($"/backgrounds/{b.Name}"))">
+                    <h2 class="m-0">@b.Name</h2><hr/>
+                    <div>
+                        <b>Skill Proficiencies:</b><br/>@b.SkillProficiencies
+                    </div>
+                </RadzenCard>
+            </div>
+        }
+    </div>
 </DataInitializer>
 
 @code {

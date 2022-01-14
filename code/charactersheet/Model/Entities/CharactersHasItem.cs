@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class CharactersHasItem
-    {
+namespace Model.Entities {
+    public partial class CharactersHasItem {
         public int CharacterId { get; set; }
         public int ItemId { get; set; }
         public int Amount { get; set; }

@@ -15,7 +15,7 @@
             <RadzenMenuItem Text="Spells" Path="spells" Icon="perm_media"></RadzenMenuItem>
         </RadzenMenuItem>
         <RadzenMenuItem Text="Create Character" Path="createcharacter" Icon="save"></RadzenMenuItem>
-        
+
         <AuthorizeView>
             <Authorized>
                 <RadzenMenuItem Text="My Characters" Path="dashboard" Icon="account_box"></RadzenMenuItem>
@@ -45,7 +45,7 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private void ToggleNavMenu(){
+    private void ToggleNavMenu() {
         collapseNavMenu = !collapseNavMenu;
     }
 

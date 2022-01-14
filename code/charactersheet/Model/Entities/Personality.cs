@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Personality
-    {
-        public Personality()
-        {
+namespace Model.Entities {
+    public partial class Personality {
+        public Personality() {
             Characters = new HashSet<Character>();
         }
 

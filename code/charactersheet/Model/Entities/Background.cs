@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Background
-    {
-        public Background()
-        {
+namespace Model.Entities {
+    public partial class Background {
+        public Background() {
             Characters = new HashSet<Character>();
         }
 

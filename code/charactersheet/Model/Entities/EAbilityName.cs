@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class EAbilityName
-    {
-        public EAbilityName()
-        {
+namespace Model.Entities {
+    public partial class EAbilityName {
+        public EAbilityName() {
             Abilities = new HashSet<Ability>();
             RaceHasAbilityScoreIncreases = new HashSet<RaceHasAbilityScoreIncrease>();
             Classes = new HashSet<Class>();

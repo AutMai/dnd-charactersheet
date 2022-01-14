@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Trait
-    {
-        public Trait()
-        {
+namespace Model.Entities {
+    public partial class Trait {
+        public Trait() {
             Races = new HashSet<Race>();
         }
 

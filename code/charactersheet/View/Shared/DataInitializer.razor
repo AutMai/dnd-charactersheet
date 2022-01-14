@@ -12,7 +12,7 @@
     </div>
 }
 else {
-    @ChildComponent(Data)
+    @ChildContent(Data)
 }
 
 <style></style>
@@ -20,7 +20,7 @@ else {
 @code {
 
     [Parameter]
-    public RenderFragment<TData> ChildComponent { get; set; }
+    public RenderFragment<TData> ChildContent { get; set; }
 
     [Parameter]
     public TData Data { get; set; }

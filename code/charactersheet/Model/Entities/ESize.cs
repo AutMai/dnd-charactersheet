@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class ESize
-    {
-        public ESize()
-        {
+namespace Model.Entities {
+    public partial class ESize {
+        public ESize() {
             Races = new HashSet<Race>();
         }
 

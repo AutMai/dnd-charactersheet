@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Model.Entities
-{
-    public partial class Feature
-    {
-        public Feature()
-        {
+namespace Model.Entities {
+    public partial class Feature {
+        public Feature() {
             Classes = new HashSet<Class>();
         }
 

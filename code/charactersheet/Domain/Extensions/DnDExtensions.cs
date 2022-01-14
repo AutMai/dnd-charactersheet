@@ -74,9 +74,9 @@ public static class DnDExtensions {
 
     public static Dictionary<string, int> SplitCopperCoins(this int copperCoins) {
         string copperC = copperCoins.ToString("D5");
-        
+
         var coins = new Dictionary<string, int> {
-            { "CP", 0 }, 
+            { "CP", 0 },
             { "SP", 0 },
             { "GP", 0 },
             { "PP", 0 }
@@ -86,11 +86,11 @@ public static class DnDExtensions {
         coins["SP"] = copperC[^2].ToInt();
         coins["GP"] = copperC[^3].ToInt();
         coins["PP"] = copperC[1..^3].ToInt();
-        
+
         return coins;
     }
-    
-    public static int MergeToCopperCoins(this Dictionary<string,int> coins) {
+
+    public static int MergeToCopperCoins(this Dictionary<string, int> coins) {
         int copperCoins = 0;
 
         copperCoins += coins["CP"];
@@ -99,6 +99,4 @@ public static class DnDExtensions {
         copperCoins += coins["PP"] * 1000;
         return copperCoins;
     }
-    
-    
 }
