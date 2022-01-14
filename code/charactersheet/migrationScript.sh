@@ -1,4 +1,5 @@
-curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
+#Installing jq
+#curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
 
 connectionString=$(jq '.ConnectionStrings.DefaultConnection' ./View/appsettings.json)
 databaseString="$(cut -d';' -f3 <<<"$connectionString")"
@@ -18,6 +19,6 @@ dotnet ef -s ../View migrations add "Init"
 
 dotnet ef -s ../View database update
 
-export MYSQL_PWD=$password;"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u $user $database < inserts.sql
-
+export MYSQL_PWD=$password;"C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u $user $database < ../inserts.sql
+echo "Script Done!"
 read
