@@ -1,5 +1,5 @@
 #Installing jq
-#curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
+curl -L -o /usr/bin/jq.exe https://github.com/stedolan/jq/releases/latest/download/jq-win64.exe
 
 connectionString=$(jq '.ConnectionStrings.DefaultConnection' ./View/appsettings.json)
 databaseString="$(cut -d';' -f3 <<<"$connectionString")"

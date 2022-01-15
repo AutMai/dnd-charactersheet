@@ -36,7 +36,9 @@ builder.Services.AddScoped<ISpellRepository, SpellRepository>();
 builder.Services.AddScoped<IRepository<ExperienceProficencyBonu>, ExperienceProficiencyBonusRepository>();
 builder.Services.AddScoped<IRepository<EWeaponType>, WeaponTypeRepository>();
 builder.Services.AddScoped<IRepository<EDamageType>, DamageTypeRepository>();
-builder.Services.AddScoped<IRepository<Item>, ItemRepository>();
+builder.Services.AddScoped<IRepository<Armor>, ArmorRepository>();
+builder.Services.AddScoped<IRepository<EArmorType>, ArmorTypeRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IRepository<CharactersHasItem>, CharacterHasItemsRepository>();
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 builder.Services.AddScoped<DialogService>();
@@ -54,7 +56,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment()) {
+if (!app.Environment.IsDevelopment()){
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
