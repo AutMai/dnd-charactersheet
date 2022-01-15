@@ -29,18 +29,17 @@
     </RadzenTemplateForm>
 }
 else{
-<div class="row">
-<div class="col-md-4 align-items-center d-flex">
-    <RadzenLabel Text="Create new Item"/>
-</div>
-</div>
-
+    <div class="row">
+        <div class="col-md-8 align-items-center d-flex">
+            <RadzenLabel Text="Create new Item"/>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-4 align-items-center d-flex">
             <RadzenLabel Text="Type"/>
         </div>
         <div class="col-md-8">
-            <RadzenDropDown @bind-Value="@SelectedItemType" Data="@_types" style="width: 100%;" @onchange="() => ChangeSelectedItem()" TextProperty="Name" ValueProperty="Name">
+            <RadzenDropDown @bind-Value="@SelectedItemType" Data="@_types" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
             </RadzenDropDown>
         </div>
     </div>
@@ -78,8 +77,58 @@ else{
             <span>lb.</span>
         </div>
     </div>
-    
-    
+
+    @if (SelectedItemType == _types[1]){
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Armor Class"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown @bind-Value="Item.Armor.ArmorType" Data="@ArmorTypes.Select(k => k.Label)" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
+                </RadzenDropDown>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Armor Class"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenNumeric type="number" Name="WeaponName" @bind-Value="Item.Armor.ArmorClass"/>
+            </div>
+        </div>
+    }
+
+    @if (SelectedItemType == _types[2]){
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Type"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown @bind-Value="Item.Weapon.WeaponType" Data="@WeaponTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
+                </RadzenDropDown>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Damage"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => Item.Weapon.DamageDieAmount = s.ToInt()"/>
+                <span>d</span>
+                <RadzenTextBox type="number" style="width: 10%;" Name="WeaponName" ValueChanged="s => Item.Weapon.DamageDieType = s.ToInt()"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 align-items-center d-flex">
+                <RadzenLabel Text="Damage Type"/>
+            </div>
+            <div class="col-md-8">
+                <RadzenDropDown @bind-Value="Item.Weapon.DamageType" Data="@DamageTypes" style="width: 100%;" TextProperty="Name" ValueProperty="Name">
+                </RadzenDropDown>
+            </div>
+        </div>
+    }
+
     <div class="row justify-content-center">
         <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
             <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Add" Click="@(async _ => await SubmitNewAsync())"/>
@@ -112,11 +161,9 @@ else{
 
     public string Type { get; set; }
 
-    List<string> _types = new (){ "Item", "Armor", "Weapon" };
+    readonly List<string> _types = new(){ "Item", "Armor", "Weapon" };
 
     public Item Item { get; set; } = new();
-    public Armor Armor { get; set; } = new();
-    public Weapon Weapon { get; set; } = new();
 
     public string SelectedItemType { get; set; }
 
@@ -132,15 +179,16 @@ else{
 
     private async Task SubmitAsync(){
         var item = _itemRepository.Read(ItemName);
+
         if (item is not null){
-            var charactersHasItem =Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == item.ItemId);
+            var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == item.ItemId);
             if (charactersHasItem is not null){
                 charactersHasItem.Amount++;
                 Console.WriteLine("close");
                 dialogService.Close(true);
                 return;
             }
-            
+
             await _characterHasItemRepository.CreateAsync(new CharactersHasItem(){ Amount = 1, Character = Character, Item = item });
             Console.WriteLine("close");
             dialogService.Close(true);
@@ -148,20 +196,30 @@ else{
         }
 
         Item.Name = ItemName;
+        Item.Armor = new Armor();
+        Item.Weapon = new Weapon();
         IsChecked = true;
         this.StateHasChanged();
     }
-    
-    
+
     private async Task SubmitNewAsync(){
+        Item.Name = ItemName;
+
+        if (SelectedItemType == _types[0]){
+            Item.Armor = null!;
+            Item.Weapon = null!;
+        }
+
+        if (SelectedItemType == _types[1]){
+            Item.Weapon = null!;
+        }
+        if (SelectedItemType == _types[2]){
+            Item.Armor = null!;
+        }
         var x = await _itemRepository.CreateAsync(Item);
-        await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = x.ItemId });
+        await _characterHasItemRepository.CreateAsync(new CharactersHasItem(){ Amount = 1, CharacterId = Character.CharacterId, ItemId = x.ItemId });
         Console.WriteLine("close");
         dialogService.Close(true);
     }
 
-
-    void ChangeSelectedItem(){
-       Console.WriteLine(SelectedItemType);
-    }
 }
