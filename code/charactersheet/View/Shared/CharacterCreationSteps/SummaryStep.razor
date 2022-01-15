@@ -39,7 +39,7 @@
 </RadzenCard>
 
 <RadzenCard>
-    <RadzenButton class="m-auto" Text="Finished - Create My Character" Click="@(_ => InsertCharacter())" ButtonStyle="ButtonStyle.Success" Disabled="@(Character.Name is null)"/>
+    <RadzenButton class="m-auto" Text="Finished - Create My Character" Click="@(async _ => await InsertCharacterAsync())" ButtonStyle="ButtonStyle.Success" Disabled="@(Character.Name is null)"/>
 </RadzenCard>
 
 @code {
@@ -62,7 +62,7 @@
     [Parameter]
     public EventCallback<Character> CharacterChanged { get; set; }
 
-    private async Task InsertCharacter() {
+    private async Task InsertCharacterAsync() {
         Character.ArmorClass = 10;
         Character.HitDiceAmount = 1;
         Character.UserId = _user.Id;

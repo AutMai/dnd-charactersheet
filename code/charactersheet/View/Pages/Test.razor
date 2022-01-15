@@ -12,7 +12,7 @@
 @code {
     public Race? Character { get; set; }
 
-    protected async override Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync() {
         Character = (await _raceRepository.ReadWithAllIncludes(1))!;
     }
 

@@ -75,7 +75,7 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
-                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Add" Click="@Submit"/>
+                <RadzenButton ButtonType="ButtonType.Submit" Icon="save" Text="Add" Click="@(async _ => await SubmitAsync())"/>
             </div>
         </div>
     </RadzenTemplateForm>
@@ -114,7 +114,7 @@
         DamageTypes = await _damageTypeRepository.ReadAsync();
     }
 
-    private async Task Submit() {
+    private async Task SubmitAsync() {
         var weapon = await _itemRepository.CreateAsync(_weapon);
         await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = weapon.ItemId });
         Console.WriteLine("close");

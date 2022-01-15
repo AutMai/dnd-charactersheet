@@ -16,7 +16,7 @@
 <header>
     <section class="charname">
         <label for="charname">Character Name</label>
-        <input name="charname" value="@Character.Name" @onchange="args => {Character.Name = args.Value.ToString(); UpdateCharacter();}"/>
+        <input name="charname" value="@Character.Name" @onchange="async args => {Character.Name = args.Value.ToString(); await UpdateCharacter();}"/>
     </section>
     <section class="misc">
         <ul>
@@ -40,11 +40,11 @@
             </li>
             <li>
                 <label for="alignment">Alignment</label>
-                <input name="alignment" value="@Character.Alignment" @onchange="args => {Character.Alignment = args.Value.ToString(); UpdateCharacter();}"/>
+                <input name="alignment" value="@Character.Alignment" @onchange="async args => {Character.Alignment = args.Value.ToString(); await UpdateCharacter();}"/>
             </li>
             <li>
                 <label for="experiencepoints">Experience Points</label>
-                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="args => {Character.Xp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="async args => {Character.Xp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </li>
         </ul>
     </section>
@@ -62,7 +62,7 @@
                             <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
                         </div>
                         <div class="modifier">
-                            <input value="@a.AbilityScore" maxlength="2" @onchange="args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                            <input value="@a.AbilityScore" maxlength="2" @onchange="async args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                         </div>
                     </li>
                 }
@@ -73,7 +73,7 @@
                 <div class="label-container">
                     <label for="inspiration">Inspiration</label>
                 </div>
-                <input name="inspiration" type="checkbox" checked="@(Character.Inspiration == 1)" @onchange="args => {Character.Inspiration = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); UpdateCharacter();}"/>
+                <input name="inspiration" type="checkbox" checked="@(Character.Inspiration == 1)" @onchange="async args => {Character.Inspiration = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter();}"/>
             </div>
             <div class="proficiencybonus box">
                 <div class="label-container">
@@ -89,7 +89,7 @@
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
                             <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
-                            <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(args => { savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); UpdateCharacter(); })"/>
+                            <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(async args => { savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
                         </li>
                     }
                 </ul>
@@ -106,7 +106,7 @@
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
                                 </label>
                                 <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
-                                <input name="@skill.Name-prof" type="checkbox" checked="@(skill.Proficient == 1)" @onchange="@(args => { skill.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); UpdateCharacter(); })"/>
+                                <input name="@skill.Name-prof" type="checkbox" checked="@(skill.Proficient == 1)" @onchange="@(async args => { skill.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
                             </li>
                         }
                     }
@@ -139,7 +139,7 @@
         <div class="armorclass">
             <div>
                 <label for="ac">Armor<br/>Class</label>
-                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="args => {Character.ArmorClass = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="async args => {Character.ArmorClass = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </div>
         </div>
         <div class="initiative">
@@ -158,16 +158,16 @@
             <div class="regular">
                 <div class="max">
                     <label for="maxhp">Hit Point Maximum</label>
-                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="args => {Character.MaxHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="async args => {Character.MaxHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                 </div>
                 <div class="current">
                     <label for="currenthp">Current Hit Points</label>
-                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="args => {Character.CurrentHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="async args => {Character.CurrentHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                 </div>
             </div>
             <div class="temporary">
                 <label for="temphp">Temporary Hit Points</label>
-                <input name="temphp" type="text" value="@Character.TemporaryHp" maxlength="9" @onchange="args => {Character.TemporaryHp = Convert.ToInt32(args.Value); UpdateCharacter();}"/>
+                <input name="temphp" type="text" value="@Character.TemporaryHp" maxlength="9" @onchange="async args => {Character.TemporaryHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </div>
         </div>
         <div class="hitdice">
@@ -178,7 +178,7 @@
                 </div>
                 <div class="remaining">
                     <label for="remaininghd">Hit Dice</label>
-                    <input name="remaininghd" type="text" value="@(Character.HitDiceAmount)" @onchange="args => UpdateCharacterRemainingHitDice(Convert.ToInt32(args.Value))"/>
+                    <input name="remaininghd" type="text" value="@(Character.HitDiceAmount)" @onchange="async args => await UpdateCharacterRemainingHitDice(Convert.ToInt32(args.Value))"/>
                 </div>
             </div>
         </div>
@@ -193,7 +193,7 @@
                         <div class="bubbles">
                             @for (int i = 1; i <= 3; i++) {
                                 int x = i;
-                                <input name="deathsuccess" type="checkbox" @onchange="@(args => { Character.DeathSaveSuccessCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; UpdateCharacter(); })" checked="@(Character.DeathSaveSuccessCount >= x)"/>
+                                <input name="deathsuccess" type="checkbox" @onchange="@(async args => { Character.DeathSaveSuccessCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveSuccessCount >= x)"/>
                             }
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                         <div class="bubbles">
                             @for (int i = 1; i <= 3; i++) {
                                 int x = i;
-                                <input name="deathfail" type="checkbox" @onchange="@(args => { Character.DeathSaveFailureCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; UpdateCharacter(); })" checked="@(Character.DeathSaveFailureCount >= x)"/>
+                                <input name="deathfail" type="checkbox" @onchange="@(async args => { Character.DeathSaveFailureCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveFailureCount >= x)"/>
                             }
                         </div>
                     </div>
@@ -239,7 +239,7 @@
                 }
                 </tbody>
             </table>
-            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="args => OpenWeaponForm()">ADD</RadzenButton>
+            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="async _ => await OpenWeaponForm()">ADD</RadzenButton>
         </div>
     </section>
     <section class="equipment">
@@ -250,7 +250,7 @@
                     @foreach (var coin in Coins) {
                         <li>
                             <label for="coin">@coin.Key</label>
-                            <input name="<%= type %>" value="@coin.Value" @onchange="args => {Coins[coin.Key] = Convert.ToInt32(args.Value); Character.CopperCoins = Coins.MergeToCopperCoins(); UpdateCharacter();}"/>
+                            <input name="<%= type %>" value="@coin.Value" @onchange="async args => {Coins[coin.Key] = Convert.ToInt32(args.Value); Character.CopperCoins = Coins.MergeToCopperCoins(); await UpdateCharacter();}"/>
                         </li>
                     }
                 </ul>
@@ -268,25 +268,25 @@
     <section class="flavor">
         <div class="personality">
             <label for="personality">Personality Traits</label>
-            <textarea name="personality" @onchange="@(args => {Character.PersonalityTraits().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="personality" @onchange="@(async args => {Character.PersonalityTraits().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.PersonalityTraits().Description
             </textarea>
         </div>
         <div class="ideals">
             <label for="ideals">Ideals</label>
-            <textarea name="ideals" @onchange="@(args => {Character.Ideals().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="ideals" @onchange="@(async args => {Character.Ideals().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Ideals().Description
             </textarea>
         </div>
         <div class="bonds">
             <label for="bonds">Bonds</label>
-            <textarea name="bonds" @onchange="@(args => {Character.Bonds().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="bonds" @onchange="@(async args => {Character.Bonds().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Bonds().Description
             </textarea>
         </div>
         <div class="flaws">
             <label for="flaws">Flaws</label>
-            <textarea name="flaws" @onchange="@(args => {Character.Flaws().Description = args.Value.ToString(); UpdateCharacter();})">
+            <textarea name="flaws" @onchange="@(async args => {Character.Flaws().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Flaws().Description
             </textarea>
         </div>
@@ -343,9 +343,9 @@
         Coins = Character.CopperCoins.SplitCopperCoins();
     }
 
-    private void UpdateCharacterRemainingHitDice(int newValue) {
+    private async Task UpdateCharacterRemainingHitDice(int newValue) {
         Character.HitDiceAmount = newValue > Level ? ProficiencyBonus : newValue;
-        UpdateCharacter();
+        await UpdateCharacter();
     }
 
     private int Level => ExperienceProficencyBonusList.Last(e => Character.Xp >= e.Xp).Level;
@@ -355,7 +355,7 @@
     private Task<AuthenticationState> authStateTask { get; set; }
 
 
-    private void UpdateCharacter() => _characterRepository.UpdateAsync(Character);
+    private async Task UpdateCharacter() => await _characterRepository.UpdateAsync(Character);
 
     private async Task OpenWeaponForm() {
         await DialogService.OpenAsync<WeaponForm>($"WeaponForm",
