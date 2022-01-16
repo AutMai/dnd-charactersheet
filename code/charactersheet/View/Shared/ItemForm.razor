@@ -183,8 +183,13 @@ else {
         if (existingItem is not null) { // item exists already
             var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == existingItem.ItemId); 
             if (charactersHasItem is not null) { // character already has min 1 of this item 
-                charactersHasItem.Amount++;
-                //await _characterHasItemRepository.UpdateAsync(charactersHasItem);
+                CharactersHasItem c = new(){
+                    Amount = charactersHasItem.Amount + 1,
+                    CharacterId = charactersHasItem.CharacterId,
+                    ItemId = charactersHasItem.ItemId
+                };
+                await _characterHasItemRepository.DeleteAsync(charactersHasItem);
+                await _characterHasItemRepository.CreateAsync(c);
                 dialogService.Close(true);
                 return;
             }
