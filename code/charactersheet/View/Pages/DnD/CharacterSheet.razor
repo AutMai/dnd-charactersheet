@@ -143,10 +143,10 @@
                 <input name="ac" value="@Character.ArmorClass" type="text" @onchange="async args => {Character.ArmorClass = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </div>
         </div>
-        <div class="initiative">
+        <div class="initiative" @onclick="@(args => RollDice("Initiative", 1, 20, Character.Abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore))">
             <div>
-                <label for="initiative">Initiative</label>
-                <input name="initiative" value="@Character.Abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore" type="text"/>
+                <label for="initiative" style="cursor: pointer">Initiative</label>
+                <input style="cursor: pointer" name="initiative" value="@Character.Abilities.SingleOrDefault(a => a.Name == "DEXTERITY").AbilityScore" type="text" disabled/>
             </div>
         </div>
         <div class="speed">
@@ -223,20 +223,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var chi in Character.CharactersHasItems) {
-                    if (chi.Item.Weapon is not null) {
-                        <tr>
-                            <td>
-                                <input name="atkname" type="text" value="@chi.Item.Name" disabled/>
-                            </td>
-                            <td>
-                                <input name="atkbonus" type="text" value="@chi.Item.Weapon.GetAttackBonus(Character.Abilities, 2).AddSign()" disabled/>
-                            </td>
-                            <td>
-                                <input name="atkdamage" type="text" value="@(chi.Item.Weapon.DamageDieAmount + "d" + chi.Item.Weapon.DamageDieType)" disabled/>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var chi in Character.CharactersHasItems.Where(ci => ci.Item.Weapon is not null)) {
+                    <tr>
+                        <td>
+                            <input name="atkname" type="text" value="@chi.Item.Name" disabled/>
+                        </td>
+                        <td @onclick="@(_ => RollDice($"{chi.Item.Name}: To Hit", 1, 20, chi.Item.Weapon.GetAttackBonus(Character.Abilities, 2)))">
+                            <input name="atkbonus" type="text" value="@chi.Item.Weapon.GetAttackBonus(Character.Abilities, 2).AddSign()" disabled style="cursor: pointer"/>
+                        </td>
+                        <td @onclick="@(_ => RollDice($"{chi.Item.Name}: To Hit", chi.Item.Weapon.DamageDieAmount, chi.Item.Weapon.DamageDieType))">
+                            <input name="atkdamage" type="text" value="@(chi.Item.Weapon.DamageDieAmount + "d" + chi.Item.Weapon.DamageDieType)" disabled style="cursor: pointer"/>
+                        </td>
+                    </tr>
                 }
                 </tbody>
             </table>
@@ -245,7 +243,7 @@
                 <details>
                     <summary>Spells</summary>
                     <ul>
-                        @foreach (var spellLevel in Character.Spells.GroupBy(s => s.Level).OrderBy(s=>s.Key).ToList()) {
+                        @foreach (var spellLevel in Character.Spells.GroupBy(s => s.Level).OrderBy(s => s.Key).ToList()) {
                             <li>
                                 <details class="ml-3">
                                     <summary>Level: @spellLevel.Key</summary>
@@ -257,7 +255,7 @@
                         }
                     </ul>
                 </details>
-                <RadzenAutoComplete @bind-Value="SelectedSpellName" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@NotAddedSpells TextProperty="Name" Style="width: 100%;" />
+                <RadzenAutoComplete @bind-Value="SelectedSpellName" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@NotAddedSpells TextProperty="Name" Style="width: 100%;"/>
                 <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="AddSpellAsync">Add Spell</RadzenButton>
             }
         </div>
@@ -336,6 +334,15 @@
 </section>
 </main>
 </form>
+
+<div class="dice-rolls" style="position: absolute; top: 94vh; left: 99vw; transform: translate(-100%,-100%);">
+    @foreach (var diceroll in DiceRolls) {
+        <div style="height: 10vh; width: 20vw; background-color: white; border: 1px solid black; border-radius: 10px;">
+            <h3>@diceroll.Item1</h3>
+            <h3>@diceroll.Item2</h3>
+        </div>
+    }
+</div>
 </DataInitializer>
 
 @code {
@@ -350,12 +357,14 @@
     private Dictionary<string, int> Coins { get; set; }
 
     private string SelectedSpellName { get; set; } = "";
- 
+
     protected override async Task OnInitializedAsync() {
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
     }
 
     private List<Spell> NotAddedSpells { get; set; }
+
+    public List<(string,string)> DiceRolls { get; set; } = new();
 
     protected override async Task OnParametersSetAsync() {
         Stopwatch sw = new Stopwatch();
@@ -390,7 +399,7 @@
 
     private async Task OpenWeaponForm() {
         await DialogService.OpenAsync<ItemForm>($"WeaponForm",
-            new Dictionary<string, object>() { { "Character", Character }, {"SelectedItemType", "Weapon"} },
+            new Dictionary<string, object>() { { "Character", Character }, { "SelectedItemType", "Weapon" } },
             new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
@@ -398,6 +407,8 @@
         await DialogService.OpenAsync<ItemForm>($"ItemForm",
             new Dictionary<string, object>() { { "Character", Character } },
             new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
+        await UpdateCharacter();
+        StateHasChanged();
     }
 
     private async Task OpenSpellInfo(Spell spell) {
@@ -412,5 +423,11 @@
         SelectedSpellName = "";
         NotAddedSpells.Remove(s);
         await UpdateCharacter();
-    } 
+    }
+
+    private void RollDice(string label, int diceAmount, int diceType, int bonus = 0) {
+        var dr = DnDExtensions.RollDice(diceAmount, diceType, bonus).Sum().ToString();
+        DiceRolls.Add(new ValueTuple<string, string>(label, dr));
+    }
+
 }
