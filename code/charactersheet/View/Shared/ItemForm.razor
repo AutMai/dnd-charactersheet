@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components
 @using Domain.Extensions
 @using Domain.Repositories.Implementations
+@using Castle.Core.Internal
 @inject IRepository<EArmorType> _armorTypeRepository;
 @inject IItemRepository _itemRepository;
 @inject IRepository<EWeaponType> _weaponTypeRepository;
@@ -11,14 +12,14 @@
 
 @inject DialogService dialogService
 
-@if (!IsChecked) {
-    <RadzenTemplateForm Data="ItemName">
+@if (!itemExistChecked) {
+    <RadzenTemplateForm Data="Item">
         <div class="row">
             <div class="col-md-4 align-items-center d-flex">
                 <RadzenLabel Text="Name"/>
             </div>
             <div class="col-md-8">
-                <RadzenTextBox style="width: 100%;" Name="WeaponName" @bind-Value="ItemName"/>
+                <RadzenTextBox style="width: 100%;" Name="WeaponName" @bind-Value="Item.Name"/>
             </div>
         </div>
         <div class="row justify-content-center">
@@ -155,16 +156,13 @@ else {
     [Parameter]
     public Character Character { get; set; }
 
-    public bool IsChecked { get; set; } = false;
-
-    public string ItemName { get; set; }
-
-    public string Type { get; set; }
-
+    public bool itemExistChecked { get; set; } = false;
+    
     readonly List<string> _types = new() { "Item", "Armor", "Weapon" };
 
     public Item Item { get; set; } = new();
 
+    [Parameter]
     public string SelectedItemType { get; set; }
 
     private List<EArmorType> ArmorTypes { get; set; }
@@ -172,13 +170,18 @@ else {
     private List<EDamageType> DamageTypes { get; set; }
 
     protected override async Task OnInitializedAsync() {
+        Item.Armor = new Armor();
+        Item.Weapon = new Weapon();
+        if (!SelectedItemType.IsNullOrEmpty()) {
+            itemExistChecked = true;
+        }
         ArmorTypes = await _armorTypeRepository.ReadAsync();
         WeaponTypes = await _weaponTypeRepository.ReadAsync();
         DamageTypes = await _damageTypeRepository.ReadAsync();
     }
 
     private async Task SubmitAsync() {
-        var existingItem = _itemRepository.Read(ItemName);
+        var existingItem = _itemRepository.Read(Item.Name);
 
         if (existingItem is not null) { // item exists already
             var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == existingItem.ItemId); 
@@ -194,15 +197,12 @@ else {
                 return;
             }
 
-            await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, Character = Character, Item = existingItem });
+            await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = existingItem.ItemId });
             dialogService.Close(true);
             return;
         }
 
-        Item.Name = ItemName;
-        Item.Armor = new Armor();
-        Item.Weapon = new Weapon();
-        IsChecked = true;
+        itemExistChecked = true;
         StateHasChanged();
     }
 

@@ -245,20 +245,20 @@
                 <details>
                     <summary>Spells</summary>
                     <ul>
-                        @foreach (var spellLevel in Character.Spells.GroupBy(s => s.Level).ToList()) {
+                        @foreach (var spellLevel in Character.Spells.GroupBy(s => s.Level).OrderBy(s=>s.Key).ToList()) {
                             <li>
                                 <details class="ml-3">
                                     <summary>Level: @spellLevel.Key</summary>
                                     @foreach (var spell in Character.Spells.Where(s => s.Level == spellLevel.Key)) {
-                                        <a class="ml-3" style="cursor: pointer" @onclick="@(async _ => await OpenSpellInfo(spell))">@spell.Name</a>
+                                        <a class="ml-3 d-block" style="cursor: pointer" @onclick="@(async _ => await OpenSpellInfo(spell))">@spell.Name</a>
                                     }
                                 </details>
                             </li>
                         }
                     </ul>
                 </details>
-                <RadzenAutoComplete Data=@Character.Class.Spells TextProperty="Name" Change=@(args => Console.WriteLine(args)) Style="width: 100%;" />
-                <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="AddSpell">Add Spell</RadzenButton>
+                <RadzenAutoComplete @bind-Value="SelectedSpellName" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@NotAddedSpells TextProperty="Name" Style="width: 100%;" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="AddSpellAsync">Add Spell</RadzenButton>
             }
         </div>
     </section>
@@ -279,7 +279,7 @@
                 string equipment = "";
                 equipment += string.Join(", ", Character.CharactersHasItems.Select(i => i.Amount + "x " + i.Item.Name));
 
-                <textarea placeholder="Equipment list here">@equipment</textarea>
+                <textarea placeholder="Equipment list here" disabled>@equipment</textarea>
             }
         </div>
         <div>
@@ -349,16 +349,19 @@
 
     private Dictionary<string, int> Coins { get; set; }
 
-    private string SelectedSpellName { get; set; }
+    private string SelectedSpellName { get; set; } = "";
  
     protected override async Task OnInitializedAsync() {
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
     }
 
+    private List<Spell> NotAddedSpells { get; set; }
+
     protected override async Task OnParametersSetAsync() {
         Stopwatch sw = new Stopwatch();
         sw.Start();
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
+        NotAddedSpells = Character.Class.Spells.Except(Character.Spells).ToList();
         sw.Stop();
         Console.WriteLine("CHARACTER LOADING: " + sw.ElapsedMilliseconds);
         if (Character is null) return;
@@ -386,8 +389,8 @@
     private async Task UpdateCharacter() => await _characterRepository.UpdateAsync(Character);
 
     private async Task OpenWeaponForm() {
-        await DialogService.OpenAsync<WeaponForm>($"WeaponForm",
-            new Dictionary<string, object>() { { "Character", Character } },
+        await DialogService.OpenAsync<ItemForm>($"WeaponForm",
+            new Dictionary<string, object>() { { "Character", Character }, {"SelectedItemType", "Weapon"} },
             new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
@@ -403,5 +406,11 @@
             new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
-    private void AddSpell() => Character.Spells.Add(Character.Class.Spells.SingleOrDefault(s => s.Name == SelectedSpellName));
+    private async Task AddSpellAsync() {
+        Spell s;
+        Character.Spells.Add(s = Character.Class.Spells.SingleOrDefault(s => s.Name == SelectedSpellName));
+        SelectedSpellName = "";
+        NotAddedSpells.Remove(s);
+        await UpdateCharacter();
+    } 
 }
