@@ -183,7 +183,14 @@ else{
         if (item is not null){
             var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == item.ItemId);
             if (charactersHasItem is not null){
-                charactersHasItem.Amount++;
+
+                CharactersHasItem c = new(){
+                    Amount = charactersHasItem.Amount + 1,
+                    CharacterId = charactersHasItem.CharacterId,
+                    ItemId = charactersHasItem.ItemId
+                };
+                await _characterHasItemRepository.DeleteAsync(charactersHasItem);
+                await _characterHasItemRepository.CreateAsync(c);
                 Console.WriteLine("close");
                 dialogService.Close(true);
                 return;
