@@ -15,13 +15,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
-builder.Services.AddDbContextFactory<CharacterSheetDbContext>(
+builder.Services.AddDbContext<CharacterSheetDbContext>(
     options => {
-        options.UseMySql(
+        options.EnableSensitiveDataLogging();
+        options.UseLazyLoadingProxies().UseMySql(
             builder.Configuration.GetConnectionString("DefaultConnection"),
             new MySqlServerVersion(new Version(8, 0, 27))
         );
-        options.EnableSensitiveDataLogging();
     },
     ServiceLifetime.Transient
 );

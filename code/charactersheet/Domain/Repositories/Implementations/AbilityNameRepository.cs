@@ -9,6 +9,5 @@ public class AbilityNameRepository : ARepository<EAbilityName>, IAbilityNameRepo
     public AbilityNameRepository(CharacterSheetDbContext context) : base(context) {
     }
 
-    public async Task<List<EAbilityName>> ReadGraphAsync() => await _set
-        .Include(a => a.SkillNames).ToListAsync();
+    public async Task<List<EAbilityName>> ReadGraphAsync() => await _set.ToListAsync();
 }
