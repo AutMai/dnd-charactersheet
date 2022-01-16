@@ -3,6 +3,7 @@
 @using Domain.Repositories.Interfaces
 @using System.Linq
 @using Domain.Extensions
+@using System.Diagnostics
 @attribute [Authorize]
 @inject ICharacterRepository _characterRepository
 @inject IRepository<ExperienceProficencyBonu> _experienceProfBonusRepository;
@@ -16,13 +17,13 @@
 <header>
     <section class="charname">
         <label for="charname">Character Name</label>
-        <input name="charname" value="@Character.Name" @onchange="async args =>{Character.Name = args.Value.ToString(); await UpdateCharacter();}"/>
+        <input name="charname" value="@Character.Name" @onchange="async args => {Character.Name = args.Value.ToString(); await UpdateCharacter();}"/>
     </section>
     <section class="misc">
         <ul>
             <li>
                 <label for="classlevel">Class & Level</label>
-                @if (ExperienceProficencyBonusList is not null){
+                @if (ExperienceProficencyBonusList is not null) {
                     <input name="classlevel" value="@Character.Class.Name @Level" disabled/>
                 }
             </li>
@@ -40,11 +41,11 @@
             </li>
             <li>
                 <label for="alignment">Alignment</label>
-                <input name="alignment" value="@Character.Alignment" @onchange="async args =>{Character.Alignment = args.Value.ToString(); await UpdateCharacter();}"/>
+                <input name="alignment" value="@Character.Alignment" @onchange="async args => {Character.Alignment = args.Value.ToString(); await UpdateCharacter();}"/>
             </li>
             <li>
                 <label for="experiencepoints">Experience Points</label>
-                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="async args =>{Character.Xp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                <input name="experiencepoints" value="@Character.Xp" maxlength="9" @onchange="async args => {Character.Xp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </li>
         </ul>
     </section>
@@ -55,14 +56,14 @@
     <section class="attributes">
         <div class="scores">
             <ul>
-                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+                @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                     <li>
                         <div class="score">
                             <label for="@a.Name">@a.Name</label>
                             <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
                         </div>
                         <div class="modifier">
-                            <input value="@a.AbilityScore" maxlength="2" @onchange="async args =>{Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                            <input value="@a.AbilityScore" maxlength="2" @onchange="async args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                         </div>
                     </li>
                 }
@@ -73,23 +74,23 @@
                 <div class="label-container">
                     <label for="inspiration">Inspiration</label>
                 </div>
-                <input name="inspiration" type="checkbox" checked="@(Character.Inspiration == 1)" @onchange="async args =>{Character.Inspiration = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter();}"/>
+                <input name="inspiration" type="checkbox" checked="@(Character.Inspiration == 1)" @onchange="async args => {Character.Inspiration = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter();}"/>
             </div>
             <div class="proficiencybonus box">
                 <div class="label-container">
                     <label for="proficiencybonus">Proficiency Bonus</label>
                 </div>
-                @if (ExperienceProficencyBonusList is not null){
+                @if (ExperienceProficencyBonusList is not null) {
                     <input name="proficiencybonus" value="+ @ProficiencyBonus" disabled/>
                 }
             </div>
             <div class="saves list-section box">
                 <ul>
-                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
+                    @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
                             <label for="@savingThrow.Name">@savingThrow.Name</label>
                             <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
-                            <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(async args =>{ savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
+                            <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(async args => { savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
                         </li>
                     }
                 </ul>
@@ -99,14 +100,14 @@
             </div>
             <div class="skills list-section box">
                 <ul>
-                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))){
-                        foreach (var skill in ability.Skills){
+                    @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
+                        foreach (var skill in ability.Skills) {
                             <li>
                                 <label for="@skill.Name">
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
                                 </label>
                                 <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
-                                <input name="@skill.Name-prof" type="checkbox" checked="@(skill.Proficient == 1)" @onchange="@(async args =>{ skill.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
+                                <input name="@skill.Name-prof" type="checkbox" checked="@(skill.Proficient == 1)" @onchange="@(async args => { skill.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
                             </li>
                         }
                     }
@@ -139,7 +140,7 @@
         <div class="armorclass">
             <div>
                 <label for="ac">Armor<br/>Class</label>
-                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="async args =>{Character.ArmorClass = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                <input name="ac" value="@Character.ArmorClass" type="text" @onchange="async args => {Character.ArmorClass = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </div>
         </div>
         <div class="initiative">
@@ -158,16 +159,16 @@
             <div class="regular">
                 <div class="max">
                     <label for="maxhp">Hit Point Maximum</label>
-                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="async args =>{Character.MaxHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                    <input name="maxhp" value="@Character.MaxHp" type="text" maxlength="9" @onchange="async args => {Character.MaxHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                 </div>
                 <div class="current">
                     <label for="currenthp">Current Hit Points</label>
-                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="async args =>{Character.CurrentHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                    <input name="currenthp" type="text" value="@Character.CurrentHp" maxlength="9" @onchange="async args => {Character.CurrentHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
                 </div>
             </div>
             <div class="temporary">
                 <label for="temphp">Temporary Hit Points</label>
-                <input name="temphp" type="text" value="@Character.TemporaryHp" maxlength="9" @onchange="async args =>{Character.TemporaryHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
+                <input name="temphp" type="text" value="@Character.TemporaryHp" maxlength="9" @onchange="async args => {Character.TemporaryHp = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
             </div>
         </div>
         <div class="hitdice">
@@ -191,18 +192,18 @@
                     <div class="deathsuccesses">
                         <label>Successes</label>
                         <div class="bubbles">
-                            @for (int i = 1; i <= 3; i++){
+                            @for (int i = 1; i <= 3; i++) {
                                 int x = i;
-                                <input name="deathsuccess" type="checkbox" @onchange="@(async args =>{ Character.DeathSaveSuccessCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveSuccessCount >= x)"/>
+                                <input name="deathsuccess" type="checkbox" @onchange="@(async args => { Character.DeathSaveSuccessCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveSuccessCount >= x)"/>
                             }
                         </div>
                     </div>
                     <div class="deathfails">
                         <label>Failures</label>
                         <div class="bubbles">
-                            @for (int i = 1; i <= 3; i++){
+                            @for (int i = 1; i <= 3; i++) {
                                 int x = i;
-                                <input name="deathfail" type="checkbox" @onchange="@(async args =>{ Character.DeathSaveFailureCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveFailureCount >= x)"/>
+                                <input name="deathfail" type="checkbox" @onchange="@(async args => { Character.DeathSaveFailureCount = (Convert.ToBoolean(args.Value)) ? x : x - 1; await UpdateCharacter(); })" checked="@(Character.DeathSaveFailureCount >= x)"/>
                             }
                         </div>
                     </div>
@@ -222,8 +223,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach (var chi in Character.CharactersHasItems){
-                    if (chi.Item.Weapon is not null){
+                @foreach (var chi in Character.CharactersHasItems) {
+                    if (chi.Item.Weapon is not null) {
                         <tr>
                             <td>
                                 <input name="atkname" type="text" value="@chi.Item.Name" disabled/>
@@ -239,7 +240,26 @@
                 }
                 </tbody>
             </table>
-            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="async _ => await OpenWeaponForm()">ADD</RadzenButton>
+            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="async _ => await OpenWeaponForm()">Add Weapon</RadzenButton>
+            @if (Character.Class.Spells.Count > 0) {
+                <details>
+                    <summary>Spells</summary>
+                    <ul>
+                        @foreach (var spellLevel in Character.Spells.GroupBy(s => s.Level).ToList()) {
+                            <li>
+                                <details class="ml-3">
+                                    <summary>Level: @spellLevel.Key</summary>
+                                    @foreach (var spell in Character.Spells.Where(s => s.Level == spellLevel.Key)) {
+                                        <a class="ml-3" style="cursor: pointer" @onclick="@(async _ => await OpenSpellInfo(spell))">@spell.Name</a>
+                                    }
+                                </details>
+                            </li>
+                        }
+                    </ul>
+                </details>
+                <RadzenAutoComplete Data=@Character.Class.Spells TextProperty="Name" Change=@(args => Console.WriteLine(args)) Style="width: 100%;" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="AddSpell">Add Spell</RadzenButton>
+            }
         </div>
     </section>
     <section class="equipment">
@@ -247,10 +267,10 @@
             <label>Equipment</label>
             <div class="money">
                 <ul>
-                    @foreach (var coin in Coins){
+                    @foreach (var coin in Coins) {
                         <li>
                             <label for="coin">@coin.Key</label>
-                            <input name="<%= type %>" value="@coin.Value" @onchange="async args =>{Coins[coin.Key] = Convert.ToInt32(args.Value); Character.CopperCoins = Coins.MergeToCopperCoins(); await UpdateCharacter();}"/>
+                            <input name="<%= type %>" value="@coin.Value" @onchange="async args => {Coins[coin.Key] = Convert.ToInt32(args.Value); Character.CopperCoins = Coins.MergeToCopperCoins(); await UpdateCharacter();}"/>
                         </li>
                     }
                 </ul>
@@ -271,25 +291,25 @@
     <section class="flavor">
         <div class="personality">
             <label for="personality">Personality Traits</label>
-            <textarea name="personality" @onchange="@(async args =>{Character.PersonalityTraits().Description = args.Value.ToString(); await UpdateCharacter();})">
+            <textarea name="personality" @onchange="@(async args => {Character.PersonalityTraits().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.PersonalityTraits().Description
             </textarea>
         </div>
         <div class="ideals">
             <label for="ideals">Ideals</label>
-            <textarea name="ideals" @onchange="@(async args =>{Character.Ideals().Description = args.Value.ToString(); await UpdateCharacter();})">
+            <textarea name="ideals" @onchange="@(async args => {Character.Ideals().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Ideals().Description
             </textarea>
         </div>
         <div class="bonds">
             <label for="bonds">Bonds</label>
-            <textarea name="bonds" @onchange="@(async args =>{Character.Bonds().Description = args.Value.ToString(); await UpdateCharacter();})">
+            <textarea name="bonds" @onchange="@(async args => {Character.Bonds().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Bonds().Description
             </textarea>
         </div>
         <div class="flaws">
             <label for="flaws">Flaws</label>
-            <textarea name="flaws" @onchange="@(async args =>{Character.Flaws().Description = args.Value.ToString(); await UpdateCharacter();})">
+            <textarea name="flaws" @onchange="@(async args => {Character.Flaws().Description = args.Value.ToString(); await UpdateCharacter();})">
                 @Character.Flaws().Description
             </textarea>
         </div>
@@ -300,11 +320,11 @@
             @{
                 string features = "";
             }
-            @foreach (var trait in Character.Race.Traits){
+            @foreach (var trait in Character.Race.Traits) {
                 features += $"<h4>{trait.Label}</h4>";
                 features += $"<p>{trait.Description}</p><br/>";
             }
-            @foreach (var feature in Character.Class.Features){
+            @foreach (var feature in Character.Class.Features) {
                 features += $"<h4>{feature.Label}</h4>";
                 features += $"<p>{feature.Description}</p><br/>";
             }
@@ -325,28 +345,33 @@
 
     private Character? Character { get; set; }
 
-    public List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
+    private List<ExperienceProficencyBonu> ExperienceProficencyBonusList { get; set; }
 
-    public Dictionary<string, int> Coins { get; set; }
+    private Dictionary<string, int> Coins { get; set; }
 
-    protected override async Task OnInitializedAsync(){
+    private string SelectedSpellName { get; set; }
+ 
+    protected override async Task OnInitializedAsync() {
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
     }
 
-    protected override async Task OnParametersSetAsync(){
+    protected override async Task OnParametersSetAsync() {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
         Character = await _characterRepository.ReadGraphAsync(CharacterId);
-
+        sw.Stop();
+        Console.WriteLine("CHARACTER LOADING: " + sw.ElapsedMilliseconds);
         if (Character is null) return;
 
         var authState = await authStateTask;
-        if (Character.ApplicationUser.UserName != authState.User.Identity.Name){
+        if (Character.ApplicationUser.UserName != authState.User.Identity.Name) {
             _navigationManager.NavigateTo("/");
         }
 
         Coins = Character.CopperCoins.SplitCopperCoins();
     }
 
-    private async Task UpdateCharacterRemainingHitDice(int newValue){
+    private async Task UpdateCharacterRemainingHitDice(int newValue) {
         Character.HitDiceAmount = newValue > Level ? ProficiencyBonus : newValue;
         await UpdateCharacter();
     }
@@ -360,16 +385,23 @@
 
     private async Task UpdateCharacter() => await _characterRepository.UpdateAsync(Character);
 
-    private async Task OpenWeaponForm(){
+    private async Task OpenWeaponForm() {
         await DialogService.OpenAsync<WeaponForm>($"WeaponForm",
-            new Dictionary<string, object>(){ { "Character", Character } },
-            new DialogOptions(){ Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
+            new Dictionary<string, object>() { { "Character", Character } },
+            new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
-    private async Task OpenItemForm(){
+    private async Task OpenItemForm() {
         await DialogService.OpenAsync<ItemForm>($"ItemForm",
-            new Dictionary<string, object>(){ { "Character", Character } },
-            new DialogOptions(){ Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
+            new Dictionary<string, object>() { { "Character", Character } },
+            new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
     }
 
+    private async Task OpenSpellInfo(Spell spell) {
+        await DialogService.OpenAsync<SpellDetail>("Spell Info",
+            new Dictionary<string, object>() { { "Spell", spell } },
+            new DialogOptions() { Width = "30vw", Resizable = false, Draggable = false, CloseDialogOnOverlayClick = true });
+    }
+
+    private void AddSpell() => Character.Spells.Add(Character.Class.Spells.SingleOrDefault(s => s.Name == SelectedSpellName));
 }

@@ -64,9 +64,7 @@
     public Class? Class { get; set; }
 
     protected override async Task OnParametersSetAsync() {
-        if (Class is null) {
-            Class = await _classRepository.ReadGraphAsync(ClassName);
-        }
+        Class ??= await _classRepository.ReadGraphAsync(ClassName);
     }
 
 }
