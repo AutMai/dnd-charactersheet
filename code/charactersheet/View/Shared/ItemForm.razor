@@ -11,7 +11,7 @@
 
 @inject DialogService dialogService
 
-@if (!IsChecked){
+@if (!IsChecked) {
     <RadzenTemplateForm Data="ItemName">
         <div class="row">
             <div class="col-md-4 align-items-center d-flex">
@@ -28,7 +28,7 @@
         </div>
     </RadzenTemplateForm>
 }
-else{
+else {
     <div class="row">
         <div class="col-md-8 align-items-center d-flex">
             <RadzenLabel Text="Create new Item"/>
@@ -78,7 +78,7 @@ else{
         </div>
     </div>
 
-    @if (SelectedItemType == _types[1]){
+    @if (SelectedItemType == _types[1]) {
         <div class="row">
             <div class="col-md-4 align-items-center d-flex">
                 <RadzenLabel Text="Armor Class"/>
@@ -98,7 +98,7 @@ else{
         </div>
     }
 
-    @if (SelectedItemType == _types[2]){
+    @if (SelectedItemType == _types[2]) {
         <div class="row">
             <div class="col-md-4 align-items-center d-flex">
                 <RadzenLabel Text="Type"/>
@@ -161,7 +161,7 @@ else{
 
     public string Type { get; set; }
 
-    readonly List<string> _types = new(){ "Item", "Armor", "Weapon" };
+    readonly List<string> _types = new() { "Item", "Armor", "Weapon" };
 
     public Item Item { get; set; } = new();
 
@@ -171,26 +171,25 @@ else{
     private List<EWeaponType> WeaponTypes { get; set; }
     private List<EDamageType> DamageTypes { get; set; }
 
-    protected override async Task OnInitializedAsync(){
+    protected override async Task OnInitializedAsync() {
         ArmorTypes = await _armorTypeRepository.ReadAsync();
         WeaponTypes = await _weaponTypeRepository.ReadAsync();
         DamageTypes = await _damageTypeRepository.ReadAsync();
     }
 
-    private async Task SubmitAsync(){
-        var item = _itemRepository.Read(ItemName);
+    private async Task SubmitAsync() {
+        var existingItem = _itemRepository.Read(ItemName);
 
-        if (item is not null){
-            var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == item.ItemId);
-            if (charactersHasItem is not null){
+        if (existingItem is not null) { // item exists already
+            var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == existingItem.ItemId); 
+            if (charactersHasItem is not null) { // character already has min 1 of this item 
                 charactersHasItem.Amount++;
-                Console.WriteLine("close");
+                //await _characterHasItemRepository.UpdateAsync(charactersHasItem);
                 dialogService.Close(true);
                 return;
             }
 
-            await _characterHasItemRepository.CreateAsync(new CharactersHasItem(){ Amount = 1, Character = Character, Item = item });
-            Console.WriteLine("close");
+            await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, Character = Character, Item = existingItem });
             dialogService.Close(true);
             return;
         }
@@ -199,26 +198,22 @@ else{
         Item.Armor = new Armor();
         Item.Weapon = new Weapon();
         IsChecked = true;
-        this.StateHasChanged();
+        StateHasChanged();
     }
 
-    private async Task SubmitNewAsync(){
-        Item.Name = ItemName;
-
-        if (SelectedItemType == _types[0]){
+    private async Task SubmitNewAsync() {
+        if (SelectedItemType == _types[0]) {
             Item.Armor = null!;
             Item.Weapon = null!;
         }
-
-        if (SelectedItemType == _types[1]){
+        if (SelectedItemType == _types[1]) {
             Item.Weapon = null!;
         }
-        if (SelectedItemType == _types[2]){
+        if (SelectedItemType == _types[2]) {
             Item.Armor = null!;
         }
         var x = await _itemRepository.CreateAsync(Item);
-        await _characterHasItemRepository.CreateAsync(new CharactersHasItem(){ Amount = 1, CharacterId = Character.CharacterId, ItemId = x.ItemId });
-        Console.WriteLine("close");
+        await _characterHasItemRepository.CreateAsync(new CharactersHasItem() { Amount = 1, CharacterId = Character.CharacterId, ItemId = x.ItemId });
         dialogService.Close(true);
     }
 
