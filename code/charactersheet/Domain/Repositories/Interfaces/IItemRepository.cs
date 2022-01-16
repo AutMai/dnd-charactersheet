@@ -3,5 +3,5 @@
 namespace Domain.Repositories.Interfaces;
 
 public interface IItemRepository : IRepository<Item>{
-   Item? Read (string name);      
+   Task<Item?> ReadAsync(string name);      
 }

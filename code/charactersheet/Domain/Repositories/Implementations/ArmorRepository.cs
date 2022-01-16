@@ -1,9 +1,10 @@
-﻿using Model.Configurations;
+﻿using Microsoft.EntityFrameworkCore;
+using Model.Configurations;
 using Model.Entities;
 
 namespace Domain.Repositories.Implementations;
 
 public class ArmorRepository : ARepository<Armor>{
-    public ArmorRepository(CharacterSheetDbContext context) : base(context){
+    public ArmorRepository(IDbContextFactory<CharacterSheetDbContext> contextFactory) : base(contextFactory){
     }
 }

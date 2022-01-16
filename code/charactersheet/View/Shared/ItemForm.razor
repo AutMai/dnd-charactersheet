@@ -178,7 +178,7 @@ else {
     }
 
     private async Task SubmitAsync() {
-        var existingItem = _itemRepository.Read(ItemName);
+        var existingItem = await _itemRepository.ReadAsync(ItemName);
 
         if (existingItem is not null) { // item exists already
             var charactersHasItem = Character.CharactersHasItems.FirstOrDefault(k => k.ItemId == existingItem.ItemId); 

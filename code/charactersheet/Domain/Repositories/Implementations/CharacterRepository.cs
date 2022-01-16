@@ -26,7 +26,7 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
            .Include(c => c.Background)
            .Include(c => c.Spells)
            .Include(c => c.Personalities)
-           .Include(c => c.Names)
+           .Include(c => c.Languages)
            .Include(c => c.CharactersHasItems)
            .ThenInclude(i => i.Item)
            .ThenInclude(i => i.Weapon)
