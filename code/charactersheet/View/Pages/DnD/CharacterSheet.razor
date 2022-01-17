@@ -58,9 +58,9 @@
             <ul>
                 @foreach (var a in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                     <li>
-                        <div class="score">
+                        <div class="score" style="cursor:pointer;" @onclick="@(_ => RollDice($"{a.Name}: Check", 1,20,a.AbilityScore.GetAbilityModifier()))">
                             <label for="@a.Name">@a.Name</label>
-                            <input name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
+                            <input style="cursor: pointer" name="@a.Name" value="@a.AbilityScore.GetAbilityModifier().AddSign()" disabled/>
                         </div>
                         <div class="modifier">
                             <input value="@a.AbilityScore" maxlength="2" @onchange="async args => {Character.Abilities.SingleOrDefault(ac => ac.Name == a.Name).AbilityScore = Convert.ToInt32(args.Value); await UpdateCharacter();}"/>
@@ -88,7 +88,7 @@
                 <ul>
                     @foreach (var savingThrow in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         <li>
-                            <label for="@savingThrow.Name">@savingThrow.Name</label>
+                            <label style="cursor: pointer" for="@savingThrow.Name" @onclick="@(_ => RollDice($"{savingThrow.Name}: Save", 1,20,savingThrow.ModifierWithPossibleProficiencyBonus(ProficiencyBonus)))">@savingThrow.Name</label>
                             <input name="@savingThrow.Name" value="@savingThrow.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
                             <input name="@savingThrow.Name-prof" type="checkbox" checked="@(savingThrow.Proficient == 1)" @onchange="@(async args => { savingThrow.Proficient = (Convert.ToBoolean(args.Value)) ? Convert.ToSByte(1) : Convert.ToSByte(0); await UpdateCharacter(); })"/>
                         </li>
@@ -103,7 +103,7 @@
                     @foreach (var ability in Character.Abilities.OrderBy(an => Array.IndexOf(DnDExtensions.AbilitiesSorted, an.Name))) {
                         foreach (var skill in ability.Skills) {
                             <li>
-                                <label for="@skill.Name">
+                                <label for="@skill.Name" style="cursor: pointer" @onclick="@(_ => RollDice($"{skill.Name}: Check", 1,20,skill.ModifierWithPossibleProficiencyBonus(ProficiencyBonus)))">
                                     @skill.Name<span class="skill"> (@ability.Name[..3])</span>
                                 </label>
                                 <input name="@skill.Name" value="@skill.ModifierWithPossibleProficiencyBonus(ProficiencyBonus).AddSign()" type="text" disabled/>
@@ -231,7 +231,7 @@
                         <td @onclick="@(_ => RollDice($"{chi.Item.Name}: To Hit", 1, 20, chi.Item.Weapon.GetAttackBonus(Character.Abilities, 2)))">
                             <input name="atkbonus" type="text" value="@chi.Item.Weapon.GetAttackBonus(Character.Abilities, 2).AddSign()" disabled style="cursor: pointer"/>
                         </td>
-                        <td @onclick="@(_ => RollDice($"{chi.Item.Name}: To Hit", chi.Item.Weapon.DamageDieAmount, chi.Item.Weapon.DamageDieType))">
+                        <td @onclick="@(_ => RollDice($"{chi.Item.Name}: Damage", chi.Item.Weapon.DamageDieAmount, chi.Item.Weapon.DamageDieType))">
                             <input name="atkdamage" type="text" value="@(chi.Item.Weapon.DamageDieAmount + "d" + chi.Item.Weapon.DamageDieType)" disabled style="cursor: pointer"/>
                         </td>
                     </tr>
@@ -248,7 +248,10 @@
                                 <details class="ml-3">
                                     <summary>Level: @spellLevel.Key</summary>
                                     @foreach (var spell in Character.Spells.Where(s => s.Level == spellLevel.Key)) {
-                                        <a class="ml-3 d-block" style="cursor: pointer" @onclick="@(async _ => await OpenSpellInfo(spell))">@spell.Name</a>
+                                        <div class="spell-wrapper d-flex align-items-center">
+                                            <a class="ml-3 d-block" style="cursor: pointer" @onclick="@(_ => RollDice($"{spell.Name}: Damage", spell.DamageDieAmount, spell.DamageDieType))">@spell.Name</a>
+                                            <RadzenButton class="ml-2" Click=@(async _ => await OpenSpellInfo(spell)) Icon="info" ButtonStyle="ButtonStyle.Info"/>
+                                        </div>
                                     }
                                 </details>
                             </li>
@@ -335,14 +338,29 @@
 </main>
 </form>
 
-<div class="dice-rolls" style="position: absolute; top: 94vh; left: 99vw; transform: translate(-100%,-100%);">
+<div class="dice-rolls">
     @foreach (var diceroll in DiceRolls) {
-        <div style="height: 10vh; width: 20vw; background-color: white; border: 1px solid black; border-radius: 10px;">
-            <h3>@diceroll.Item1</h3>
-            <h3>@diceroll.Item2</h3>
+        <div class="dice-roll p-3 mb-2" @onclick="@(_ => DiceRolls.Remove(diceroll))">
+            <div class="left">
+                <h6 style="text-transform:uppercase">@diceroll.Item1</h6>
+                <h2>@diceroll.Item2.SpecificDiceRoll() =</h2>
+                <h4>@diceroll.Item2.GeneralDiceRoll()</h4>
+            </div>
+            <div class="divider"></div>
+            <div class="right">
+                <h1>
+                    <b>@diceroll.Item2.TotalResult</b>
+                </h1>
+            </div>
+        </div>
+    }
+    @if (DiceRolls.Count > 0) {
+        <div style="text-align: right">
+            <RadzenButton ButtonStyle="ButtonStyle.Light" style="color: #000; background-color: #eee; width: 100% ;border: 3px solid #cccccc; border-radius: 5px; font-size: 0.7rem;" class="mb-3" Click="_ => DiceRolls.Clear()">Clear</RadzenButton>
         </div>
     }
 </div>
+
 </DataInitializer>
 
 @code {
@@ -364,7 +382,7 @@
 
     private List<Spell> NotAddedSpells { get; set; }
 
-    public List<(string,string)> DiceRolls { get; set; } = new();
+    public List<(string,DiceRoll)> DiceRolls { get; set; } = new();
 
     protected override async Task OnParametersSetAsync() {
         Stopwatch sw = new Stopwatch();
@@ -426,8 +444,28 @@
     }
 
     private void RollDice(string label, int diceAmount, int diceType, int bonus = 0) {
-        var dr = DnDExtensions.RollDice(diceAmount, diceType, bonus).Sum().ToString();
-        DiceRolls.Add(new ValueTuple<string, string>(label, dr));
+        var dr = DnDExtensions.RollDice(diceAmount, diceType, bonus).Sum();
+        DiceRolls.Add(new ValueTuple<string, DiceRoll>(label, new DiceRoll { Bonus = bonus, DiceAmount = diceAmount, DiceType = diceType, TotalResult = dr }));
+        if (DiceRolls.Count > 8) {
+            DiceRolls.RemoveAt(0);
+        }
+    }
+
+    public class DiceRoll {
+        public int Bonus { get; init; }
+        public int TotalResult { get; init; }
+        public int DiceType { get; init; }
+        public int DiceAmount { get; init; }
+
+        public int DiceRollResultWithoutBonus => TotalResult - Bonus;
+
+        public string GeneralDiceRoll() {
+            return (Bonus == 0) ? $"{DiceAmount}d{DiceType}" : $"{DiceAmount}d{DiceType}+{Bonus}";
+        }
+
+        public string SpecificDiceRoll() {
+            return (Bonus == 0) ? $"{DiceRollResultWithoutBonus}" : $"{DiceRollResultWithoutBonus}+{Bonus}";
+        }
     }
 
 }

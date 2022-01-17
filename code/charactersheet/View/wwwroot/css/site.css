@@ -4,6 +4,61 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.spell-wrapper button {
+    height: 20px !important;
+    width: 20px !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.spell-wrapper button:hover {
+    background-color: lightgrey !important;
+    border: 1px solid grey !important;
+}
+
+.spell-wrapper i {
+    height: 20px !important;
+    font-size: 10px !important;
+    margin-left: -9px;
+    margin-top: -20px;
+    color: black;
+}
+
+.dice-rolls {
+    position: fixed;
+    top: 100vh;
+    left: 99vw;
+    transform: translate(-100%, -100%);
+    min-width: 16rem;
+}
+
+.dice-roll {
+    border: 3px solid lightgrey;
+    cursor: pointer;
+    height: 8rem;
+    width: 20rem;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.dice-roll .left {
+    width: 13rem;
+}
+
+.dice-roll .divider {
+    border-left: 1px solid gray;
+    margin-right: 1.5rem;
+    width: 1px;
+    height: 100%;
+}
+
+.dice-roll .right h1 {
+    text-align: center;
+}
+
+
 .img-404 {
     background-image: url("/img/404.png");
     background-size: contain;

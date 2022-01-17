@@ -13,7 +13,7 @@ public static class DnDExtensions {
         if (dropLowest)
             rolls.Remove(rolls.Min());
 
-        rolls.Add(4);
+        rolls.Add(bonus);
         
         return rolls;
     }
