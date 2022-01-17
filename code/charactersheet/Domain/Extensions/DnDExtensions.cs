@@ -87,7 +87,7 @@ public static class DnDExtensions {
         coins["CP"] = copperC[^1].ToInt();
         coins["SP"] = copperC[^2].ToInt();
         coins["GP"] = copperC[^3].ToInt();
-        coins["PP"] = copperC[1..^3].ToInt();
+        coins["PP"] = copperC[..^3].ToInt();
 
         return coins;
     }
