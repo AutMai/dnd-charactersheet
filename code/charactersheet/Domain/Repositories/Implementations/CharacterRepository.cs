@@ -13,10 +13,10 @@ public class CharacterRepository : ARepository<Character>, ICharacterRepository 
     public async Task<Character> ReadGraphAsync(string name) =>
         await _set.FirstOrDefaultAsync(c => c.Name == name) ?? new Character();
 
-    public async Task<Character> ReadGraphAsync(int id) => (await _set.SingleOrDefaultAsync(c => c.CharacterId == id))!;
+    public async Task<Character> ReadGraphAsync(int id) => (await _set.Include(c=>c.ApplicationUser).SingleOrDefaultAsync(c => c.CharacterId == id))!;
 
     public new async Task<Character> CreateAsync(Character character) {
-        //_context.ChangeTracker.Clear();
+        _context.ChangeTracker.Clear();
         _context.Attach(character.Background);
         _context.Attach(character.Race);
         _context.Attach(character.Class);
