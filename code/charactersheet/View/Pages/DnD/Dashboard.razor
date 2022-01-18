@@ -51,6 +51,8 @@
 
 
     protected override async Task OnInitializedAsync() {
+        //Cascading values and parameters are a way to pass a value
+        //from a component to all of its descendants without having to use traditional component parameters
         var authState = await authStateTask;
         _user = (await userRepository.ReadGraphAsync(authState.User.Identity!.Name!))!;
         ExperienceProficencyBonusList = await _experienceProfBonusRepository.ReadAsync();
