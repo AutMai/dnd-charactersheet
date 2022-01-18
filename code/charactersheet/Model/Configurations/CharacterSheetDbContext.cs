@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Model.Entities;
 
 namespace Model.Configurations {
+    //einbinden vom aspnet framework
     public partial class CharacterSheetDbContext : IdentityDbContext<ApplicationUser> {
         public CharacterSheetDbContext(DbContextOptions<CharacterSheetDbContext> options) : base(options) {
         }
@@ -39,22 +40,28 @@ namespace Model.Configurations {
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
 
+            //Verwendung von utf8 CharSet
             modelBuilder.UseCollation("utf8_general_ci")
                 .HasCharSet("utf8");
-
+            
             modelBuilder.Entity<Ability>(entity => {
+                //Table Annotation
                 entity.ToTable("abilities");
 
+                //Fremd Schlüssel - FK bekommt einen Namen
+                //Das wird verwendet, um Aktionen zu verhindern,
+                //die Verbindungen zwischen Tabellen zerstören würden.
                 entity.HasIndex(e => e.CharacterId, "fk_ABILITIES_CHARACTERS1_idx");
-
+                
                 entity.HasIndex(e => e.Name, "fk_E_ABILITIES_E_ABILITY_NAMES1_idx");
 
+                //Setzen der Column Name
                 entity.Property(e => e.AbilityId).HasColumnName("ABILITY_ID");
 
                 entity.Property(e => e.AbilityScore).HasColumnName("ABILITY_SCORE");
 
                 entity.Property(e => e.CharacterId).HasColumnName("CHARACTER_ID");
-
+                
                 entity.Property(e => e.Name)
                     .HasMaxLength(45)
                     .HasColumnName("NAME");
@@ -64,7 +71,7 @@ namespace Model.Configurations {
                 entity.HasOne(d => d.Character)
                     .WithMany(p => p.Abilities)
                     .HasForeignKey(d => d.CharacterId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.ClientSetNull) //Siehe DC
                     .HasConstraintName("fk_ABILITIES_CHARACTERS1");
 
                 entity.HasOne(d => d.NameNavigation)
@@ -80,7 +87,7 @@ namespace Model.Configurations {
                 entity.HasIndex(e => e.ArmorType, "fk_ARMORS_E_ARMOR_TYPE1_idx");
 
                 entity.Property(e => e.ArmorId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedNever() //manuell pk einzutragen, sonst ef erstellt von selbst
                     .HasColumnName("ARMOR_ID");
 
                 entity.Property(e => e.ArmorClass).HasColumnName("ARMOR_CLASS");
@@ -194,12 +201,18 @@ namespace Model.Configurations {
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_CHARACTERS_USERS1");
-
+                
+                //der entity character n zu m hinzufügen
                 entity.HasMany(d => d.Languages)
                     .WithMany(p => p.Characters)
                     .UsingEntity<Dictionary<string, object>>(
                         "CharacterHasLanguage",
                         l => l.HasOne<ELanguage>().WithMany().HasForeignKey("Name")
+                            //Wenn Sie möchten, dass die Datenbank auch dann versucht, Nullwerte an untergeordnete Fremdschlüssel weiterzugeben,
+                            //wenn die untergeordnete Entität nicht geladen ist, dann verwenden Sie SetNull. Beachten Sie jedoch,
+                            //dass die Datenbank dies unterstützen muss, und die Konfiguration der Datenbank auf diese Weise
+                            //kann zu anderen Einschränkungen führen, was diese Option in der Praxis oft unpraktisch macht.
+                            //Aus diesem Grund ist SetNull nicht der Standard.
                             .OnDelete(DeleteBehavior.ClientSetNull)
                             .HasConstraintName("fk_CHARACTERS_has_E_LANGUAGES_E_LANGUAGES1"),
                         r => r.HasOne<Character>().WithMany().HasForeignKey("CharacterId")
