@@ -19,7 +19,7 @@
                     <RadzenSelectBar @bind-Value=@SelectedSkillProficiencies TValue="IEnumerable<string>" Multiple="true" Disabled="@(SelectedSkillProficiencies.Count() >= TempClass.ClassHasSkillProficienciesChoices.First().Amount)" class="skillSelect">
                         <Items>
                             @foreach (var skill in TempClass.ClassHasSkillProficienciesChoices) {
-                                <RadzenSelectBarItem class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
+                                <RadzenSelectBarItem Style="width: 100%" class="skillSelectItem" Text="@skill.SkillName" Value="@skill.SkillName"/>
                             }
                         </Items>
                     </RadzenSelectBar>

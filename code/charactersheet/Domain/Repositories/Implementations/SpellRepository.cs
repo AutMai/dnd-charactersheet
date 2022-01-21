@@ -10,6 +10,5 @@ public class SpellRepository : ARepository<Spell>, ISpellRepository {
     }
 
     public async Task<Spell> ReadGraphAsync(string name) => (await _set
-        .Include(s => s.Classes)
         .SingleOrDefaultAsync(s => s.Name == name))!;
 }

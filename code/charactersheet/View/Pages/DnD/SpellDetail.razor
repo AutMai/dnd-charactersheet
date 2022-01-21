@@ -37,10 +37,11 @@
     [Parameter]
     public string SpellName { get; set; }
 
-    private Spell? Spell { get; set; }
+    [Parameter]
+    public Spell? Spell { get; set; }
 
     protected override async Task OnParametersSetAsync() {
-        Spell = await _spellRepository.ReadGraphAsync(SpellName);
+        Spell ??= await _spellRepository.ReadGraphAsync(SpellName);
     }
 
 }

@@ -43,9 +43,4 @@ public class ARepository<TEntity> : IRepository<TEntity> where TEntity : class {
         _set.Remove(entity);
         await _context.SaveChangesAsync();
     }
-
-    public async Task<TEntity?> ReadWithAllIncludes(int id) {
-        var e = await _set.FindAsync(id);
-        return await _set.IncludeAll().SingleOrDefaultAsync(k => Equals(k, e));
-    }
 }

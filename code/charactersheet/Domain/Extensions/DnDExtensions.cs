@@ -4,7 +4,7 @@ using Model.Entities;
 public static class DnDExtensions {
     private static Random _random = new Random();
 
-    public static List<int> RollDice(int amount, int type, bool dropLowest = false) {
+    public static List<int> RollDice(int amount, int type, int bonus = 0, bool dropLowest = false) {
         List<int> rolls = new List<int>();
         for (int i = 0; i < amount; i++) {
             rolls.Add(_random.Next(1, type + 1));
@@ -13,6 +13,8 @@ public static class DnDExtensions {
         if (dropLowest)
             rolls.Remove(rolls.Min());
 
+        rolls.Add(bonus);
+        
         return rolls;
     }
 
@@ -85,7 +87,7 @@ public static class DnDExtensions {
         coins["CP"] = copperC[^1].ToInt();
         coins["SP"] = copperC[^2].ToInt();
         coins["GP"] = copperC[^3].ToInt();
-        coins["PP"] = copperC[1..^3].ToInt();
+        coins["PP"] = copperC[..^3].ToInt();
 
         return coins;
     }

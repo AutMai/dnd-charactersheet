@@ -10,11 +10,7 @@ public class ApplicationUserRepository : ARepository<ApplicationUser>, IApplicat
     public ApplicationUserRepository(CharacterSheetDbContext context) : base(context) {
     }
 
-    public async Task<ApplicationUser?> ReadGraphAsync(string name) {
-        return await _set.IncludeAll().SingleOrDefaultAsync(k => k.UserName == name);
-    }
+    public async Task<ApplicationUser?> ReadGraphAsync(string name) => await _set.SingleOrDefaultAsync(k => k.UserName == name);
 
-    public Task<ApplicationUser?> ReadAsync(string name) {
-        return _set.Include(a => a.Characters).SingleOrDefaultAsync(k => k.UserName == name);
-    }
+    public async Task<ApplicationUser?> ReadAsync(string name)  => await _set.SingleOrDefaultAsync(k => k.UserName == name);
 }

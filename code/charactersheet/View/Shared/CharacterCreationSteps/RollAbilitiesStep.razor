@@ -43,7 +43,7 @@
     public IEnumerable<string> SelectedSkillProficiencies { get; set; }
 
     private void RollAbilityScore(string abilityName) {
-        var rolledScore = DnDExtensions.RollDice(4, 6, true).Sum();
+        var rolledScore = DnDExtensions.RollDice(4, 6, 0,true).Sum();
         var parentIncrease = 0;
         if (Character.Race.ParentRace is not null)
             parentIncrease = Character.Race.ParentRace.RaceHasAbilityScoreIncreases.Where(a => a.AbilityName == abilityName).Sum(abilityScoreIncrease => abilityScoreIncrease.Increase);
