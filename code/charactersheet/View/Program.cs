@@ -1,3 +1,4 @@
+using System.Net;
 using Domain.Repositories.Implementations;
 using Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -5,7 +6,9 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
+using Model.Identity;
 using Radzen;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +45,14 @@ builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStat
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
 
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(builder =>
+        builder.WithOrigins("https://localhost:44338")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
+
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => {
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 4;
@@ -60,6 +71,7 @@ if (!app.Environment.IsDevelopment()){
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
@@ -67,6 +79,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+
+//add cors
+app.UseCors();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

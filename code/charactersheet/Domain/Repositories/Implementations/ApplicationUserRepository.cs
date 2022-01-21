@@ -3,6 +3,7 @@ using Domain.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Model.Configurations;
 using Model.Entities;
+using Model.Identity;
 
 namespace Domain.Repositories.Implementations;
 

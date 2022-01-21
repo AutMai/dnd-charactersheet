@@ -1,5 +1,6 @@
-﻿using Domain.Extensions;
-using Model.Entities;
+﻿using Model.Entities;
+
+namespace Domain.Extensions;
 
 public static class DnDExtensions {
     private static Random _random = new Random();

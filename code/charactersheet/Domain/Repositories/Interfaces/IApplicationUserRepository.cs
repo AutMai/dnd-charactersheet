@@ -1,4 +1,5 @@
 using Model.Entities;
+using Model.Identity;
 
 namespace Domain.Repositories.Interfaces;
 
